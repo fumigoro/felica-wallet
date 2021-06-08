@@ -1,5 +1,6 @@
 package com.example.y3033067.nfcreader;
 
+import android.nfc.tech.NfcF;
 import android.util.Log;
 
 public class ReadWithoutEncryption {
@@ -149,6 +150,5 @@ public class ReadWithoutEncryption {
             }
         return str1.toString();
     }
-
 
 }

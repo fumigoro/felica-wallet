@@ -11,14 +11,15 @@ import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private IntentFilter[] intentFiltersArray;
     private String[][] techListsArray;
     private NfcAdapter mAdapter;
     private PendingIntent pendingIntent;
-    private byte[][] data;
-//    private NfcReader nfcReader = new NfcReader();
+    private final NFCReader nfcReader = new NFCReader();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +66,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        NfcReader nfcReader = new NfcReader();
+        ArrayList<Byte[]> data = new ArrayList<Byte[]>();
         data = nfcReader.readTag(tag);
-        Log.d("TAG", "\n" + nfcReader.hex2string2D(data));
-//        Log.d("TAG",data+"!");
-
+        if(data==null){
+            Log.e("","Loaded data null");
+            return;
+        }
+        for(int i=0;i<data.size();i++){
+            Log.d("BlockData", String.format("<%02X> ",i)+nfcReader.hex2string(data.get(i)));
+        }
+        Log.d("BlockData", "================");
         // ここで取得したTagを使ってデータの読み書きを行う。
     }
 
