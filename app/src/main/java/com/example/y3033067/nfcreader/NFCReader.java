@@ -31,23 +31,47 @@ class NfcReader {
             byte[] targetIDm = Arrays.copyOfRange(pollingRes, 2, 10);
 
             // サービスに含まれているデータのサイズ(今回は4だった)
-            int size = 15;
+            int size = 10;
 
             // 対象のサービスコード -> 0x1A8B
-            byte[] targetServiceCode = new byte[]{(byte) 0x89, (byte) 0x8F};
+//            byte[] targetServiceCode = new byte[]{(byte) 0x89, (byte) 0x8F};
+
+            int targetServiceCode = 0x898F;
 
             // Read Without Encryption コマンドを作成
-            byte[] req = readWithoutEncryption(targetIDm, size, targetServiceCode);
-
+//            byte[] req = readWithoutEncryption(targetIDm, targetServiceCode,  0, 15);
+            ReadWithoutEncryption rwe1 = new ReadWithoutEncryption(targetIDm,targetServiceCode,0,10);
             // コマンドを送信して結果を取得
-            byte[] res = nfc.transceive(req);
+            byte[] res1 = nfc.transceive(rwe1.generateCommandPacket());
+
+            ReadWithoutEncryption rwe2 = new ReadWithoutEncryption(targetIDm,targetServiceCode,10,20);
+
+//            req = readWithoutEncryption(targetIDm, targetServiceCode,  15, 20);
+            // コマンドを送信して結果を取得
+            byte[] res2 = nfc.transceive(rwe2.generateCommandPacket());
 
             nfc.close();
 
-            // 結果をパースしてデータだけ取得
             //IDmを表示
             Log.d("TAG",hex2string(targetIDm));
-            return parse(res);
+            Log.d("TAG","res1:"+hex2string(res1));
+            Log.d("TAG","res2:"+hex2string(res2));
+
+
+            // 結果をパースしてデータだけ取得
+
+            byte[][] parsedRes1 = parse(res1);
+            byte[][] parsedRes2 = parse(res2);
+
+            byte[][] parsedRes = new byte[parsedRes1.length + parsedRes2.length][16];
+            for(int i=0;i<parsedRes1.length;i++){
+                System.arraycopy(parsedRes1[i], 0, parsedRes[i], 0, parsedRes1[i].length);
+            }
+            for(int i=parsedRes1.length;i<parsedRes2.length;i++){
+                System.arraycopy(parsedRes2[i], 0, parsedRes[i], 0, parsedRes2[i].length );
+            }
+
+            return parsedRes;
         } catch (Exception e) {
             Log.e("TAG", e.getMessage() , e);
         }
@@ -79,33 +103,79 @@ class NfcReader {
     /**
      * Read Without Encryptionコマンドの取得。
      * @param idm 指定するシステムのID
-     * @param size 取得するデータの数
+     * @param
      * @return Read Without Encryptionコマンド
      * @throws IOException
      */
-    private byte[] readWithoutEncryption(byte[] idm, int size, byte[] serviceCode) throws IOException {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream(100);
+//    private byte[] readWithoutEncryption(byte[] idm, byte[] serviceCode, int start, int end) throws IOException {
+//        ByteArrayOutputStream bout = new ByteArrayOutputStream(100);
+//
+//        bout.write(0);              // データ長バイトのダミー
+//        bout.write(0x06);           // コマンドコード
+//        bout.write(idm);               // IDm 8byte
+//        bout.write(1);              // サービス数の長さ(以下２バイトがこの数分繰り返す)
+//
+//        // サービスコードの指定はリトルエンディアンなので、下位バイトから指定します。
+//        bout.write(serviceCode[1]); // サービスコード下位バイト
+//        bout.write(serviceCode[0]); // サービスコード上位バイト
+//        bout.write(end-start);   // ブロック数
+//
+//        // ブロック番号の指定
+//        for (int i = start; i < end; i++) {
+//            bout.write(0x80);       // ブロックエレメント上位バイト 「Felicaユーザマニュアル抜粋」の4.3項参照
+//            bout.write(i);          // ブロック番号
+//        }
+//
+//        byte[] msg = bout.toByteArray();
+//        msg[0] = (byte) msg.length; // 先頭１バイトはデータ長
+//        Log.d("TAG","msg:"+hex2string(msg));
+//        return msg;
+//    }
 
-        bout.write(0);              // データ長バイトのダミー
-        bout.write(0x06);           // コマンドコード
-        bout.write(idm);            // IDm 8byte
-        bout.write(1);              // サービス数の長さ(以下２バイトがこの数分繰り返す)
+//    private byte[] readWithoutEncryption2(byte[] idm,int serviceCode, int startBlock, int endBlock) throws Exception {
+//        int maxReadableSize = 15; //最大同時読み出しブロック数（製品ごとに異なる）
+//        //同時読み出し可能なブロック数を超えていないかチェック
+//        if(1<=endBlock-startBlock && endBlock-startBlock<maxReadableSize){
+//            throw new Exception("Invalid block number");
+//        }
+//        //IDmが8byteかチェック
+//        if(idm.length!=8){
+//            throw new Exception("Invalid IDm size");
+//        }
+//
+//        byte[] command = new byte[12+endBlock-startBlock];
+//
+//        command[1] = 0x06; // コマンドコード
+//        //IDm（[2]~[9]）
+//        for(int i=0;i<8;i++){
+//            command[i+2] = idm[i];
+//        }
+//        command[10] = 0x01; //サービス数
+//
+//
+//        bout.write(0);              // データ長バイトのダミー
+//        bout.write(0x06);
+//        bout.write(idm);               // IDm 8byte
+//        bout.write(1);              // サービス数の長さ(以下２バイトがこの数分繰り返す)
+//
+//        // サービスコードの指定はリトルエンディアンなので、下位バイトから指定します。
+//        bout.write(serviceCode[1]); // サービスコード下位バイト
+//        bout.write(serviceCode[0]); // サービスコード上位バイト
+//        bout.write(end-start);   // ブロック数
+//
+//        // ブロック番号の指定
+//        for (int i = start; i < end; i++) {
+//            bout.write(0x80);       // ブロックエレメント上位バイト 「Felicaユーザマニュアル抜粋」の4.3項参照
+//            bout.write(i);          // ブロック番号
+//        }
+//
+//        byte[] msg = bout.toByteArray();
+//        msg[0] = (byte) msg.length; // 先頭１バイトはデータ長
+//        Log.d("TAG","msg:"+hex2string(msg));
+//        return msg;
+//    }
 
-        // サービスコードの指定はリトルエンディアンなので、下位バイトから指定します。
-        bout.write(serviceCode[1]); // サービスコード下位バイト
-        bout.write(serviceCode[0]); // サービスコード上位バイト
-        bout.write(size);           // ブロック数
 
-        // ブロック番号の指定
-        for (int i = 0; i < size; i++) {
-            bout.write(0x80);       // ブロックエレメント上位バイト 「Felicaユーザマニュアル抜粋」の4.3項参照
-            bout.write(i);          // ブロック番号
-        }
-
-        byte[] msg = bout.toByteArray();
-        msg[0] = (byte) msg.length; // 先頭１バイトはデータ長
-        return msg;
-    }
 
     /**
      * Read Without Encryption応答の解析。
@@ -162,7 +232,7 @@ class NfcReader {
         if(bytes==null){
             return str1.toString();
         }
-        Log.d("TAG","length:"+bytes.length);
+//        Log.d("TAG","length:"+bytes.length);
         for (byte b : bytes) {
             try {
                 str1.append(String.format("%02X", b)+":");
@@ -171,9 +241,6 @@ class NfcReader {
             }
 
         }
-
-
         return str1.toString();
-
     }
 }

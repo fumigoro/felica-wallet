@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scan>
+	<version>4.24.7</version>
+	<date>2021-06-08 17:44:15</date>
+	<title>Unknown FeliCa tag</title>
+	<uid nxp="false">01:12:04:12:4F:18:1A:32</uid>
+	<hasndef>false</hasndef>
+	<section>
+		<subsection title="IC manufacturer">
+			<block type="text">
+	<content>Unknown manufacturer</content>
+</block>
+		</subsection>
+		<subsection title="IC type">
+			<block type="text">
+	<content>FeliCa</content>
+</block>
+		</subsection>
+	</section>
+	<section>
+		<subsection title="No NDEF data storage populated">
+			<block type="text">
+	<content></content>
+</block>
+		</subsection>
+	</section>
+	<section>
+		<subsection title="System Codes">
+			<block type="text">
+	<content>ayuca<hexoutput> (0x83EE)</hexoutput></content>
+</block>
+		</subsection>
+	</section>
+	<section>
+		<subsection title="Technologies supported">
+			<block type="text">
+	<content>JIS X 6319-4 compatible</content>
+</block>
+		</subsection>
+		<subsection title="Android technology information">
+			<block type="text">
+	<content>Tag description:
+‣ TAG: Tech [android.nfc.tech.NfcF]
+‣ Maximum transceive length: 255 bytes
+‣ Default maximum transceive time-out: 255 ms
+<hexoutput>MIFARE Classic support present in Android</hexoutput></content>
+</block>
+		</subsection>
+		<subsection title="Detailed protocol information">
+			<block type="text">
+	<content>ID: 01:12:04:12:4F:18:1A:32
+‣ Manufacturer code: 0x1201
+PMm: 0x0136428247459AFF
+‣ IC code: 0x0136
+	• ROM type: 0x01
+	• IC type: 0x36
+‣ Max. command response times:
+	• Req. Service: 3.62 + n*1.21 ms<hexoutput> (0x42)</hexoutput>
+	• Req. Response: 14.50 ms<hexoutput> (0x82)</hexoutput>
+	• Authenticate: 9.66 + n*1.21 ms<hexoutput> (0x47)</hexoutput>
+	• Read/Check: 7.25 + n*1.21 ms<hexoutput> (0x45)</hexoutput>
+	• Write/Update: 14.50 + n*19.33 ms<hexoutput> (0x9A)</hexoutput>
+	• Issuance command: 154.62 ms<hexoutput> (0xFF)</hexoutput>
+  ('n': no. of blocks/services)
+
+Primary System Code: 0x83EE
+Advanced Protocol Features:
+‣ Automatically selectable bit rates
+‣ Supported communication rates:
+	• 212, 424 kbit/s (divisors: 2, 4)
+</content>
+</block>
+		</subsection>
+		<subsection title="Memory content">
+			<block type="text">
+	<content>System Code 0x83EE: ayuca
+‣ IDm: 01:12:04:12:4F:18:1A:32
+‣ Area #0: 0x0000 - 0xFFFE
+‣ Area #1: 0x8000 - 0x927F
+‣ Area #2: 0x8040 - 0x80BF
+‣ Area #3: 0x8840 - 0x887F
+‣ Area #4: 0x8980 - 0x89BF
+‣ Area #5: 0x8AC0 - 0x8AFF
+‣ Area #6: 0x9240 - 0x927F
+  • Service: 0x8048 #513 Random Access R/W     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x804A #513 Random Access R/O     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x804B #513 Random Access R/O     
+</content>
+</block>
+<block>
+	<address addrwidth="4">0</address>
+	<data>0D 83 00 01 E0 00 00 10 00 00 20 00 32 80 C0 00</data>
+</block>
+<block>
+	<address addrwidth="4">1</address>
+	<data>26 7E 18 CA 01 00 00 00 00 01 01 91 00 00 00 00</data>
+</block>
+<block type="text">
+	<content>  • Service: 0x8088 #514 Random Access R/W     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x808A #514 Random Access R/O     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x8848 #545 Random Access R/W     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x884A #545 Random Access R/O     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x884B #545 Random Access R/O     
+</content>
+</block>
+<block>
+	<address addrwidth="4">0</address>
+	<data>11 9E 00 00 00 00 00 2A C3 01 10 2A C2 3D 60 00</data>
+</block>
+<block>
+	<address addrwidth="4">1</address>
+	<data>00 79 2A C2 00 12 A0 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">2</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block type="text">
+	<content>  • Service: 0x898C #550 Cyclic Access R/W     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x898E #550 Cyclic Access R/O     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x898F #550 Cyclic Access R/O     
+</content>
+</block>
+<block>
+	<address addrwidth="4">0</address>
+	<data>2A C3 4C E0 02 96 00 03 53 01 4A 11 9E 00 12 A0</data>
+</block>
+<block>
+	<address addrwidth="4">1</address>
+	<data>2A C3 21 90 00 02 02 88 53 01 4A 12 E8 00 0E 80</data>
+</block>
+<block>
+	<address addrwidth="4">2</address>
+	<data>2A C2 3D 60 00 64 01 F9 89 13 88 14 32 00 0A 60</data>
+</block>
+<block>
+	<address addrwidth="4">3</address>
+	<data>2A C2 3D 30 02 96 00 66 53 01 4A 00 AA 00 0A 60</data>
+</block>
+<block>
+	<address addrwidth="4">4</address>
+	<data>2A C2 21 80 00 02 02 88 53 01 4A 01 F4 00 06 41</data>
+</block>
+<block>
+	<address addrwidth="4">5</address>
+	<data>2A BF 50 60 02 96 00 03 53 01 4A 02 D0 00 48 40</data>
+</block>
+<block>
+	<address addrwidth="4">6</address>
+	<data>2A BF 28 20 00 02 02 96 53 01 4A 04 1A 00 44 20</data>
+</block>
+<block>
+	<address addrwidth="4">7</address>
+	<data>2A BA 4C 80 02 96 00 03 53 01 4A 05 64 00 40 00</data>
+</block>
+<block>
+	<address addrwidth="4">8</address>
+	<data>2A BA 21 F0 00 02 02 96 53 01 4A 06 AE 00 3B E2</data>
+</block>
+<block>
+	<address addrwidth="4">9</address>
+	<data>2A B4 42 B0 02 96 00 66 53 01 4A 07 F8 00 18 80</data>
+</block>
+<block>
+	<address addrwidth="4">10</address>
+	<data>2A B4 22 20 00 02 02 96 53 01 4A 09 42 00 14 60</data>
+</block>
+<block>
+	<address addrwidth="4">11</address>
+	<data>2A B3 45 30 02 96 00 66 53 01 4A 0A 8C 00 10 40</data>
+</block>
+<block>
+	<address addrwidth="4">12</address>
+	<data>2A B3 21 E0 00 02 02 88 53 01 4A 0B D6 00 0C 20</data>
+</block>
+<block>
+	<address addrwidth="4">13</address>
+	<data>2A AD 49 50 02 96 00 03 53 01 4A 0D 20 00 08 00</data>
+</block>
+<block>
+	<address addrwidth="4">14</address>
+	<data>2A AD 3D E0 00 66 02 96 53 01 4A 0E 6A 00 03 E1</data>
+</block>
+<block>
+	<address addrwidth="4">15</address>
+	<data>2A 9B 45 A0 02 96 00 03 53 01 4A 0E B0 00 A5 80</data>
+</block>
+<block>
+	<address addrwidth="4">16</address>
+	<data>2A 9B 31 80 00 66 02 96 53 01 4A 0F FA 00 A1 62</data>
+</block>
+<block>
+	<address addrwidth="4">17</address>
+	<data>2A 96 48 50 02 96 00 03 53 01 4A 11 44 00 5E C0</data>
+</block>
+<block>
+	<address addrwidth="4">18</address>
+	<data>2A 96 22 00 00 02 02 96 53 01 4A 12 8E 00 5A A0</data>
+</block>
+<block>
+	<address addrwidth="4">19</address>
+	<data>2A 95 22 50 00 02 02 88 53 01 4A 13 D8 00 56 80</data>
+</block>
+<block type="text">
+	<content>  • Service: 0x8AC8 #555 Random Access R/W     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x8ACA #555 Random Access R/O     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x9248 #585 Random Access R/W     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x924A #585 Random Access R/O     
+    ◦ Protected (no access)</content>
+</block>
+<block type="text">
+	<content>  • Service: 0x924B #585 Random Access R/O     
+</content>
+</block>
+<block>
+	<address addrwidth="4">0</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">1</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">2</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">3</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">4</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">5</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">6</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">7</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">8</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">9</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">10</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">11</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">12</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">13</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">14</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">15</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+<block>
+	<address addrwidth="4">16</address>
+	<data>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</data>
+</block>
+		</subsection>
+	</section>
+</scan>
