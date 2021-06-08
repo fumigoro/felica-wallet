@@ -70,7 +70,7 @@ public class ReadWithoutEncryption{
         Log.d("cmd","==========================");
         Log.d("cmd","Type:ReadWithoutEncryption");
         command[0] = (byte) (0x000000ff & (command.length));
-        command[1] = 0x06; // コマンドコード
+        command[1] = COMMAND_CODE; // コマンドコード
         Log.d("cmd","CommandCode:"+String.format("%02X",command[1]));
         //IDm（[2]~[9]）
         for(int i=0;i<8;i++){
