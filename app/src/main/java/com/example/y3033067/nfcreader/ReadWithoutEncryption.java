@@ -140,7 +140,6 @@ public class ReadWithoutEncryption {
         if (bytes == null) {
             return str1.toString();
         }
-//        Log.d("TAG","length:"+bytes.length);
         for (byte b : bytes)
             try {
                 str1.append(String.format("%02X", b)).append(":");
