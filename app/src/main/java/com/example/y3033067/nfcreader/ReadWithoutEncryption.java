@@ -3,13 +3,13 @@ package com.example.y3033067.nfcreader;
 import android.util.Log;
 
 public class ReadWithoutEncryption {
-    final byte COMMAND_CODE = 0x06;
     byte[] idm;
     byte serviceCodeNumber;
     int[] serviceCodes;
     byte blockNumber;
     short[] blocks;
 
+    final byte COMMAND_CODE = 0x06;
     final int MAX_BLOCK_SIZE = 15;
     final int MAX_SERVICE_SIZE = 16;
 
