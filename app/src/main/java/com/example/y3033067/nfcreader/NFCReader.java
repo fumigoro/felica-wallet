@@ -5,7 +5,6 @@ import android.nfc.tech.NfcF;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 
 class NfcReader {
@@ -15,11 +14,11 @@ class NfcReader {
         try {
             nfc.connect();
             // System 1のシステムコード -> 0x83EE
-            /**
+            /*
              * Ayuca:0x83ee
              * CampusPay:0x8e4b
              */
-            byte[] targetSystemCode = new byte[]{(byte) 0x83,(byte) 0xee};
+            byte[] targetSystemCode = new byte[]{(byte) 0x83, (byte) 0xee};
 
             // polling コマンドを作成
             byte[] polling = polling(targetSystemCode);
@@ -30,9 +29,6 @@ class NfcReader {
             // System 0 のIDｍを取得(1バイト目はデータサイズ、2バイト目はレスポンスコード、IDmのサイズは8バイト)
             byte[] targetIDm = Arrays.copyOfRange(pollingRes, 2, 10);
 
-            // サービスに含まれているデータのサイズ(今回は4だった)
-            int size = 10;
-
             // 対象のサービスコード -> 0x1A8B
 //            byte[] targetServiceCode = new byte[]{(byte) 0x89, (byte) 0x8F};
 
@@ -40,11 +36,11 @@ class NfcReader {
 
             // Read Without Encryption コマンドを作成
 //            byte[] req = readWithoutEncryption(targetIDm, targetServiceCode,  0, 15);
-            ReadWithoutEncryption rwe1 = new ReadWithoutEncryption(targetIDm,targetServiceCode,0,10);
+            ReadWithoutEncryption rwe1 = new ReadWithoutEncryption(targetIDm, targetServiceCode, 0, 10);
             // コマンドを送信して結果を取得
             byte[] res1 = nfc.transceive(rwe1.generateCommandPacket());
 
-            ReadWithoutEncryption rwe2 = new ReadWithoutEncryption(targetIDm,targetServiceCode,10,20);
+            ReadWithoutEncryption rwe2 = new ReadWithoutEncryption(targetIDm, targetServiceCode, 10, 20);
 
 //            req = readWithoutEncryption(targetIDm, targetServiceCode,  15, 20);
             // コマンドを送信して結果を取得
@@ -53,9 +49,9 @@ class NfcReader {
             nfc.close();
 
             //IDmを表示
-            Log.d("TAG",hex2string(targetIDm));
-            Log.d("TAG","res1:"+hex2string(res1));
-            Log.d("TAG","res2:"+hex2string(res2));
+            Log.d("TAG", hex2string(targetIDm));
+            Log.d("TAG", "res1:" + hex2string(res1));
+            Log.d("TAG", "res2:" + hex2string(res2));
 
 
             // 結果をパースしてデータだけ取得
@@ -64,16 +60,16 @@ class NfcReader {
             byte[][] parsedRes2 = parse(res2);
 
             byte[][] parsedRes = new byte[parsedRes1.length + parsedRes2.length][16];
-            for(int i=0;i<parsedRes1.length;i++){
+            for (int i = 0; i < parsedRes1.length; i++) {
                 System.arraycopy(parsedRes1[i], 0, parsedRes[i], 0, parsedRes1[i].length);
             }
-            for(int i=parsedRes1.length;i<parsedRes2.length;i++){
-                System.arraycopy(parsedRes2[i], 0, parsedRes[i], 0, parsedRes2[i].length );
+            for (int i = parsedRes1.length; i < parsedRes2.length; i++) {
+                System.arraycopy(parsedRes2[i], 0, parsedRes[i], 0, parsedRes2[i].length);
             }
 
             return parsedRes;
         } catch (Exception e) {
-            Log.e("TAG", e.getMessage() , e);
+            Log.e("TAG", e.getMessage(), e);
         }
 
         return null;
@@ -81,9 +77,9 @@ class NfcReader {
 
     /**
      * Pollingコマンドの取得。
+     *
      * @param systemCode byte[] 指定するシステムコード
      * @return Pollingコマンド
-     * @throws IOException
      */
     private byte[] polling(byte[] systemCode) {
         ByteArrayOutputStream bout = new ByteArrayOutputStream(100);
@@ -100,7 +96,7 @@ class NfcReader {
         return msg;
     }
 
-    /**
+    /*
      * Read Without Encryptionコマンドの取得。
      * @param idm 指定するシステムのID
      * @param
@@ -176,46 +172,45 @@ class NfcReader {
 //    }
 
 
-
     /**
      * Read Without Encryption応答の解析。
+     *
      * @param res byte[]
      * @return 文字列表現
-     * @throws Exception
+     * @throws Exception コマンドのレスポンスエラー
      */
     private byte[][] parse(byte[] res) throws Exception {
         // res[10] エラーコード。0x00の場合が正常
-        if (res[10] != 0x00)
-            throw new RuntimeException("Read Without Encryption Command Error");
+        if (res[10] != 0x00){
+            throw new Exception("Read Without Encryption Command Error");
+        }
+
 
         // res[12] 応答ブロック数
         // res[13 + n * 16] 実データ 16(byte/ブロック)の繰り返し
         int size = res[12];
         byte[][] data = new byte[size][16];
-        String str = "";
         for (int i = 0; i < size; i++) {
             byte[] tmp = new byte[16];
             int offset = 13 + i * 16;
-            for (int j = 0; j < 16; j++) {
-                tmp[j] = res[offset + j];
-            }
+            System.arraycopy(res, offset, tmp, 0, 16);
 
             data[i] = tmp;
         }
         return data;
     }
 
-    public String hex2string2D(byte[][] bytes){
+    public String hex2string2D(byte[][] bytes) {
         StringBuilder str1 = new StringBuilder();
-        if(bytes==null){
+        if (bytes == null) {
             return str1.toString();
         }
-        for (int i=0;i<bytes.length;i++) {
-            str1.append(i+" ");
+        for (int i = 0; i < bytes.length; i++) {
+            str1.append(i).append(" ");
             for (byte b : bytes[i]) {
                 try {
-                    str1.append(String.format("%02X", b)+":");
-                }catch (Error e){
+                    str1.append(String.format("%02X", b)).append(":");
+                } catch (Error e) {
                     e.printStackTrace();
                 }
 
@@ -227,16 +222,16 @@ class NfcReader {
 
     }
 
-    public String hex2string(byte[] bytes){
+    public String hex2string(byte[] bytes) {
         StringBuilder str1 = new StringBuilder();
-        if(bytes==null){
+        if (bytes == null) {
             return str1.toString();
         }
 //        Log.d("TAG","length:"+bytes.length);
         for (byte b : bytes) {
             try {
-                str1.append(String.format("%02X", b)+":");
-            }catch (Error e){
+                str1.append(String.format("%02X", b)).append(":");
+            } catch (Error e) {
                 e.printStackTrace();
             }
 

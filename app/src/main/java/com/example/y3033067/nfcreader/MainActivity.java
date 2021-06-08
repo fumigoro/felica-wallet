@@ -32,20 +32,19 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             ndef.addDataType("text/plain");
-        }
-        catch (IntentFilter.MalformedMimeTypeException e) {
+        } catch (IntentFilter.MalformedMimeTypeException e) {
             throw new RuntimeException("fail", e);
         }
-        intentFiltersArray = new IntentFilter[] {ndef};
+        intentFiltersArray = new IntentFilter[]{ndef};
 
         // FelicaはNFC-TypeFなのでNfcFのみ指定でOK
-        techListsArray = new String[][] {
-                new String[] { NfcF.class.getName() }
+        techListsArray = new String[][]{
+                new String[]{NfcF.class.getName()}
         };
 
         // NfcAdapterを取得
         mAdapter = NfcAdapter.getDefaultAdapter(getApplicationContext());
-        Log.d("TAG","RUN");
+        Log.d("TAG", "RUN");
 
     }
 
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         NfcReader nfcReader = new NfcReader();
         data = nfcReader.readTag(tag);
-        Log.d("TAG","\n"+nfcReader.hex2string2D(data));
+        Log.d("TAG", "\n" + nfcReader.hex2string2D(data));
 //        Log.d("TAG",data+"!");
 
         // ここで取得したTagを使ってデータの読み書きを行う。
