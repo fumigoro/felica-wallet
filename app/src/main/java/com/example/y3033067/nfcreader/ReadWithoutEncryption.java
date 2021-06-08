@@ -17,7 +17,7 @@ public class ReadWithoutEncryption {
      * @param targetIDm         IDm
      * @param targetServiceCode 読み込みたいサービのサービススコード
      * @param startBlock        ブロックの開始位置
-     * @param endBlock          　ブロックの終了位置
+     * @param endBlock          ブロックの終了位置
      */
     public ReadWithoutEncryption(byte[] targetIDm, int targetServiceCode, int startBlock, int endBlock) {
         //読み出すサービス数が1の場合のコンストラクタ
