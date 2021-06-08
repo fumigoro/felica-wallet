@@ -113,7 +113,8 @@ public class ReadWithoutEncryption {
 
         //ブロック数
         command[11 + serviceCodeNumber * 2] = blockNumber;
-        Log.d("cmd", "BlockNumber:" + String.format("%02X", command[11 + serviceCodeNumber * 2]));
+        Log.d("cmd", "BlockNumber:"
+                + String.format("%02X", command[11 + serviceCodeNumber * 2]));
 
         //ブロックリスト（[11+serviceCodeNumber*2+3]~[11+serviceCodeNumber*2+3+blockNumber*2]）
         for (int i = 0; i < blockNumber; i++) {
