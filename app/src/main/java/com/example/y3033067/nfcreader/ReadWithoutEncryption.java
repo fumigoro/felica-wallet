@@ -28,6 +28,7 @@ public class ReadWithoutEncryption {
         //サービス数を1
         this.serviceCodeNumber = 0x01;
         //サービスコードをメンバーに代入
+        //MEMO:将来的な拡張に備えて配列にした
         this.serviceCodes = new int[1];
         this.serviceCodes[0] = targetServiceCode;
         //ブロック数をバイトに変換しメンバにせっと
@@ -135,6 +136,39 @@ public class ReadWithoutEncryption {
         Log.d("TAG", "ReadWithoutEncryption: Command generated successfully.");
 
         return command;
+    }
+
+    /**
+     * @param status1 ステータスコード1
+     * @param status2 ステータスコード2
+     * @throws Exception エラー内容出典：
+     *                   FeliCaカード ユーザーズマニュアル 抜粋版
+     *                   https://www.sony.co.jp/Products/felica/business/tech-support/st_usmnl.html
+     *                   4.5節　P84~P86
+     */
+    public void handleStatusFlag(byte status1, byte status2) throws Exception {
+        switch (status1) {
+            case (byte) 0x00:
+                break;
+            case (byte) 0xff:
+                Log.e("Exception", "コマンドパケットにリストを含まないコマンドでのエラー・リストに依存しないエラー");
+                break;
+            default:
+                Log.e("Exception", "ブロックリストまたはサービスコードリストに関するエラー/Flag1:0x" + String.format("%02X", status1));
+                break;
+        }
+        if (status1 != 0x00) {
+            switch (status2) {
+                case (byte) 0x01:
+                    throw new Exception("パースのデクリメント時に計算結果がゼロ未満になります。または、パースのキャッシュバック時に計算結果が、4バイトを超える数字になります。");
+                case (byte) 0x02:
+                    throw new Exception("パースのキャッシュバック時に、指定されたデータがキャッシュバックデータの値を超えています。");
+                case (byte) 0x70:
+                    throw new Exception("メモリエラー (致命的エラー)");
+                case (byte) 0x71:
+                    Log.w("", "メモリ書き換え回数が上限を超えています (警告であり、書き込み処理は行われます)。製品により書き換え回数の上限値は異なります。また、ステータスフラグ1が00hの製品と、FFhの製品があります。");
+            }
+        }
     }
 
     public String hex2string(byte[] bytes) {

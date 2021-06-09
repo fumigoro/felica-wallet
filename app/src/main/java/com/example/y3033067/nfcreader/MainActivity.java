@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private NfcAdapter mAdapter;
     private PendingIntent pendingIntent;
     private final NFCReader nfcReader = new NFCReader();
+    ArrayList<Byte[]> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,25 +59,33 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-// IntentにTagの基本データが入ってくるので取得。
+        // IntentにTagの基本データが入ってくるので取得
         super.onNewIntent(intent);
 
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         if (tag == null) {
             return;
         }
+        //============================================================
+        //参考にしたコードから改変した部分はここから
 
-        ArrayList<Byte[]> data = new ArrayList<Byte[]>();
-        data = nfcReader.readTag(tag);
+        //カードからデータを読み取り
+        data = nfcReader.run(tag);
+        //読み取りが失敗した場合nullが返る
         if(data==null){
             Log.e("","Loaded data null");
             return;
         }
+        //取得したデータをログに表示
         for(int i=0;i<data.size();i++){
             Log.d("BlockData", String.format("<%02X> ",i)+nfcReader.hex2string(data.get(i)));
         }
         Log.d("BlockData", "================");
-        // ここで取得したTagを使ってデータの読み書きを行う。
+
+        //ここまで
+        //============================================================
+
+
     }
 
     @Override

@@ -4,158 +4,180 @@ import android.nfc.Tag;
 import android.nfc.tech.NfcF;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class NFCReader {
-    private int targetServiceCode;
-    private int targetSystemCode;
+    private final int SERVICE_CODE;//これは仮
+    private final int SYSTEM_CODE;
     private NfcF nfc;
     ArrayList<Byte[]> blockData;
 
     public NFCReader() {
-        // System 1のシステムコード -> 0x83EE
+        // システムコード
         /*
          * Ayuca:0x83ee
          * CampusPay:0x8e4b
          */
-        targetServiceCode = 0x898F;
-        targetSystemCode = 0x83EE;
+        SERVICE_CODE = 0x898F;
+        SYSTEM_CODE = 0x83EE;
         blockData = new ArrayList<>();
-
     }
 
-    public ArrayList<Byte[]> readTag(Tag tag) {
+    /**
+     * ICカードから予め指定したデータを取得して返す
+     * 通信開始から終了まで1連の流れを行う
+     *
+     * @param tag 　Intentから来たタグ
+     * @return 取得したデータ
+     */
+    public ArrayList<Byte[]> run(Tag tag) {
         blockData = new ArrayList<>();
         try {
-            this.connect(tag);
+            //通信開始
+            this.nfc = NfcF.get(tag);
+            nfc.connect();
 
-            byte[] targetIDm = getIDm(targetSystemCode);
+            //PollingコマンドでIDｍを取得
+            byte[] targetIDm = getIDm(SYSTEM_CODE);
+            //データを取得
+            this.read(targetIDm, SERVICE_CODE, 0, 10, blockData);
+            this.read(targetIDm, SERVICE_CODE, 10, 20, blockData);
 
-            this.read(targetIDm,targetServiceCode,0,10,blockData);
-            this.read(targetIDm,targetServiceCode,10,20,blockData);
-
+            //通信終了
             nfc.close();
-
             return blockData;
         } catch (Exception e) {
-            Log.e("general", e.getMessage(), e);
+            e.printStackTrace();
+            return null;
         }
-        return null;
+
     }
 
     /**
-     * Pollingコマンドの取得。
+     * Pollingコマンドを用いてIDｍを取得
      *
-     * @param systemCode byte[] 指定するシステムコード
-     * @return Pollingコマンド
+     * @param systemCode システムコード
+     * @return IDｍ
+     * @throws IOException nfc.transceive()から発生する例外
      */
-    private byte[] getPollingCommand(byte[] systemCode) {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream(100);
-
-        bout.write(0x00);           // データ長バイトのダミー
-        bout.write(0x00);           // コマンドコード
-        bout.write(systemCode[0]);  // systemCode
-        bout.write(systemCode[1]);  // systemCode
-        bout.write(0x01);           // リクエストコード
-        bout.write(0x0f);           // タイムスロット
-
-        byte[] msg = bout.toByteArray();
-        msg[0] = (byte) msg.length; // 先頭１バイトはデータ長
-        return msg;
-    }
-
     private byte[] getIDm(int systemCode) throws IOException {
-        byte[] systemCodeB = new byte[2];
-        systemCodeB[0] = (byte) (0x000000ff & systemCode >>> 8);
-        systemCodeB[1] = (byte) (0x000000ff & systemCode);
-        byte[] command = getPollingCommand(systemCodeB);
-        byte[] pollingRes = nfc.transceive(command);
-
-        return Arrays.copyOfRange(pollingRes, 2, 10);
-    }
-
-    public void connect(Tag tag) throws IOException {
-        this.nfc = NfcF.get(tag);
-        nfc.connect();
+        //Pollingコマンド用のビット列を生成
+        byte[] command = generatePollingCommand(systemCode);
+        //ビット列を送信（コマンド実行）
+        byte[] res = nfc.transceive(command);
+        Log.d("general", hex2string(res));
+        //応答内容を返却
+        return Arrays.copyOfRange(res, 2, 10);
     }
 
     /**
-     *
-     * @param targetIDm
-     * @param targetServiceCode
-     * @param startBlock
-     * @param endBlock
-     * @param blockData
-     * @throws Exception
+     * 読み込みたい場所を指定しデータを取得
+     * @param targetIDm         IDｍ
+     * @param targetServiceCode 読み込みたい場所のサービスコード
+     * @param startBlock        読み込みたいブロックの開始位置
+     * @param endBlock          終了位置
+     * @param blockData         読み込んだ内容を格納するリスト(の参照)
+     * @throws Exception ReadWithoutEncryptionクラスのhandleStatusFlag()から発生。
+     *                   応答内容を元にエラーの解析を行う
      */
-    public void read(byte[] targetIDm, int targetServiceCode, int startBlock, int endBlock, ArrayList<Byte[]> blockData) throws Exception {
+    private void read(byte[] targetIDm, int targetServiceCode, int startBlock, int endBlock, ArrayList<Byte[]> blockData) throws Exception {
         ReadWithoutEncryption rwe = new ReadWithoutEncryption(targetIDm, targetServiceCode, startBlock, endBlock);
         // コマンドを送信して結果を取得
         byte[] res = nfc.transceive(rwe.generateCommandPacket());
-        handleStatusFlag(res[10], res[11]);
-        int blockNumber = res[12];
+        //応答のエラーハンドリング
+        //エラーがあった場合はExceptionを発生させるメソッド
+        rwe.handleStatusFlag(res[10], res[11]);
 
+        //要求に応じて返されたブロックデータの数
+        int blockNumber = res[12];
+        //ブロックデータ自体はindex13以降に格納されている
         int index = 13;
+
+        //ブロックデータを要素16のバイト配列のリストに整形
         for (int i = 0; i < blockNumber; i++) {
             Byte[] blockTmp = new Byte[16];
             for (int j = 0; j < 16; j++) {
                 blockTmp[j] = res[index];
                 index += 1;
             }
+            //渡されたリストの参照を使ってデータを格納
             blockData.add(blockTmp);
         }
-
     }
 
-    public String hex2string(Byte[] bytes) {
-        StringBuilder str1 = new StringBuilder();
-        if (bytes == null) {
-            return str1.toString();
-        }
-        for (byte b : bytes) {
-            try {
-                str1.append(String.format("%02X", b)).append(":");
-            } catch (Error e) {
-                e.printStackTrace();
-            }
 
-        }
-        return str1.toString();
+    /**
+     * Pollingコマンドのビット列を生成
+     *
+     * @param systemCode システムコード
+     * @return コマンド配列
+     */
+    private byte[] generatePollingCommand(int systemCode) {
+        //int->2バイトのバイト配列変換
+        byte[] systemCodeB = new byte[2];
+        systemCodeB[0] = (byte) (0x000000ff & systemCode >>> 8);
+        systemCodeB[1] = (byte) (0x000000ff & systemCode);
+
+        //コマンド配列
+        byte[] command = new byte[6];
+
+        //データ長
+        command[0] = (byte) command.length;
+        //コマンドコード（0x00で固定）
+        command[1] = 0x00;
+        //システムコード(リトルエンディアン)
+        command[2] = systemCodeB[0];
+        command[3] = systemCodeB[1];
+        //リクエストコード
+        /*
+         * 0x00:要求なし
+         * 0x01:システムコード要求
+         * 0x02:通信性能要求
+         * */
+        command[4] = 0x00;
+        //タイムスロット
+        command[5] = 0x0f;
+
+        return command;
     }
 
     /**
-     * @param status1
-     * @param status2
-     * @throws Exception エラー内容出典：
-     *                   FeliCaカード ユーザーズマニュアル 抜粋版
-     *                   https://www.sony.co.jp/Products/felica/business/tech-support/st_usmnl.html
-     *                   4.5節　P84~P86
+     * バイト配列を16進数表記で1バイトずつ区切った文字列に変換する
+     * @param bytes バイト配列(プリミティブbyte)
+     * @return 文字列
      */
-    private void handleStatusFlag(byte status1, byte status2) throws Exception {
-        switch (status1) {
-            case (byte) 0x00:
-                break;
-            case (byte) 0xff:
-                Log.e("Exception", "コマンドパケットにリストを含まないコマンドでのエラー・リストに依存しないエラー");
-                break;
-            default:
-                Log.e("Exception", "ブロックリストまたはサービスコードリストに関するエラー/CD:0x" + String.format("%02X", status1));
-                break;
-        }
-        if (status1 != 0x00) {
-            switch (status2) {
-                case (byte) 0x01:
-                    throw new Exception("パースのデクリメント時に計算結果がゼロ未満になります。または、パースのキャッシュバック時に計算結果が、4バイトを超える数字になります。");
-                case (byte) 0x02:
-                    throw new Exception("パースのキャッシュバック時に、指定されたデータがキャッシュバックデータの値を超えています。");
-                case (byte) 0x70:
-                    throw new Exception("メモリエラー (致命的エラー)");
-                case (byte) 0x71:
-                    Log.w("", "メモリ書き換え回数が上限を超えています (警告であり、書き込み処理は行われます)。製品により書き換え回数の上限値は異なります。また、ステータスフラグ1が00hの製品と、FFhの製品があります。");
+    //こっちは基本データ型のbyte型
+    public String hex2string(Byte[] bytes) {
+        StringBuilder string = new StringBuilder();
+        for (byte b : bytes) {
+            try {
+                string.append(String.format("%02X:", b));
+            } catch (Error e) {
+                e.printStackTrace();
             }
         }
+        return string.toString();
     }
+
+    /**
+     * バイト配列を16進数表記で1バイトずつ区切った文字列に変換する
+     * @param bytes バイト配列(Byteクラス)
+     * @return 文字列
+     */
+    //こっちはByteクラスのByte型
+    public String hex2string(byte[] bytes) {
+        StringBuilder string = new StringBuilder();
+        for (byte b : bytes) {
+            try {
+                string.append(String.format("%02X:", b));
+            } catch (Error e) {
+                e.printStackTrace();
+            }
+        }
+        return string.toString();
+    }
+
+
 }
