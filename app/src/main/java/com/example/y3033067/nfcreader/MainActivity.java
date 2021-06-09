@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         //============================================================
-        //参考にしたコードから改変した部分はここから
+        //参考にしたコードから追加した部分はここから
 
         //カードからデータを読み取り
         data = nfcReader.run(tag);
