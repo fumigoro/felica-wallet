@@ -9,50 +9,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class NFCReader {
-    private final int SERVICE_CODE;//これは仮
-    private final int SYSTEM_CODE;
-    private NfcF nfc;
-    ArrayList<Byte[]> blockData;
 
-    public NFCReader() {
+    private NfcF nfc;
+
+    public NFCReader(Tag tag) {
+        this.nfc = NfcF.get(tag);
         // システムコード
         /*
          * Ayuca:0x83ee
          * CampusPay:0x8e4b
          */
-        SERVICE_CODE = 0x898F;
-        SYSTEM_CODE = 0x83EE;
-        blockData = new ArrayList<>();
-    }
-
-    /**
-     * ICカードから予め指定したデータを取得して返す
-     * 通信開始から終了まで1連の流れを行う
-     *
-     * @param tag 　Intentから来たタグ
-     * @return 取得したデータ
-     */
-    public ArrayList<Byte[]> run(Tag tag) {
-        blockData = new ArrayList<>();
-        try {
-            //通信開始
-            this.nfc = NfcF.get(tag);
-            nfc.connect();
-
-            //PollingコマンドでIDｍを取得
-            byte[] targetIDm = getIDm(SYSTEM_CODE);
-            //データを取得
-            this.read(targetIDm, SERVICE_CODE, 0, 10, blockData);
-            this.read(targetIDm, SERVICE_CODE, 10, 20, blockData);
-
-            //通信終了
-            nfc.close();
-            return blockData;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
     }
 
     /**
@@ -62,7 +28,7 @@ public class NFCReader {
      * @return IDｍ
      * @throws IOException nfc.transceive()から発生する例外
      */
-    private byte[] getIDm(int systemCode) throws IOException {
+    public byte[] getIDm(int systemCode) throws IOException {
         //Pollingコマンド用のビット列を生成
         byte[] command = generatePollingCommand(systemCode);
         //ビット列を送信（コマンド実行）
@@ -82,7 +48,7 @@ public class NFCReader {
      * @throws Exception ReadWithoutEncryptionクラスのhandleStatusFlag()から発生。
      *                   応答内容を元にエラーの解析を行う
      */
-    private void read(byte[] targetIDm, int targetServiceCode, int startBlock, int endBlock, ArrayList<Byte[]> blockData) throws Exception {
+    public void getBlockData(byte[] targetIDm, int targetServiceCode, int startBlock, int endBlock, ArrayList<Byte[]> blockData) throws Exception {
         ReadWithoutEncryption rwe = new ReadWithoutEncryption(targetIDm, targetServiceCode, startBlock, endBlock);
         // コマンドを送信して結果を取得
         byte[] res = nfc.transceive(rwe.generateCommandPacket());

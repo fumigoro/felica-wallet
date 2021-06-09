@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private String[][] techListsArray;
     private NfcAdapter mAdapter;
     private PendingIntent pendingIntent;
-    private final NFCReader nfcReader = new NFCReader();
+    private Ayuca ayuca;
     ArrayList<Byte[]> data;
 
     @Override
@@ -68,9 +68,9 @@ public class MainActivity extends AppCompatActivity {
         }
         //============================================================
         //参考にしたコードから追加した部分はここから
-
+        ayuca = new Ayuca(tag);
         //カードからデータを読み取り
-        data = nfcReader.run(tag);
+        data = ayuca.getHistory();
         //読み取りが失敗した場合nullが返る
         if(data==null){
             Log.e("","Loaded data null");
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         }
         //取得したデータをログに表示
         for(int i=0;i<data.size();i++){
-            Log.d("BlockData", String.format("<%02X> ",i)+nfcReader.hex2string(data.get(i)));
+            Log.d("BlockData", String.format("<%02X> ",i)+ayuca.hex2string(data.get(i)));
         }
         Log.d("BlockData", "================");
 
