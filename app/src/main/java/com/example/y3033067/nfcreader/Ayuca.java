@@ -2,6 +2,7 @@ package com.example.y3033067.nfcreader;
 
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -18,9 +19,9 @@ public class Ayuca extends NFCReader{
         super(tag);
         this.nfc = NfcF.get(tag);
         SYSTEM_CODE = 0x83EE;
-        SERVICE_CODE_HISTORY = 0x898F;
-        SERVICE_CODE_BALANCE = 0x884B;
-        SERVICE_CODE_INFO = 0x804B;
+        SERVICE_CODE_HISTORY = 0x898F;//履歴
+        SERVICE_CODE_BALANCE = 0x884B;//残高
+        SERVICE_CODE_INFO = 0x804B;//カード情報
     }
 
     /**
@@ -68,8 +69,7 @@ public class Ayuca extends NFCReader{
             //PollingコマンドでIDｍを取得
             byte[] targetIDm = super.getIDm(SYSTEM_CODE);
             //データを取得
-            super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 0, 10, blockData);
-            super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 10, 20, blockData);
+            super.getBlockData(targetIDm, SERVICE_CODE_INFO, 0, 2, blockData);
 
             //通信終了
             nfc.close();
