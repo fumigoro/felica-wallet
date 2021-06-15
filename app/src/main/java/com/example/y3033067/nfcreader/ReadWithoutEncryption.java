@@ -36,8 +36,9 @@ public class ReadWithoutEncryption {
         this.blocks = new short[this.blockNumber];
         //ブロックリスト
         for (int i = 0; i < blockNumber; i++) {
-            //ブロックの上位バイトに0x80をセット 「Felicaユーザマニュアル抜粋」の4.3項
+            //ブロックの上位バイトに0x80をセット 「Felicaユーザマニュアル抜粋」の4.2.1/44ページ
             this.blocks[i] = (short) ((0x0000ffff & (startBlock + i)) | 0x8000);
+
         }
     }
 
@@ -154,7 +155,7 @@ public class ReadWithoutEncryption {
                 Log.e("Exception", "コマンドパケットにリストを含まないコマンドでのエラー・リストに依存しないエラー");
                 break;
             default:
-                Log.e("Exception", "ブロックリストまたはサービスコードリストに関するエラー/Flag1:0x" + String.format("%02X", status1));
+                Log.e("Exception", "ブロックリストまたはサービスコードリストに関するエラー/Flag1:0x" + String.format("%02X,Flag2:0x%02X", status1,status2));
                 break;
         }
         if (status1 != 0x00) {
@@ -166,7 +167,10 @@ public class ReadWithoutEncryption {
                 case (byte) 0x70:
                     throw new Exception("メモリエラー (致命的エラー)");
                 case (byte) 0x71:
-                    Log.w("", "メモリ書き換え回数が上限を超えています (警告であり、書き込み処理は行われます)。製品により書き換え回数の上限値は異なります。また、ステータスフラグ1が00hの製品と、FFhの製品があります。");
+                    Log.w("", "メモリ書き換え回数が上限を超えています (警告であり、書き込み処理は行われます)。" +
+                            "製品により書き換え回数の上限値は異なります。また、ステータスフラグ1が00hの製品と、FFhの製品があります。");
+                default:
+                    throw new Exception("不明なエラー");
             }
         }
     }
