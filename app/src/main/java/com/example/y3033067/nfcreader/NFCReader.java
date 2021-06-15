@@ -110,6 +110,51 @@ public class NFCReader {
     }
 
     /**
+     *
+     */
+    public int getCardType(){
+        try {
+            //通信開始
+
+            nfc.connect();
+
+            //PollingコマンドでIDｍを取得
+            //最初はどのカードかわからないのでSystemCodeはワイルドカード指定
+            byte[] targetIDm = getIDm(0xffff);
+
+            //通信終了
+            nfc.close();
+
+            StringBuilder IDmString = new StringBuilder();
+            IDmString.append(String.format("%02X", targetIDm[0]));
+            IDmString.append(String.format("%02X", targetIDm[1]));
+
+            switch (String.valueOf(IDmString)){
+                case "0112":
+                    //Ayuca
+                    Log.d("TAG", "Ayuca");
+                    return 1;
+                case "0114":
+                    //CampusPay
+                    Log.d("TAG", "CampusPay");
+                    return 2;
+                case "012E":
+                    //学生証
+                    Log.d("TAG", "学生証");
+                    return 3;
+                default:
+                    return 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+
+
+    }
+
+    /**
      * バイト配列を16進数表記で1バイトずつ区切った文字列に変換する
      * @param bytes バイト配列(プリミティブbyte)
      * @return 文字列
