@@ -20,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private NfcAdapter mAdapter;
     private PendingIntent pendingIntent;
     private Ayuca ayuca;
-    ArrayList<Byte[]> data;
+    private CampusPay campusPay;
+    ArrayList<Byte[]> historyData,cardInfo,cardBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,17 +69,49 @@ public class MainActivity extends AppCompatActivity {
         }
         //============================================================
         //参考にしたコードから追加した部分はここから
-        ayuca = new Ayuca(tag);
-        //カードからデータを読み取り
-        data = ayuca.getHistory();
-        //読み取りが失敗した場合nullが返る
-        if(data==null){
-            Log.e("","Loaded data null");
-            return;
+        NFCReader card = new NFCReader(tag);
+        int type = card.getCardType();
+        Log.d("TAG", "Type:"+type);
+
+        switch(type){
+            case 1:
+                //Ayuca
+                Log.d("BlockData", "Ayuca");
+                ayuca = new Ayuca(tag);
+                //カードからデータを読み取り
+                historyData = ayuca.getHistory();
+                cardInfo = ayuca.getCardInfo();
+
+                //読み取りが失敗した場合nullが返る
+                if(historyData ==null){
+                    Log.e("","Loaded data null");
+                    return;
+                }
+                break;
+            case 2:
+                //CampusPay
+                Log.d("BlockData", "CampusPay");
+                campusPay = new CampusPay(tag);
+                //カードからデータを読み取り
+                historyData = campusPay.getHistory();
+                cardInfo = campusPay.getCardInfo();
+                //読み取りが失敗した場合nullが返る
+                if(historyData ==null){
+                    Log.e("","Loaded data null");
+                    return;
+                }
+                break;
+
         }
+
         //取得したデータをログに表示
-        for(int i=0;i<data.size();i++){
-            Log.d("BlockData", String.format("<%02X> ",i)+ayuca.hex2string(data.get(i)));
+        Log.d("BlockData", "カード情報");
+        for(int i = 0; i< cardInfo.size(); i++){
+            Log.d("BlockData", String.format("<%02X> ",i)+ayuca.hex2string(historyData.get(i)));
+        }
+        Log.d("BlockData", "利用履歴");
+        for(int i = 0; i< historyData.size(); i++){
+            Log.d("BlockData", String.format("<%02X> ",i)+ayuca.hex2string(historyData.get(i)));
         }
         Log.d("BlockData", "================");
 
