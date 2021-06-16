@@ -1,9 +1,16 @@
 package com.example.y3033067.nfcreader;
 
+import android.annotation.SuppressLint;
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
+import android.os.Build;
+import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 
 public class Ayuca extends NFCReader{
     private final int SYSTEM_CODE;
@@ -12,6 +19,7 @@ public class Ayuca extends NFCReader{
     private final int SERVICE_CODE_INFO;
     private NfcF nfc;
     ArrayList<Byte[]> historyData, cardInfo, balance;
+    ArrayList<CardHistory> histories;
 
 
     public Ayuca(Tag tag){
@@ -83,6 +91,25 @@ public class Ayuca extends NFCReader{
     /**
      *
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public ArrayList<CardHistory> parseHistory(){
+        StringBuilder stringB = new StringBuilder();
+        String year,month,day,hour,minute,discount,device,type,price,balance,point;
+        String stringTmp;
+
+        for(int i=0;i<historyData.size();i++){
+            for(int j=0;j<historyData.get(0).length;j++){
+                stringTmp = (Integer.toBinaryString((Byte.toUnsignedInt(historyData.get(i)[j]))));
+                stringB.append(String.format("%8s", stringTmp).replace(' ', '0')); // 0埋め
+            }
+            year = stringB.substring(0, 7);
+            month = stringB.substring(7, 11);
+            day = stringB.substring(11,16);
+            Log.d("TAG",year+"/"+month+"/"+day);
+
+        }
+        return histories;
+    }
 
 
 }
