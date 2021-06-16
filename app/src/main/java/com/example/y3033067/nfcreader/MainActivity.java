@@ -1,5 +1,6 @@
 package com.example.y3033067.nfcreader;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.PendingIntent;
@@ -8,6 +9,7 @@ import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onNewIntent(Intent intent) {
         // IntentにTagの基本データが入ってくるので取得
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 //カードからデータを読み取り
                 historyData = ayuca.getHistory();
                 cardInfo = ayuca.getCardInfo();
+                ayuca.parseHistory();
 
                 break;
             case 2:
