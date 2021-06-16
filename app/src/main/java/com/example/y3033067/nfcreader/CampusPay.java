@@ -40,7 +40,7 @@ public class CampusPay extends NFCReader {
             byte[] targetIDm = super.getIDm(SYSTEM_CODE);
             Log.d("TAG", super.hex2string(targetIDm));
             //データを取得
-            super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 0, 1, blockData);
+            super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 0, 10, blockData);
 
             //通信終了
             nfc.close();
