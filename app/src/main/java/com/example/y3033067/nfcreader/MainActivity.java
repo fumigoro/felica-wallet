@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private PendingIntent pendingIntent;
     private Ayuca ayuca;
     private CampusPay campusPay;
+    private StudentIDCard idCard;
     ArrayList<Byte[]> historyData,cardInfo,cardBalance;
 
     @Override
@@ -76,44 +77,51 @@ public class MainActivity extends AppCompatActivity {
         switch(type){
             case 1:
                 //Ayuca
-                Log.d("BlockData", "Ayuca");
+                Log.d("TAG", "Ayuca");
                 ayuca = new Ayuca(tag);
                 //カードからデータを読み取り
                 historyData = ayuca.getHistory();
                 cardInfo = ayuca.getCardInfo();
 
-                //読み取りが失敗した場合nullが返る
-                if(historyData ==null){
-                    Log.e("","Loaded data null");
-                    return;
-                }
                 break;
             case 2:
                 //CampusPay
-                Log.d("BlockData", "CampusPay");
+                Log.d("TAG", "CampusPay");
                 campusPay = new CampusPay(tag);
                 //カードからデータを読み取り
                 historyData = campusPay.getHistory();
                 cardInfo = campusPay.getCardInfo();
-                //読み取りが失敗した場合nullが返る
-                if(historyData ==null){
-                    Log.e("","Loaded data null");
-                    return;
-                }
+                break;
+            case 3:
+                //学生証
+                Log.d("TAG", "学生証");
+                idCard = new StudentIDCard(tag);
+                //カードからデータを読み取り
+                cardInfo = idCard.getID();
+                historyData = new ArrayList<>();
                 break;
 
-        }
 
+        }
+        //読み取りが失敗した場合nullが返る
+        if(historyData ==null){
+            Log.e("","Loaded data null/history");
+            return;
+        }
+        if(cardInfo ==null){
+            Log.e("","Loaded data null/cardInfo");
+            return;
+        }
         //取得したデータをログに表示
-        Log.d("BlockData", "カード情報");
+        Log.d("TAG", "カード情報");
         for(int i = 0; i< cardInfo.size(); i++){
-            Log.d("BlockData", String.format("<%02X> ",i)+ayuca.hex2string(historyData.get(i)));
+            Log.d("TAG", String.format("<%02X> ",i)+card.hex2string(cardInfo.get(i)));
         }
-        Log.d("BlockData", "利用履歴");
+        Log.d("TAG", "利用履歴");
         for(int i = 0; i< historyData.size(); i++){
-            Log.d("BlockData", String.format("<%02X> ",i)+ayuca.hex2string(historyData.get(i)));
+            Log.d("TAG", String.format("<%02X> ",i)+card.hex2string(historyData.get(i)));
         }
-        Log.d("BlockData", "================");
+        Log.d("TAG", "================");
 
         //ここまで
         //============================================================
