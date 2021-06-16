@@ -2,7 +2,6 @@ package com.example.y3033067.nfcreader;
 
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -12,7 +11,7 @@ public class Ayuca extends NFCReader{
     private final int SERVICE_CODE_BALANCE;
     private final int SERVICE_CODE_INFO;
     private NfcF nfc;
-    ArrayList<Byte[]> blockData;
+    ArrayList<Byte[]> historyData, cardInfo, balance;
 
 
     public Ayuca(Tag tag){
@@ -31,7 +30,7 @@ public class Ayuca extends NFCReader{
      * @return 取得したデータ
      */
     public ArrayList<Byte[]> getHistory() {
-        blockData = new ArrayList<>();
+        historyData = new ArrayList<>();
         try {
             //通信開始
 
@@ -40,12 +39,12 @@ public class Ayuca extends NFCReader{
             //PollingコマンドでIDｍを取得
             byte[] targetIDm = super.getIDm(SYSTEM_CODE);
             //データを取得
-            super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 0, 10, blockData);
-            super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 10, 20, blockData);
+            super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 0, 10, historyData);
+            super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 10, 20, historyData);
 
             //通信終了
             nfc.close();
-            return blockData;
+            return historyData;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -60,7 +59,7 @@ public class Ayuca extends NFCReader{
      * @return 取得したデータ
      */
     public ArrayList<Byte[]> getCardInfo() {
-        blockData = new ArrayList<>();
+        cardInfo = new ArrayList<>();
         try {
             //通信開始
 
@@ -69,17 +68,21 @@ public class Ayuca extends NFCReader{
             //PollingコマンドでIDｍを取得
             byte[] targetIDm = super.getIDm(SYSTEM_CODE);
             //データを取得
-            super.getBlockData(targetIDm, SERVICE_CODE_INFO, 0, 2, blockData);
+            super.getBlockData(targetIDm, SERVICE_CODE_INFO, 0, 2, cardInfo);
 
             //通信終了
             nfc.close();
-            return blockData;
+            return cardInfo;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
 
     }
+
+    /**
+     *
+     */
 
 
 }
