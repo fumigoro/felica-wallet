@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Locale;
 
 public class Ayuca extends NFCReader{
@@ -93,23 +94,53 @@ public class Ayuca extends NFCReader{
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<CardHistory> parseHistory(){
-        StringBuilder stringB = new StringBuilder();
-        String year,month,day,hour,minute,discount,device,type,price,balance,point;
-        String stringTmp;
 
+        StringBuilder stringB;
+        String discount,start,end,device,type;
+        int year,month,day,hour,minute,price,balance,point;
+        String stringTmp;
+        CardHistory history;
         for(int i=0;i<historyData.size();i++){
+            stringB = new StringBuilder();
             for(int j=0;j<historyData.get(0).length;j++){
-                stringTmp = (Integer.toBinaryString((Byte.toUnsignedInt(historyData.get(i)[j]))));
+                stringTmp = (Integer.toBinaryString(Byte.toUnsignedInt(historyData.get(i)[j])));
                 stringB.append(String.format("%8s", stringTmp).replace(' ', '0')); // 0埋め
             }
-            year = stringB.substring(0, 7);
-            month = stringB.substring(7, 11);
-            day = stringB.substring(11,16);
-            Log.d("TAG",year+"/"+month+"/"+day);
+
+            year = Integer.parseInt(stringB.substring(0, 7),2);
+            month = Integer.parseInt(stringB.substring(7, 11),2);
+            day = Integer.parseInt(stringB.substring(11,16),2);
+            hour = Integer.parseInt(stringB.substring(16,22),2);
+            minute = Integer.parseInt(stringB.substring(22,28),2);
+            discount = String.format("0x%X",Integer.parseInt(stringB.substring(28,32),2));
+            start = String.format("0x%04X",Integer.parseInt(stringB.substring(32,48),2));
+            end = String.format("0x%04X",Integer.parseInt(stringB.substring(48,64),2));
+            device = String.format("0x%X",Integer.parseInt(stringB.substring(64,68),2));
+            type = String.format("0x%X",Integer.parseInt(stringB.substring(68,72),2));
+
+            price = Integer.parseInt(stringB.substring(72,88),2);
+            balance = Integer.parseInt(stringB.substring(88,104),2);
+            point = Integer.parseInt(stringB.substring(104,124),2);
+            Log.d("TAG",
+                    year+" "+
+                    month+" "+
+                    day+" "+
+                    hour+" "+
+                    minute+" "+
+                    discount+" "+
+                    start+" "+
+                    end+" "+
+                    device+" "+
+                    type+" "+
+                    price+" "+
+                    balance+" "+
+                    point
+            );
+
+            history = new CardHistory(new Date(year+2000,month,day,hour,minute,0),price,point,balance,type,discount,device,start,end);
 
         }
         return histories;
     }
-
 
 }
