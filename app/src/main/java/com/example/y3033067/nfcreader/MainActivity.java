@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 //カードからデータを読み取り
                 historyData = campusPay.getHistory();
                 cardInfo = campusPay.getCardInfo();
+                campusPay.parseHistory();
                 break;
             case 3:
                 //学生証
