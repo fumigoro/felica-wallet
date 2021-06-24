@@ -85,8 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 //カードからデータを読み取り
                 historyData = ayuca.getHistory();
                 cardInfo = ayuca.getCardInfo();
+                cardBalance = ayuca.getBalance();
                 ayuca.parseHistory();
-
+                for(int i = 0; i< cardBalance.size(); i++){
+                    Log.d("TAG", String.format("<%02X> ",i)+card.hex2string(cardBalance.get(i)));
+                }
                 break;
             case 2:
                 //CampusPay
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("","Loaded data null/cardInfo");
             return;
         }
-        //取得したデータをログに表示
+//        取得したデータをログに表示
         Log.d("TAG", "カード情報");
         for(int i = 0; i< cardInfo.size(); i++){
             Log.d("TAG", String.format("<%02X> ",i)+card.hex2string(cardInfo.get(i)));
