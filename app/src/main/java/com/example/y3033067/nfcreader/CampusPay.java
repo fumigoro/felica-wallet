@@ -96,7 +96,7 @@ public class CampusPay extends NFCReader {
 
         StringBuilder stringB;
         String discount, start, end, device, type;
-        int year, month, day, hour, minute, price, balance, point;
+        int year, month, day, hour, minute, second, price, balance, point;
         String stringTmp;
         CardHistory history;
         for (int i = 0; i < historyData.size(); i++) {
@@ -106,28 +106,30 @@ public class CampusPay extends NFCReader {
                 stringB.append(stringTmp); // 0埋め
             }
 //            Log.d("TAG",String.valueOf(stringB));
-            year = Integer.parseInt(stringB.substring(0, 4), 2);
-            month = Integer.parseInt(stringB.substring(4, 6), 2);
-            day = Integer.parseInt(stringB.substring(6, 8), 2);
-            hour = Integer.parseInt(stringB.substring(8, 10), 2);
-            minute = Integer.parseInt(stringB.substring(10, 12), 2);
+            year = Integer.parseInt(stringB.substring(0, 4), 10);
+            month = Integer.parseInt(stringB.substring(4, 6), 10);
+            day = Integer.parseInt(stringB.substring(6, 8), 10);
+            hour = Integer.parseInt(stringB.substring(8, 10), 10);
+            minute = Integer.parseInt(stringB.substring(10, 12), 10);
+            second = Integer.parseInt(stringB.substring(12, 14), 10);
             discount = "";
             start = "";
             end = "";
             device = "";
-            type = String.format("0x%X", Integer.parseInt(stringB.substring(14, 16), 2));
+            type = String.format("0x%X", Integer.parseInt(stringB.substring(14, 16), 10));
 
-            price = Integer.parseInt(stringB.substring(16, 22), 2);
-            balance = Integer.parseInt(stringB.substring(22, 28), 2);
-            point = 0;
+            price = Integer.parseInt(stringB.substring(16, 22), 10);
+            balance = Integer.parseInt(stringB.substring(22, 28), 10);
+            point = (int)((double)price/1.1*0.01);
             Log.d("TAG",
-                    year + " " +
-                            month + " " +
+                    year + "/" +
+                            month + "/" +
                             day + " " +
-                            hour + " " +
-                            minute + " " +
+                            hour + ":" +
+                            minute + ":" +
+                            second + " "+
                             discount + " " +
-                            start + " " +
+                            start + "~" +
                             end + " " +
                             device + " " +
                             type + " " +
@@ -136,7 +138,7 @@ public class CampusPay extends NFCReader {
                             point
             );
 
-            history = new CardHistory(new Date(year, month, day, hour, minute, 0), price, point, balance, type, discount, device, start, end);
+            history = new CardHistory(new Date(year, month, day, hour, minute, second), price, point, balance, type, discount, device, start, end);
             histories.add(history);
         }
         return histories;

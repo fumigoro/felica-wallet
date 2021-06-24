@@ -138,7 +138,8 @@ public class Ayuca extends NFCReader {
                             point
             );
 
-            history = new CardHistory(new Date(year + 2000, month, day, hour, minute, 0), price, point, balance, type, discount, device, start, end);
+            history = new CardHistory(new Date(year + 2000, month, day, hour, minute, 0),
+                    price, point, balance, type, discount, device, start, end);
             histories.add(history);
         }
         return histories;
