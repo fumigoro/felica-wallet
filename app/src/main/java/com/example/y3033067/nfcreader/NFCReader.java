@@ -33,7 +33,7 @@ public class NFCReader {
         byte[] command = generatePollingCommand(systemCode);
         //ビット列を送信（コマンド実行）
         byte[] res = nfc.transceive(command);
-        Log.d("general", hex2string(res));
+        Log.d("general", hex2string(res,":"));
         //応答内容を返却
         return Arrays.copyOfRange(res, 2, 10);
     }
@@ -160,11 +160,11 @@ public class NFCReader {
      * @return 文字列
      */
     //こっちは基本データ型のbyte型
-    public String hex2string(Byte[] bytes) {
+    public String hex2string(Byte[] bytes,String split) {
         StringBuilder string = new StringBuilder();
         for (byte b : bytes) {
             try {
-                string.append(String.format("%02X:", b));
+                string.append(String.format("%02X%s", b,split));
             } catch (Error e) {
                 e.printStackTrace();
             }
@@ -178,17 +178,19 @@ public class NFCReader {
      * @return 文字列
      */
     //こっちはByteクラスのByte型
-    public String hex2string(byte[] bytes) {
+    public String hex2string(byte[] bytes,String split) {
         StringBuilder string = new StringBuilder();
         for (byte b : bytes) {
             try {
-                string.append(String.format("%02X:", b));
+                string.append(String.format("%02X%s", b,split));
             } catch (Error e) {
                 e.printStackTrace();
             }
         }
         return string.toString();
     }
+
+
 
 
 }
