@@ -1,6 +1,5 @@
 package com.example.y3033067.nfcreader;
 
-import android.annotation.SuppressLint;
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
 import android.os.Build;
@@ -11,13 +10,13 @@ import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class CampusPay extends NFCReader {
+public class CampusPay extends NFCReader implements NFCReaderIf{
     private final int SYSTEM_CODE;
     private final int SERVICE_CODE_HISTORY;
     private final int SERVICE_CODE_BALANCE;
     private final int SERVICE_CODE_INFO;
-    private NfcF nfc;
-    ArrayList<Byte[]> blockData;
+    private final NfcF nfc;
+    private String IDm;
     ArrayList<Byte[]> historyData, cardInfo, balance;
     ArrayList<CardHistory> histories;
 
@@ -36,7 +35,7 @@ public class CampusPay extends NFCReader {
      *
      * @return 取得したデータ
      */
-    public ArrayList<Byte[]> getHistory() {
+    public ArrayList<Byte[]> readHistories() {
         historyData = new ArrayList<>();
         try {
             //通信開始
@@ -45,7 +44,6 @@ public class CampusPay extends NFCReader {
 
             //PollingコマンドでIDｍを取得
             byte[] targetIDm = super.getIDm(SYSTEM_CODE);
-            Log.d("TAG", super.hex2string(targetIDm));
             //データを取得
             super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 0, 10, historyData);
 
@@ -65,7 +63,7 @@ public class CampusPay extends NFCReader {
      *
      * @return 取得したデータ
      */
-    public ArrayList<Byte[]> getCardInfo() {
+    public ArrayList<Byte[]> readCardInfo() {
         cardInfo = new ArrayList<>();
         try {
             //通信開始
@@ -74,6 +72,7 @@ public class CampusPay extends NFCReader {
 
             //PollingコマンドでIDｍを取得
             byte[] targetIDm = super.getIDm(SYSTEM_CODE);
+            IDm = super.hex2string(targetIDm,"");
             //データを取得
             super.getBlockData(targetIDm, SERVICE_CODE_INFO, 0, 6, cardInfo);
 
@@ -87,13 +86,35 @@ public class CampusPay extends NFCReader {
 
     }
 
+    public ArrayList<Byte[]> readBalance() {
+        balance = new ArrayList<>();
+        try {
+            //通信開始
+
+            nfc.connect();
+
+            //PollingコマンドでIDｍを取得
+            byte[] targetIDm = super.getIDm(SYSTEM_CODE);
+            //データを取得
+            super.getBlockData(targetIDm, SERVICE_CODE_BALANCE, 0, 1, balance);
+
+            //通信終了
+            nfc.close();
+            return balance;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
 
     /**
      *
      */
-
+    @Override
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public ArrayList<CardHistory> parseHistory() {
+    public ArrayList<CardHistory> getHistories() {
 
         StringBuilder stringB;
         String discount, start, end, device, type;
@@ -119,7 +140,21 @@ public class CampusPay extends NFCReader {
             end = "";
             device = "";
             typeFlag = Integer.parseInt(stringB.substring(14, 16), 10);
-            type = String.format("%X", typeFlag);
+
+            switch (typeFlag){
+                case 0x5:
+                    //SF利用
+                    type = "決済";
+                    break;
+                case 0x1:
+                    //チャージ
+                    type = "チャージ";
+                    break;
+                default:
+                    //不明
+                    type = String.format("%X", typeFlag);
+            }
+
 
             price = Integer.parseInt(stringB.substring(16, 22), 10);
             balance = Integer.parseInt(stringB.substring(22, 28), 10);
@@ -135,13 +170,52 @@ public class CampusPay extends NFCReader {
                             price + " " +
                             balance + " "
             );
-
-            history = new CardHistory(new Date(year, month, day, hour, minute, second),
+            /*MEMO:
+            Dateの月設定は1小さい値を入れる
+            Dateの年は-1900下値を入れる
+            * */
+            history = new CardHistory(new Date(year-1900, month-1, day, hour, minute, second),
                     price, 0,  balance, type, typeFlag, discount, device, start, end);
             histories.add(history);
         }
         return histories;
     }
+    /**
+     * 残高を返す
+     * @return 残高
+     * readAllData()を先に実行する必要がある
+     */
+    @Override
+    public int getSFBalance(){
+        StringBuilder stringB = new StringBuilder();
+        if(balance.get(0).length<8){
+            return 0;
+        }
+        for (int j = 0; j < 4; j++) {
+            stringB.append(String.format("%02X", balance.get(0)[3-j]));
+        }
+        return Integer.parseInt(stringB.substring(0, 8), 16);
+    }
 
+    @Override
+    public int getPointBalance() {
+        return 0;
+    }
+
+    /**
+     * カードから読み込み可能なすべてのデータを読み込む
+     * カードから残高関連、履歴、カード情報を読み出す
+     */
+    @Override
+    public void readAllData(){
+        balance = readBalance();
+        historyData = readHistories();
+        cardInfo = readCardInfo();
+    }
+
+    @Override
+    public String getIDm() {
+        return IDm;
+    }
 
 }
