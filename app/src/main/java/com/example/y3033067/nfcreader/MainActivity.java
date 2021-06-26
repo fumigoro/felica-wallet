@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private Ayuca ayuca;
     private CampusPay campusPay;
     private StudentIDCard idCard;
-    ArrayList<Byte[]> historyData,cardInfo,cardBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,64 +75,59 @@ public class MainActivity extends AppCompatActivity {
         NFCReader card = new NFCReader(tag);
         int type = card.getCardType();
         Log.d("TAG", "Type:"+type);
-
+        ArrayList<CardHistory> ch = new ArrayList<>();
         switch(type){
             case 1:
                 //Ayuca
                 Log.d("TAG", "Ayuca");
                 ayuca = new Ayuca(tag);
                 //カードからデータを読み取り
-                historyData = ayuca.getHistory();
-                cardInfo = ayuca.getCardInfo();
-                cardBalance = ayuca.getBalance();
-                ayuca.parseHistory();
-                for(int i = 0; i< cardBalance.size(); i++){
-                    Log.d("TAG", String.format("<%02X> ",i)+card.hex2string(cardBalance.get(i)));
-                }
+                ayuca.readAllData();
+                ch = ayuca.getHistories();
+                Log.d("TAG","残高：￥"+(ayuca.getSFBalance()));
                 break;
             case 2:
                 //CampusPay
                 Log.d("TAG", "CampusPay");
                 campusPay = new CampusPay(tag);
                 //カードからデータを読み取り
-                historyData = campusPay.getHistory();
-                cardInfo = campusPay.getCardInfo();
-                campusPay.parseHistory();
+                campusPay.readAllData();
+                ch = campusPay.getHistories();
+                Log.d("TAG","残高：￥"+(campusPay.getSFBalance()));
                 break;
             case 3:
                 //学生証
                 Log.d("TAG", "学生証");
                 idCard = new StudentIDCard(tag);
                 //カードからデータを読み取り
-                cardInfo = idCard.getID();
-                historyData = new ArrayList<>();
+                idCard.getID();
                 break;
 
 
         }
-        //読み取りが失敗した場合nullが返る
-        if(historyData ==null){
-            Log.e("","Loaded data null/history");
-            return;
-        }
-        if(cardInfo ==null){
-            Log.e("","Loaded data null/cardInfo");
-            return;
-        }
-//        取得したデータをログに表示
-        Log.d("TAG", "カード情報");
-        for(int i = 0; i< cardInfo.size(); i++){
-            Log.d("TAG", String.format("<%02X> ",i)+card.hex2string(cardInfo.get(i)));
-        }
-        Log.d("TAG", "利用履歴");
-        for(int i = 0; i< historyData.size(); i++){
-            Log.d("TAG", String.format("<%02X> ",i)+card.hex2string(historyData.get(i)));
-        }
-        Log.d("TAG", "================");
+        Log.d("TAG","結果：");
 
         //ここまで
         //============================================================
+        for(int i=0;i<ch.size();i++){
+            Log.d("TAG","＝＝＝＝＝＝＝＝＝＝");
+            Log.d("TAG",(i+1)+"件目"+ch.get(i).getDate());
+            Log.d("TAG",""+ch.get(i).getDevice()+ch.get(i).getType());
+            Log.d("TAG","金額￥"+ch.get(i).getPrice());
+            Log.d("TAG","残高￥"+ch.get(i).getBalance());
 
+            if(ch.get(i).getPointFlag()){
+                Log.d("TAG","通常ポイント："+(double)ch.get(i).getGrantedNormalPoint()/10);
+                if(ch.get(i).getGrantedBonusPoint()>0){
+                    Log.d("TAG","ボーナスポイント付与："+(double)ch.get(i).getGrantedBonusPoint()/10);
+                }
+                if(ch.get(i).getUsedPoint()<0){
+                    Log.d("TAG","ポイント利用："+(double)ch.get(i).getUsedPoint()/10);
+                }
+                Log.d("TAG","ポイント残高："+(double)ch.get(i).getPointBalance()/10);
+            }
+
+        }
 
     }
 
