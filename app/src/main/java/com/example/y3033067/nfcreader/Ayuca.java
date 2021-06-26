@@ -8,9 +8,10 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
-public class Ayuca extends NFCReader {
+public class Ayuca extends NFCReader implements NFCReaderIf{
     private final int SYSTEM_CODE;
     private final int SERVICE_CODE_HISTORY;
     private final int SERVICE_CODE_BALANCE;
@@ -35,7 +36,7 @@ public class Ayuca extends NFCReader {
      *
      * @return 取得したデータ
      */
-    public ArrayList<Byte[]> getHistory() {
+    private ArrayList<Byte[]> readHistory() {
         historyData = new ArrayList<>();
         try {
             //通信開始
@@ -50,6 +51,13 @@ public class Ayuca extends NFCReader {
 
             //通信終了
             nfc.close();
+            //        取得したデータをログに表示
+            Log.d("TAG", "利用履歴");
+            for(int i = 0; i< historyData.size(); i++){
+                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(historyData.get(i),":"));
+            }
+            Log.d("TAG", "================");
+
             return historyData;
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,7 +71,7 @@ public class Ayuca extends NFCReader {
      *
      * @return 残高情報
      */
-    public ArrayList<Byte[]> getBalance() {
+    private ArrayList<Byte[]> readBalance() {
         balance = new ArrayList<>();
         try {
             //通信開始
@@ -77,6 +85,10 @@ public class Ayuca extends NFCReader {
 
             //通信終了
             nfc.close();
+            Log.d("TAG", "残高情報");
+            for(int i = 0; i< balance.size(); i++){
+                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(balance.get(i),":"));
+            }
             return balance;
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,7 +103,7 @@ public class Ayuca extends NFCReader {
      *
      * @return 取得したデータ
      */
-    public ArrayList<Byte[]> getCardInfo() {
+    private ArrayList<Byte[]> readCardInfo() {
         cardInfo = new ArrayList<>();
         try {
             //通信開始
@@ -105,6 +117,11 @@ public class Ayuca extends NFCReader {
 
             //通信終了
             nfc.close();
+
+            Log.d("TAG", "カード情報");
+            for(int i = 0; i< cardInfo.size(); i++){
+                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(cardInfo.get(i),":"));
+            }
             return cardInfo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,18 +130,19 @@ public class Ayuca extends NFCReader {
     }
 
     /**
-     *
+     * 利用履歴を返す
+     * @return 利用履歴
+     * readAllData()を先に実行する必要がある
      */
+    @Override
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public ArrayList<CardHistory> parseHistory() {
+    public ArrayList<CardHistory> getHistories() {
         StringBuilder stringB;
-        String discount, start, end, device, type, pointMessage;
-        int year, month, day, hour, minute, price, balance, point, pointFlag, pointBalance, additionalPoint, typeFlag, deviceFlag;
-        /*
-        point : 今回取引でのポイント増減
-        additionalPoint : 今回取引で付与されたボーナスポイント
+        String discount, start, end, device, type;
+        int year, month, day, hour, minute, price, balance,  pointFlag,   typeFlag, deviceFlag;
+        int point,pointBalance;
+        int grantedNormalPoint, grantedBonusPoint, usedPoint;
 
-         */
         String stringTmp;
         CardHistory history;
         histories = new ArrayList<>();
@@ -147,24 +165,51 @@ public class Ayuca extends NFCReader {
             deviceFlag = Integer.parseInt(stringB.substring(64, 68), 2);
             typeFlag = Integer.parseInt(stringB.substring(68, 72), 2);
 
-            //仮
-            device = String.format("%X", Integer.parseInt(stringB.substring(64, 68), 2));
-            type = String.format("%X", Integer.parseInt(stringB.substring(68, 72), 2));
+
+            switch (deviceFlag){
+                case 0x5:
+                    device = "車載機";
+                    break;
+                case 0x7:
+                    device = "窓口";
+                    break;
+                case 0x8:
+                    device = "入金機";
+                    break;
+                default:
+                    device = String.format("%X",deviceFlag);
+            }
+            switch (typeFlag){
+                case 0x3:
+                    //SF利用
+                    type = "決済";
+                    break;
+                case 0x9:
+                    //チャージ
+                    type = "チャージ";
+                    break;
+                case 0xA:
+                    //新規発行
+                    type = "新規発行";
+                    break;
+                default:
+                    //不明
+                    type = String.format("%X", typeFlag);
+            }
 
             price = Integer.parseInt(stringB.substring(72, 88), 2);
             balance = Integer.parseInt(stringB.substring(88, 104), 2);
             pointBalance = Integer.parseInt(stringB.substring(104, 124), 2);
-            pointFlag = Integer.parseInt(stringB.substring(124, 128), 2);
+//            pointFlag = Integer.parseInt(stringB.substring(124, 128), 2);
 
-            // 今回取引でのポイント増減
-            point = 0;
-            // ボーナスポイント付与とポイント使用(還元)のみの増減
-            additionalPoint = 0;
+            grantedNormalPoint = 0;
+            usedPoint = 0;
+            grantedBonusPoint = 0;
+
             //履歴最終行(前回の利用金額等が残っていない)かどうか確認
             if (i < historyData.size() - 1) {
                 //最終行でない場合
-                //ポイント取り扱いフラグをあげる
-                history.setPointFlag(true);
+
                 //1件前の履歴のポイント数を取得
                 int previousPointBalance = histories.get(historyData.size() - i - 2).getPointBalance();
                 //1件前の取引後残高を取得
@@ -174,42 +219,17 @@ public class Ayuca extends NFCReader {
                 //今回増えたポイント
                 point = (pointBalance - previousPointBalance);
 
-                switch (pointFlag) {
-                    case 1:
-                        //ポイント還元が行われていた場合
-
-                        /*その月の最初の履歴が積み増しだった場合の挙動が不明確なため、
-                        この行の履歴がSF利用(運賃支払)であるか確認
-                        岐阜バス公式のポイント還元が行われる条件に「翌月以降の初降車時」とあるので、
-                        SF利用の場合(typeFlag == 0x3がtrueの場合)にのみ
-                        ポイント還元が行われると考えて問題なさそうだが、確かめていないので一応チェック
-                        */
-                        if (typeFlag != 0x3) {
-                            //SFでない場合
-                            break;
-                        }
-
-                        //↑のifで積み増しを弾いているので、今回使用のSF残高>=0 が保証されている（はず）
-                        //だが念の為確認
-                        if (sfUsedPrice < 0) {
-                            break;
-                        }
-
-                        //ポイント使用額を計算（使用分は負の数で表すとする）
-                        additionalPoint = -1 * (price - sfUsedPrice);
-                        point -= additionalPoint*10;
-                        break;
-                    case 2:
-                        //ボーナスポイントの付与が行われていた場合
-                        //付与されたボーナスポイント数を計算
-                        additionalPoint = (int) (pointBalance - previousPointBalance - sfUsedPrice * 0.2) / 10;
-
+                if(typeFlag == 0x03){
+                    grantedNormalPoint = (int) (sfUsedPrice * 10 * 0.02);
+                    usedPoint = -1 * (price - sfUsedPrice)*10;
+                    grantedBonusPoint = point - grantedNormalPoint + usedPoint;
+                    //ポイント取り扱いフラグをあげる
+                    history.setPointFlag(true);
+                    history.setPointParams(grantedNormalPoint,grantedBonusPoint,usedPoint);
                 }
-
-
             }
 
-            history.setPointParams(point,additionalPoint);
+
 
             Log.d("TAG",
                     year+"/"+month+"/"+day+ " "+hour+":"+minute
@@ -220,21 +240,62 @@ public class Ayuca extends NFCReader {
                             + " T" + type
                             + " P" + price
                             + " B" + balance
-                            + " PB" + pointBalance
-                            + " P+-:" + point
-                            + " PF:" + pointFlag
-                            + " AP" + additionalPoint
+                            + " P残" + pointBalance
+                            + " 付与" + grantedNormalPoint
+                            + " B付与" + grantedBonusPoint
+                            + " 使用" + usedPoint
             );
 
-
-            history.setAllParams(new Date(year + 2000, month, day, hour, minute, 0),
+            /*MEMO:
+            Dateの月設定は1小さい値を入れる
+            Dateの年は-1900下値を入れる
+            * */
+            history.setAllParams(new Date(year + 2000 - 1900, month-1, day, hour, minute, 0),
                     price, pointBalance, balance, type, typeFlag, discount, device, start, end);
 
             histories.add(history);
         }
 
-
+        Collections.reverse(histories);
         return histories;
+    }
+
+    /**
+     * 現金積み増し分の残高を返す
+     * @return 残高
+     * readAllData()を先に実行する必要がある
+     */
+    @Override
+    public int getSFBalance(){
+        String stringTmp;
+        StringBuilder stringB = new StringBuilder();
+        for (int j = 0; j < balance.get(0).length; j++) {
+            //16進数のまま文字列へ
+            stringTmp = String.format("%02X", balance.get(0)[j]);
+            stringB.append(stringTmp);
+        }
+        return Integer.parseInt(stringB.substring(0, 4), 16);
+    }
+
+    @Override
+    public int getPointBalance() {
+        return 0;
+    }
+
+    /**
+     * カードから読み込み可能なすべてのデータを読み込む
+     * カードから残高関連、履歴、カード情報を読み出す
+     */
+    @Override
+    public void readAllData(){
+        balance = readBalance();
+        historyData = readHistory();
+        cardInfo = readCardInfo();
+    }
+
+    @Override
+    public String getIDm() {
+        return null;
     }
 
 
