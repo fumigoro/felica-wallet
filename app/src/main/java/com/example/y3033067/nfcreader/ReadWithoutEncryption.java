@@ -1,6 +1,5 @@
 package com.example.y3033067.nfcreader;
 
-import android.nfc.tech.NfcF;
 import android.util.Log;
 
 public class ReadWithoutEncryption {
@@ -84,8 +83,8 @@ public class ReadWithoutEncryption {
         //コマンド配列を作成
         byte[] command = new byte[12 + serviceCodeNumber * 2 + blockNumber * 2];
 
-        Log.d("cmd", "==========================");
-        Log.d("cmd", "Type:ReadWithoutEncryption");
+//        Log.d("cmd", "==========================");
+//        Log.d("cmd", "Type:ReadWithoutEncryption");
 
         //配列の長さ
         command[0] = (byte) (0x000000ff & (command.length));
@@ -134,7 +133,7 @@ public class ReadWithoutEncryption {
 
         //完了
         Log.d("cmd", "FullCommand:" + hex2string(command));
-        Log.d("TAG", "ReadWithoutEncryption: Command generated successfully.");
+//        Log.d("TAG", "ReadWithoutEncryption: Command generated successfully.");
 
         return command;
     }
