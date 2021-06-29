@@ -43,7 +43,7 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
             nfc.connect();
 
             //PollingコマンドでIDｍを取得
-            byte[] targetIDm = super.getIDm(SYSTEM_CODE);
+            byte[] targetIDm = super.readIDm(SYSTEM_CODE);
             //データを取得
             super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 0, 10, historyData);
 
@@ -71,7 +71,7 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
             nfc.connect();
 
             //PollingコマンドでIDｍを取得
-            byte[] targetIDm = super.getIDm(SYSTEM_CODE);
+            byte[] targetIDm = super.readIDm(SYSTEM_CODE);
             IDm = super.hex2string(targetIDm,"");
             //データを取得
             super.getBlockData(targetIDm, SERVICE_CODE_INFO, 0, 6, cardInfo);
@@ -94,7 +94,7 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
             nfc.connect();
 
             //PollingコマンドでIDｍを取得
-            byte[] targetIDm = super.getIDm(SYSTEM_CODE);
+            byte[] targetIDm = super.readIDm(SYSTEM_CODE);
             //データを取得
             super.getBlockData(targetIDm, SERVICE_CODE_BALANCE, 0, 1, balance);
 
@@ -213,9 +213,5 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
         cardInfo = readCardInfo();
     }
 
-    @Override
-    public String getIDm() {
-        return IDm;
-    }
 
 }

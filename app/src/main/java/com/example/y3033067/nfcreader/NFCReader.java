@@ -11,6 +11,7 @@ import java.util.Arrays;
 public class NFCReader {
 
     private NfcF nfc;
+    byte[] targetIDm;
 
     public NFCReader(Tag tag) {
         this.nfc = NfcF.get(tag);
@@ -28,14 +29,16 @@ public class NFCReader {
      * @return IDｍ
      * @throws IOException nfc.transceive()から発生する例外
      */
-    public byte[] getIDm(int systemCode) throws IOException {
+    public byte[] readIDm(int systemCode) throws IOException {
         //Pollingコマンド用のビット列を生成
         byte[] command = generatePollingCommand(systemCode);
         //ビット列を送信（コマンド実行）
         byte[] res = nfc.transceive(command);
         Log.d("general", hex2string(res,":"));
+        targetIDm = Arrays.copyOfRange(res, 2, 10);
         //応答内容を返却
-        return Arrays.copyOfRange(res, 2, 10);
+        return targetIDm;
+
     }
 
     /**
@@ -120,7 +123,7 @@ public class NFCReader {
 
             //PollingコマンドでIDｍを取得
             //最初はどのカードかわからないのでSystemCodeはワイルドカード指定
-            byte[] targetIDm = getIDm(0xffff);
+            targetIDm = readIDm(0xffff);
 
             //通信終了
             nfc.close();
@@ -152,7 +155,15 @@ public class NFCReader {
         }
 
 
+
+
+
     }
+
+    public String getIDm(String split) {
+        return hex2string(targetIDm,split);
+    }
+
 
     /**
      * バイト配列を16進数表記で1バイトずつ区切った文字列に変換する

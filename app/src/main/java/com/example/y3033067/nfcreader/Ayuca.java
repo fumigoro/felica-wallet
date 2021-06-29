@@ -19,7 +19,7 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
     private NfcF nfc;
     ArrayList<Byte[]> historyData, cardInfo, balance;
     ArrayList<CardHistory> histories;
-
+    byte[] targetIDm;
 
     public Ayuca(Tag tag) {
         super(tag);
@@ -28,6 +28,7 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
         SERVICE_CODE_HISTORY = 0x898F;//履歴
         SERVICE_CODE_BALANCE = 0x884B;//残高
         SERVICE_CODE_INFO = 0x804B;//カード情報
+
     }
 
     /**
@@ -44,7 +45,7 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
             nfc.connect();
 
             //PollingコマンドでIDｍを取得
-            byte[] targetIDm = super.getIDm(SYSTEM_CODE);
+            targetIDm = super.readIDm(SYSTEM_CODE);
             //データを取得
             super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 0, 10, historyData);
             super.getBlockData(targetIDm, SERVICE_CODE_HISTORY, 10, 20, historyData);
@@ -79,7 +80,7 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
             nfc.connect();
 
             //PollingコマンドでIDｍを取得
-            byte[] targetIDm = super.getIDm(SYSTEM_CODE);
+            targetIDm = super.readIDm(SYSTEM_CODE);
             //データを取得
             super.getBlockData(targetIDm, SERVICE_CODE_BALANCE, 0, 3, balance);
 
@@ -111,7 +112,7 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
             nfc.connect();
 
             //PollingコマンドでIDｍを取得
-            byte[] targetIDm = super.getIDm(SYSTEM_CODE);
+            targetIDm = super.readIDm(SYSTEM_CODE);
             //データを取得
             super.getBlockData(targetIDm, SERVICE_CODE_INFO, 0, 2, cardInfo);
 
@@ -160,8 +161,8 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
             hour = Integer.parseInt(stringB.substring(16, 22), 2);
             minute = Integer.parseInt(stringB.substring(22, 28), 2);
             discount = String.format("%X", Integer.parseInt(stringB.substring(28, 32), 2));
-            start = String.format("%04X", Integer.parseInt(stringB.substring(32, 48), 2));
-            end = String.format("%04X", Integer.parseInt(stringB.substring(48, 64), 2));
+            start = getStationName(Integer.parseInt(stringB.substring(32, 48), 2));
+            end = getStationName(Integer.parseInt(stringB.substring(48, 64), 2));
             deviceFlag = Integer.parseInt(stringB.substring(64, 68), 2);
             typeFlag = Integer.parseInt(stringB.substring(68, 72), 2);
 
@@ -293,10 +294,22 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
         cardInfo = readCardInfo();
     }
 
-    @Override
-    public String getIDm() {
-        return null;
+    private String getStationName(int code){
+        switch (code){
+            case 0x0296:
+                return "岐阜大学";
+            case 0x0288:
+                return "柳戸橋";
+            case 0x029B:
+                return "岐阜大学病院";
+            case 0x0066:
+                return "JR岐阜";
+            case 0x0003:
+                return "名鉄岐阜";
+            case 0x0002:
+                return "名鉄岐阜バスターミナル";
+        }
+        return String.format("不明(%04X)",code);
     }
-
 
 }

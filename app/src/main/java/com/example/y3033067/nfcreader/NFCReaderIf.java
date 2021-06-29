@@ -9,5 +9,4 @@ public interface NFCReaderIf {
     public int getSFBalance();
     public int getPointBalance();
     public void readAllData();
-    public String getIDm();
 }

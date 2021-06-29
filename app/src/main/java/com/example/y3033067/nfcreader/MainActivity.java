@@ -3,6 +3,7 @@ package com.example.y3033067.nfcreader;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,6 +13,7 @@ import android.nfc.tech.NfcF;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -24,11 +26,17 @@ public class MainActivity extends AppCompatActivity {
     private Ayuca ayuca;
     private CampusPay campusPay;
     private StudentIDCard idCard;
+    private  TextView cardID,cardName,cardBalance,cardLog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfcreader);
+
+        cardID = findViewById(R.id.card_id);
+        cardLog = findViewById(R.id.log);
+        cardName = findViewById(R.id.card_name);
+        cardBalance = findViewById(R.id.card_balance);
 
         pendingIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
@@ -60,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
     }
 
+    @SuppressLint("DefaultLocale")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onNewIntent(Intent intent) {
@@ -76,33 +85,47 @@ public class MainActivity extends AppCompatActivity {
         int type = card.getCardType();
         Log.d("TAG", "Type:"+type);
         ArrayList<CardHistory> ch = new ArrayList<>();
+        String displayText = "";
+        cardName.setText("非対応カード");
+        cardBalance.setText("");
+        cardID.setText(card.getIDm(":"));
+
         switch(type){
             case 1:
                 //Ayuca
                 Log.d("TAG", "Ayuca");
+                cardName.setText("Ayuca");
                 ayuca = new Ayuca(tag);
                 //カードからデータを読み取り
                 ayuca.readAllData();
                 ch = ayuca.getHistories();
+                cardID.setText(ayuca.getIDm(":"));
+                cardBalance.setText(String.format("残高￥%d",ayuca.getSFBalance()));
                 Log.d("TAG","残高：￥"+(ayuca.getSFBalance()));
                 break;
             case 2:
                 //CampusPay
                 Log.d("TAG", "CampusPay");
+                cardName.setText("生協電子マネー");
+
                 campusPay = new CampusPay(tag);
                 //カードからデータを読み取り
                 campusPay.readAllData();
                 ch = campusPay.getHistories();
+                cardID.setText(campusPay.getIDm(":"));
+                cardBalance.setText(String.format("残高￥%d",campusPay.getSFBalance()));
                 Log.d("TAG","残高：￥"+(campusPay.getSFBalance()));
                 break;
             case 3:
                 //学生証
+                cardName.setText("岐阜大学学生証");
                 Log.d("TAG", "学生証");
                 idCard = new StudentIDCard(tag);
                 //カードからデータを読み取り
-                idCard.getID();
+                idCard.readAllData();
+                cardID.setText(idCard.getIDm(":"));
+                displayText = idCard.getStudentID();
                 break;
-
 
         }
         Log.d("TAG","結果：");
@@ -115,20 +138,28 @@ public class MainActivity extends AppCompatActivity {
             Log.d("TAG",""+ch.get(i).getDevice()+ch.get(i).getType());
             Log.d("TAG","金額￥"+ch.get(i).getPrice());
             Log.d("TAG","残高￥"+ch.get(i).getBalance());
+            displayText += ("＝＝＝＝＝＝＝＝＝＝"+"\n");
+            displayText += ((i+1)+"件目"+ch.get(i).getDate()+"\n");
+            displayText += (""+ch.get(i).getDevice()+ch.get(i).getType()+"\n");
+            displayText += ("金額￥"+ch.get(i).getPrice()+"\n");
+            displayText += ("残高￥"+ch.get(i).getBalance()+"\n");
+            if(type==1 && ch.get(i).getTypeFlag()==0x03){
+                displayText += ("乗車区間："+ch.get(i).getStart()+" → "+ch.get(i).getEnd()+"\n");
 
+            }
             if(ch.get(i).getPointFlag()){
-                Log.d("TAG","通常ポイント："+(double)ch.get(i).getGrantedNormalPoint()/10);
+                displayText += ("通常ポイント："+(double)ch.get(i).getGrantedNormalPoint()/10+"\n");
                 if(ch.get(i).getGrantedBonusPoint()>0){
-                    Log.d("TAG","ボーナスポイント付与："+(double)ch.get(i).getGrantedBonusPoint()/10);
+                    displayText += ("ボーナスポイント付与："+(double)ch.get(i).getGrantedBonusPoint()/10+"\n");
                 }
                 if(ch.get(i).getUsedPoint()<0){
-                    Log.d("TAG","ポイント利用："+(double)ch.get(i).getUsedPoint()/10);
+                    displayText += ("ポイント利用："+(double)ch.get(i).getUsedPoint()/10+"\n");
                 }
-                Log.d("TAG","ポイント残高："+(double)ch.get(i).getPointBalance()/10);
+                displayText += ("ポイント残高："+(double)ch.get(i).getPointBalance()/10+"\n");
             }
 
         }
-
+        cardLog.setText(displayText);
     }
 
     @Override
