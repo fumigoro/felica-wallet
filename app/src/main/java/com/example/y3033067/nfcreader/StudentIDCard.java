@@ -60,6 +60,7 @@ public class StudentIDCard extends NFCReader implements NFCReaderIf{
         for(int i=0; i<studentID.length;i++){
             studentID2[i] = studentID[i];
         }
+        studentID2[0] = 0x20;//空白
         Log.d("TAG",super.hex2string(studentID2,":"));
 
         String resultString = "test";

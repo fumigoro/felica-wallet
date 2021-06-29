@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
     }
 
+
     @SuppressLint("DefaultLocale")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         String displayText = "";
         cardName.setText("非対応カード");
         cardBalance.setText("");
-        cardID.setText(card.getIDm(":"));
+        cardID.setText(String.format("Felica IDm：%s",card.getIDm(" ")));
 
         switch(type){
             case 1:
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 //カードからデータを読み取り
                 ayuca.readAllData();
                 ch = ayuca.getHistories();
-                cardID.setText(ayuca.getIDm(":"));
+
                 cardBalance.setText(String.format("残高￥%d",ayuca.getSFBalance()));
                 Log.d("TAG","残高：￥"+(ayuca.getSFBalance()));
                 break;
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 //カードからデータを読み取り
                 campusPay.readAllData();
                 ch = campusPay.getHistories();
-                cardID.setText(campusPay.getIDm(":"));
+
                 cardBalance.setText(String.format("残高￥%d",campusPay.getSFBalance()));
                 Log.d("TAG","残高：￥"+(campusPay.getSFBalance()));
                 break;
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 idCard = new StudentIDCard(tag);
                 //カードからデータを読み取り
                 idCard.readAllData();
-                cardID.setText(idCard.getIDm(":"));
+
                 displayText = idCard.getStudentID();
                 break;
 
