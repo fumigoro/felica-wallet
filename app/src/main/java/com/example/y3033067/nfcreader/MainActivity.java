@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private Ayuca ayuca;
     private CampusPay campusPay;
     private StudentIDCard idCard;
+    TabLayout tabLayout;
     ViewPager2 viewPager;
 
 
@@ -42,16 +44,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfcreader);
         // xmlからTabLayoutの取得
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         // xmlからViewPagerを取得
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
         // 表示Pageに必要な項目を設定
-        FragmentPagerAdapter adapter = new TabAdapter(getSupportFragmentManager());
+        TabAdapter adapter = new TabAdapter(getSupportFragmentManager());
         // ViewPagerにページを設定
         viewPager.setAdapter(adapter);
         // ViewPagerをTabLayoutを設定
         tabLayout.setupWithViewPager(viewPager);
+
+
 
         pendingIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
@@ -138,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
         }
+        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
+
         Log.d("TAG","結果：");
 
         //ここまで
