@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private StudentIDCard idCard;
     TabLayout tabLayout;
     ViewPager2 viewPager;
-
+    TextView cardID,cardLog,cardName,cardBalance;
 
 
     @Override
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         // ViewPagerをTabLayoutを設定
         tabLayout.setupWithViewPager(viewPager);
+
 
 
 
@@ -99,40 +100,50 @@ public class MainActivity extends AppCompatActivity {
         if (tag == null) {
             return;
         }
-        //============================================================
-        //参考にしたコードから追加した部分はここから
+//参考にしたコードから追加した部分はここから
         NFCReader card = new NFCReader(tag);
         int type = card.getCardType();
         Log.d("TAG", "Type:"+type);
         ArrayList<CardHistory> ch = new ArrayList<>();
         String displayText = "";
-
+        cardID = findViewById(R.id.card_id);
+        cardLog = findViewById(R.id.log);
+        cardName = findViewById(R.id.card_name);
+        cardBalance = findViewById(R.id.card_balance);
+        Log.d("TAG",String.valueOf(findViewById(R.id.card_id)==null));
+        cardName.setText("非対応カード");
+        cardBalance.setText("");
+        cardID.setText(String.format("Felica IDm：%s",card.getIDm(" ")));
 
         switch(type){
             case 1:
                 //Ayuca
                 Log.d("TAG", "Ayuca");
-
+                cardName.setText("Ayuca");
                 ayuca = new Ayuca(tag);
                 //カードからデータを読み取り
                 ayuca.readAllData();
                 ch = ayuca.getHistories();
 
+                cardBalance.setText(String.format("残高￥%d",ayuca.getSFBalance()));
                 Log.d("TAG","残高：￥"+(ayuca.getSFBalance()));
                 break;
             case 2:
                 //CampusPay
                 Log.d("TAG", "CampusPay");
+                cardName.setText("生協電子マネー");
 
                 campusPay = new CampusPay(tag);
                 //カードからデータを読み取り
                 campusPay.readAllData();
                 ch = campusPay.getHistories();
 
+                cardBalance.setText(String.format("残高￥%d",campusPay.getSFBalance()));
                 Log.d("TAG","残高：￥"+(campusPay.getSFBalance()));
                 break;
             case 3:
                 //学生証
+                cardName.setText("岐阜大学学生証");
                 Log.d("TAG", "学生証");
                 idCard = new StudentIDCard(tag);
                 //カードからデータを読み取り
@@ -142,10 +153,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
         }
+
         Objects.requireNonNull(tabLayout.getTabAt(1)).select();
-
-        Log.d("TAG","結果：");
-
         //ここまで
         //============================================================
         for(int i=0;i<ch.size();i++){
@@ -175,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+        cardLog.setText(displayText);
     }
 
     @Override
