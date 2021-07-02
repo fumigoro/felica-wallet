@@ -23,12 +23,11 @@ public class StudentIDCard extends NFCReader implements NFCReaderIf{
         SERVICE_CODE_ID = 0x020B;//学籍番号
     }
 
-
     /**
      * ICカードから学籍番号を取得して返す
      * 通信開始から終了まで1連の流れを行う
      *
-     * @return 取得したデータ
+     * @return 読み取ったダンプデータ
      */
     private ArrayList<Byte[]> readID() {
         blockData = new ArrayList<>();
@@ -53,6 +52,10 @@ public class StudentIDCard extends NFCReader implements NFCReaderIf{
 
     }
 
+    /**
+     * 読み取ったデータから学籍番号を返す
+     * @return 学籍番号
+     */
     public String getStudentID() {
 
 

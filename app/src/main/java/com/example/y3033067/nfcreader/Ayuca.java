@@ -16,7 +16,7 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
     private final int SERVICE_CODE_HISTORY;
     private final int SERVICE_CODE_BALANCE;
     private final int SERVICE_CODE_INFO;
-    private NfcF nfc;
+    private final NfcF nfc;
     ArrayList<Byte[]> historyData, cardInfo, balance;
     ArrayList<CardHistory> histories;
     byte[] targetIDm;
@@ -28,14 +28,12 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
         SERVICE_CODE_HISTORY = 0x898F;//履歴
         SERVICE_CODE_BALANCE = 0x884B;//残高
         SERVICE_CODE_INFO = 0x804B;//カード情報
-
     }
 
     /**
-     * ICカードから利用履歴を取得して返す
-     * 通信開始から終了まで1連の流れを行う
+     * 利用履歴が保存されたサービスを読み込む
      *
-     * @return 取得したデータ
+     * @return 読み取ったダンプデータ
      */
     private ArrayList<Byte[]> readHistory() {
         historyData = new ArrayList<>();
@@ -68,9 +66,9 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
     }
 
     /**
-     * 残高情報を読み込む
+     * 残高情報が保存されたサービスを読み込む
      *
-     * @return 残高情報
+     * @return 読み取ったダンプデータ
      */
     private ArrayList<Byte[]> readBalance() {
         balance = new ArrayList<>();
@@ -99,10 +97,8 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
     }
 
     /**
-     * ICカードからカード情報を取得して返す
-     * 通信開始から終了まで1連の流れを行う
-     *
-     * @return 取得したデータ
+     * カード情報が保存されたサービスを読み込む
+     * @return 読み取ったダンプデータ
      */
     private ArrayList<Byte[]> readCardInfo() {
         cardInfo = new ArrayList<>();
@@ -278,9 +274,20 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
         return Integer.parseInt(stringB.substring(0, 4), 16);
     }
 
+    /**
+     * 読み取ったデータからポイント残高を返す
+     * @return ポイント残高
+     */
     @Override
     public int getPointBalance() {
-        return 0;
+        String stringTmp;
+        StringBuilder stringB = new StringBuilder();
+        for (int j = 0; j < balance.get(0).length; j++) {
+            //16進数のまま文字列へ
+            stringTmp = String.format("%02X", balance.get(0)[j]);
+            stringB.append(stringTmp);
+        }
+        return Integer.parseInt(stringB.substring(0, 4), 16);
     }
 
     /**

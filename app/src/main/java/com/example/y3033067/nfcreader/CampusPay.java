@@ -16,7 +16,6 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
     private final int SERVICE_CODE_BALANCE;
     private final int SERVICE_CODE_INFO;
     private final NfcF nfc;
-    private String IDm;
     ArrayList<Byte[]> historyData, cardInfo, balance;
     ArrayList<CardHistory> histories;
 
@@ -30,12 +29,10 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
     }
 
     /**
-     * ICカードから利用履歴を取得して返す
-     * 通信開始から終了まで1連の流れを行う
-     *
-     * @return 取得したデータ
+     * 利用履歴が保存されたサービスを読み込む
+     * @return 読み取ったダンプデータ
      */
-    public ArrayList<Byte[]> readHistories() {
+    private ArrayList<Byte[]> readHistories() {
         historyData = new ArrayList<>();
         try {
             //通信開始
@@ -58,12 +55,11 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
     }
 
     /**
-     * ICカードからカード情報を取得して返す
-     * 通信開始から終了まで1連の流れを行う
+     * カード情報が保存されているサービスを読む
      *
-     * @return 取得したデータ
+     * @return 読み取ったダンプデータ
      */
-    public ArrayList<Byte[]> readCardInfo() {
+        private ArrayList<Byte[]> readCardInfo() {
         cardInfo = new ArrayList<>();
         try {
             //通信開始
@@ -72,7 +68,7 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
 
             //PollingコマンドでIDｍを取得
             byte[] targetIDm = super.readIDm(SYSTEM_CODE);
-            IDm = super.hex2string(targetIDm,"");
+            String IDm = super.hex2string(targetIDm, "");
             //データを取得
             super.getBlockData(targetIDm, SERVICE_CODE_INFO, 0, 6, cardInfo);
 
@@ -86,7 +82,11 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
 
     }
 
-    public ArrayList<Byte[]> readBalance() {
+    /**
+     * 残高情報が記録されたサービスを読み込む
+     * @return 読み取ったダンプデータ
+     */
+    private ArrayList<Byte[]> readBalance() {
         balance = new ArrayList<>();
         try {
             //通信開始
@@ -110,7 +110,8 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
 
 
     /**
-     *
+     *　履歴用法が保存されたサービスを読み込む
+     * @return 利用履歴
      */
     @Override
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -197,6 +198,10 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
         return Integer.parseInt(stringB.substring(0, 8), 16);
     }
 
+    /**
+     * 読み取ったデータからポイント残高を返す
+     * @return ポイント残高
+     */
     @Override
     public int getPointBalance() {
         return 0;
