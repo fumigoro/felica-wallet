@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class NFCReader {
+public class NFCReader  {
 
     private NfcF nfc;
     byte[] targetIDm;
@@ -34,7 +34,7 @@ public class NFCReader {
         byte[] command = generatePollingCommand(systemCode);
         //ビット列を送信（コマンド実行）
         byte[] res = nfc.transceive(command);
-        Log.d("general", hex2string(res,":"));
+//        Log.d("general", hex2string(res,":"));
         targetIDm = Arrays.copyOfRange(res, 2, 10);
         //応答内容を返却
         return targetIDm;
@@ -135,15 +135,12 @@ public class NFCReader {
             switch (String.valueOf(IDmString)){
                 case "0112":
                     //Ayuca
-                    Log.d("TAG", "Ayuca");
                     return 1;
                 case "0114":
                     //CampusPay
-                    Log.d("TAG", "CampusPay");
                     return 2;
                 case "012E":
                     //学生証
-                    Log.d("TAG", "学生証");
                     return 3;
                 default:
                     return 0;

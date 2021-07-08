@@ -1,5 +1,7 @@
 package com.example.y3033067.nfcreader;
 
+import android.app.Activity;
+import android.content.res.AssetManager;
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
 import android.os.Build;
@@ -7,11 +9,16 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
-public class Ayuca extends NFCReader implements NFCReaderIf{
+public class Ayuca extends NFCReader  implements NFCReaderIf  {
     private final int SYSTEM_CODE;
     private final int SERVICE_CODE_HISTORY;
     private final int SERVICE_CODE_BALANCE;
@@ -20,6 +27,10 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
     ArrayList<Byte[]> historyData, cardInfo, balance;
     ArrayList<CardHistory> histories;
     byte[] targetIDm;
+    //アセットの読み込みに使う
+    private Activity activity;
+    AyucaCode ayucaCode;
+
 
     public Ayuca(Tag tag) {
         super(tag);
@@ -50,12 +61,12 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
 
             //通信終了
             nfc.close();
-            //        取得したデータをログに表示
-            Log.d("TAG", "利用履歴");
-            for(int i = 0; i< historyData.size(); i++){
-                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(historyData.get(i),":"));
-            }
-            Log.d("TAG", "================");
+//            //        取得したデータをログに表示
+//            Log.d("TAG", "利用履歴");
+//            for(int i = 0; i< historyData.size(); i++){
+//                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(historyData.get(i),":"));
+//            }
+//            Log.d("TAG", "================");
 
             return historyData;
         } catch (Exception e) {
@@ -84,10 +95,10 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
 
             //通信終了
             nfc.close();
-            Log.d("TAG", "残高情報");
-            for(int i = 0; i< balance.size(); i++){
-                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(balance.get(i),":"));
-            }
+//            Log.d("TAG", "残高情報");
+//            for(int i = 0; i< balance.size(); i++){
+//                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(balance.get(i),":"));
+//            }
             return balance;
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,10 +126,10 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
             //通信終了
             nfc.close();
 
-            Log.d("TAG", "カード情報");
-            for(int i = 0; i< cardInfo.size(); i++){
-                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(cardInfo.get(i),":"));
-            }
+//            Log.d("TAG", "カード情報");
+//            for(int i = 0; i< cardInfo.size(); i++){
+//                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(cardInfo.get(i),":"));
+//            }
             return cardInfo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -226,23 +237,6 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
                 }
             }
 
-
-
-            Log.d("TAG",
-                    year+"/"+month+"/"+day+ " "+hour+":"+minute
-                            + " D" + discount
-                            + " " + start
-                            + "~" + end
-                            + " D" + discount
-                            + " T" + type
-                            + " P" + price
-                            + " B" + balance
-                            + " P残" + pointBalance
-                            + " 付与" + grantedNormalPoint
-                            + " B付与" + grantedBonusPoint
-                            + " 使用" + usedPoint
-            );
-
             /*MEMO:
             Dateの月設定は1小さい値を入れる
             Dateの年は-1900下値を入れる
@@ -301,22 +295,30 @@ public class Ayuca extends NFCReader implements NFCReaderIf{
         cardInfo = readCardInfo();
     }
 
-    private String getStationName(int code){
-        switch (code){
-            case 0x0296:
-                return "岐阜大学";
-            case 0x0288:
-                return "柳戸橋";
-            case 0x029B:
-                return "岐阜大学病院";
-            case 0x0066:
-                return "JR岐阜";
-            case 0x0003:
-                return "名鉄岐阜";
-            case 0x0002:
-                return "名鉄岐阜バスターミナル";
+    public void loadAssetFile(Activity _activity){
+        activity = _activity;
+        Gson gson = new Gson();
+        try{
+            AssetManager assetManager = activity.getResources().getAssets(); //アセット呼び出し
+            InputStream inputStream = assetManager.open("code_ayuca.json"); //Jsonファイル
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder json = new StringBuilder();
+            int i = 0;
+            String jsonTmp;
+            while ((jsonTmp = bufferedReader.readLine()) != null){
+                json.append(jsonTmp);
+            }
+            ayucaCode = gson.fromJson(json.toString(),AyucaCode.class);
+
+        }catch(Exception e){
+            e.printStackTrace();
         }
-        return String.format("不明(%04X)",code);
+    }
+    private String getStationName(int code){
+        if(ayucaCode==null){
+            return String.format("%04X",code);
+        }
+        return ayucaCode.getStation(code);
     }
 
 }

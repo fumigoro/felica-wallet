@@ -91,48 +91,48 @@ public class ReadWithoutEncryption {
 
         //コマンドコード
         command[1] = COMMAND_CODE;
-        Log.d("cmd", "CommandCode:" + String.format("%02X", command[1]));
+//        Log.d("cmd", "CommandCode:" + String.format("%02X", command[1]));
 
         //IDm
         //配列IDmの中身をcommandへコピー
         System.arraycopy(idm, 0, command, 2, 8);
         //command[2]~[9]を使用
-        Log.d("cmd", "IDm:" + hex2string(idm));
+//        Log.d("cmd", "IDm:" + hex2string(idm));
 
         //サービス数
         command[10] = serviceCodeNumber;
-        Log.d("cmd", "ServiceNumber:" + String.format("%02X", command[10]));
+//        Log.d("cmd", "ServiceNumber:" + String.format("%02X", command[10]));
 
         //サービスコードリスト（[11]~[11+serviceCodeNumber*2]）
         for (int i = 0; i < serviceCodeNumber; i++) {
             //リトルエンディアンで入れる
             command[11 + i * 2 + 1] = (byte) (0x000000ff & (serviceCodes[i] >>> 8));
             command[11 + i * 2] = (byte) (0x000000ff & (serviceCodes[i]));
-            Log.d("cmd", "ServiceCodeList[" + i + "]:0x"
-                    + String.format("%02X", command[11 + i * 2 + 1])
-                    + String.format("%02X", command[11 + i * 2]));
+//            Log.d("cmd", "ServiceCodeList[" + i + "]:0x"
+//                    + String.format("%02X", command[11 + i * 2 + 1])
+//                    + String.format("%02X", command[11 + i * 2]));
         }
 
         //ブロック数
         command[11 + serviceCodeNumber * 2] = blockNumber;
-        Log.d("cmd", "BlockNumber:"
-                + String.format("%02X", command[11 + serviceCodeNumber * 2]));
+//        Log.d("cmd", "BlockNumber:"
+//                + String.format("%02X", command[11 + serviceCodeNumber * 2]));
 
         //ブロックリスト（[11+serviceCodeNumber*2+3]~[11+serviceCodeNumber*2+3+blockNumber*2]）
         for (int i = 0; i < blockNumber; i++) {
             //リトルエンディアンではない（コンストラクタ内で予め順番設定済み）
             command[11 + serviceCodeNumber * 2 + 1 + i * 2] = (byte) (0x000000ff & (blocks[i] >>> 8));
             command[11 + serviceCodeNumber * 2 + 1 + i * 2 + 1] = (byte) (0x000000ff & (blocks[i]));
-            Log.d("cmd", "BlockList[" + i + "]:{D0:0x"
-                    + String.format("%02X", command[11 + serviceCodeNumber * 2 + 1 + i * 2])
-                    + ",D1:0x"
-                    + String.format("%02X", command[11 + serviceCodeNumber * 2 + 1 + i * 2 + 1])
-                    + "}"
-            );
+//            Log.d("cmd", "BlockList[" + i + "]:{D0:0x"
+//                    + String.format("%02X", command[11 + serviceCodeNumber * 2 + 1 + i * 2])
+//                    + ",D1:0x"
+//                    + String.format("%02X", command[11 + serviceCodeNumber * 2 + 1 + i * 2 + 1])
+//                    + "}"
+//            );
         }
 
         //完了
-        Log.d("cmd", "FullCommand:" + hex2string(command));
+//        Log.d("cmd", "FullCommand:" + hex2string(command));
 //        Log.d("TAG", "ReadWithoutEncryption: Command generated successfully.");
 
         return command;

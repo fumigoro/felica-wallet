@@ -2,21 +2,22 @@ package com.example.y3033067.nfcreader;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
@@ -35,9 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private CampusPay campusPay;
     private StudentIDCard idCard;
     TabLayout tabLayout;
-    ViewPager2 viewPager;
     TextView cardID,cardLog,cardName,cardBalance;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         // ViewPagerをTabLayoutを設定
         tabLayout.setupWithViewPager(viewPager);
-
-
-
 
         pendingIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
@@ -93,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onNewIntent(Intent intent) {
+        Log.d("TAG","Load");
+        ImageView image = findViewById(R.id.reader_ring);
+        Drawable ringLoading = getResources().getDrawable(R.drawable.shape_ring_loading);
+        image.setImageDrawable(ringLoading);
         // IntentにTagの基本データが入ってくるので取得
         super.onNewIntent(intent);
 
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         if (tag == null) {
             return;
         }
-//参考にしたコードから追加した部分はここから
+        //参考にしたコードから追加した部分はここから
         NFCReader card = new NFCReader(tag);
         int type = card.getCardType();
         Log.d("TAG", "Type:"+type);
@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         cardLog = findViewById(R.id.log);
         cardName = findViewById(R.id.card_name);
         cardBalance = findViewById(R.id.card_balance);
-        Log.d("TAG",String.valueOf(findViewById(R.id.card_id)==null));
         cardName.setText("非対応カード");
         cardBalance.setText("");
         cardID.setText(String.format("Felica IDm：%s",card.getIDm(" ")));
@@ -121,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("TAG", "Ayuca");
                 cardName.setText("Ayuca");
                 ayuca = new Ayuca(tag);
+                ayuca.loadAssetFile((Activity)findViewById(R.id.fragment_read).getContext());
                 //カードからデータを読み取り
                 ayuca.readAllData();
                 ch = ayuca.getHistories();
@@ -151,18 +151,12 @@ public class MainActivity extends AppCompatActivity {
 
                 displayText = idCard.getStudentID();
                 break;
-
         }
 
-        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
+
         //ここまで
         //============================================================
         for(int i=0;i<ch.size();i++){
-            Log.d("TAG","＝＝＝＝＝＝＝＝＝＝");
-            Log.d("TAG",(i+1)+"件目"+ch.get(i).getDate());
-            Log.d("TAG",""+ch.get(i).getDevice()+ch.get(i).getType());
-            Log.d("TAG","金額￥"+ch.get(i).getPrice());
-            Log.d("TAG","残高￥"+ch.get(i).getBalance());
             displayText += ("＝＝＝＝＝＝＝＝＝＝"+"\n");
             displayText += ((i+1)+"件目"+ch.get(i).getDate()+"\n");
             displayText += (""+ch.get(i).getDevice()+ch.get(i).getType()+"\n");
@@ -185,6 +179,13 @@ public class MainActivity extends AppCompatActivity {
 
         }
         cardLog.setText(displayText);
+
+
+        Drawable ringWaiting = getResources().getDrawable(R.drawable.shape_ring_waiting);
+//        image.setImageDrawable(ringWaiting);
+
+//        タブ切り替え
+        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
     }
 
     @Override
