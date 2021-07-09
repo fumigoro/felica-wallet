@@ -8,16 +8,16 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="blue">#0000FF</color>
-    <color name="red">#FF0000</color>
-    <color name="yellow">#FFFF00</color>
-    <color name="green">#00FF00</color>
-    <color name="purple">#9900CC</color>
-    <color name="pink">#FF00FF</color>
-    <color name="gray">#BEBEBE</color>
-    <color name="ivory">#EEEEE0</color>
-    <color name="orange">#FF9900</color>
-    <color name="brown">#CC9900</color>
-    <color name="cream">#FFFFCC</color>
+    <color name="blue">#FF0000FF</color>
+    <color name="red">#FFFF0000</color>
+    <color name="yellow">#FFFFFF00</color>
+    <color name="green">#FF00FF00</color>
+    <color name="purple">#FF9900CC</color>
+    <color name="pink">#FFFF00FF</color>
+    <color name="gray">#FFBEBEBE</color>
+    <color name="ivory">#FFEEEEE0</color>
+    <color name="orange">#FFFF9900</color>
+    <color name="brown">#FFCC9900</color>
+    <color name="cream">#FFFFFFCC</color>
 
     </resources>

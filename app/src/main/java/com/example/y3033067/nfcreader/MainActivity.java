@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
             if(ch.get(i).getPointFlag()){
-                displayText += ("通常ポイント："+(double)ch.get(i).getGrantedNormalPoint()/10+"\n");
+                displayText += ("通常ポイント付与："+(double)ch.get(i).getGrantedNormalPoint()/10+"\n");
                 if(ch.get(i).getGrantedBonusPoint()>0){
                     displayText += ("ボーナスポイント付与："+(double)ch.get(i).getGrantedBonusPoint()/10+"\n");
                 }
