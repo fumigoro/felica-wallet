@@ -40,21 +40,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/log"
-        android:layout_width="166dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="405dp"
-        android:layout_height="563dp"
+        android:layout_width="412dp"
+        android:layout_height="578dp"
         android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,139 +62,104 @@
                 android:layout_height="10dp"
                 android:src="@drawable/shape_history_wrapper" />
 
-            <include layout="@layout/history" android:id="@+id/history_1"/>
+            <include
+                android:id="@+id/history_1"
+                layout="@layout/history" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
 
-            <include layout="@layout/history" android:id="@+id/history_2"/>
+            <include
+                android:id="@+id/history_2"
+                layout="@layout/history" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
 
-            <include layout="@layout/history" android:id="@+id/history_3"/>
+            <include
+                android:id="@+id/history_3"
+                layout="@layout/history" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
 
-            <include layout="@layout/history" android:id="@+id/history_4"/>
+            <include
+                android:id="@+id/history_4"
+                layout="@layout/history" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
 
-            <include layout="@layout/history" android:id="@+id/history_5"/>
+            <include
+                android:id="@+id/history_5"
+                layout="@layout/history" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
 
-            <include layout="@layout/history" android:id="@+id/history_6"/>
+            <include
+                android:id="@+id/history_6"
+                layout="@layout/history" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
 
-            <include layout="@layout/history" android:id="@+id/history_7"/>
+            <include
+                android:id="@+id/history_7"
+                layout="@layout/history" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
 
-            <include layout="@layout/history" android:id="@+id/history_8"/>
+            <include
+                android:id="@+id/history_8"
+                layout="@layout/history" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
 
-            <include layout="@layout/history" android:id="@+id/history_9"/>
+            <include
+                android:id="@+id/history_9"
+                layout="@layout/history" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
 
-            <include layout="@layout/history" android:id="@+id/history_10"/>
-                        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
+            <include
+                android:id="@+id/history_10"
+                layout="@layout/history" />
 
-            <include layout="@layout/history" android:id="@+id/history_11"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
+            <include
+                android:id="@+id/history_11"
+                layout="@layout/history" />
 
-            <include layout="@layout/history" android:id="@+id/history_12"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
+            <include
+                android:id="@+id/history_12"
+                layout="@layout/history" />
 
-            <include layout="@layout/history" android:id="@+id/history_13"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
+            <include
+                android:id="@+id/history_13"
+                layout="@layout/history" />
 
-            <include layout="@layout/history" android:id="@+id/history_14"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
+            <include
+                android:id="@+id/history_14"
+                layout="@layout/history" />
 
-            <include layout="@layout/history" android:id="@+id/history_15"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
+            <include
+                android:id="@+id/history_15"
+                layout="@layout/history" />
 
-            <include layout="@layout/history" android:id="@+id/history_16"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
+            <include
+                android:id="@+id/history_16"
+                layout="@layout/history" />
 
-            <include layout="@layout/history" android:id="@+id/history_17"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
+            <include
+                android:id="@+id/history_17"
+                layout="@layout/history" />
 
-            <include layout="@layout/history" android:id="@+id/history_18"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
+            <include
+                android:id="@+id/history_18"
+                layout="@layout/history" />
 
-            <include layout="@layout/history" android:id="@+id/history_19"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
+            <include
+                android:id="@+id/history_19"
+                layout="@layout/history" />
 
-            <include layout="@layout/history" android:id="@+id/history_20"/>
+
+            <include
+                android:id="@+id/history_20"
+                layout="@layout/history" />
 
         </LinearLayout>
 

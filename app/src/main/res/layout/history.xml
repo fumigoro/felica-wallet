@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="55dp"
     android:paddingEnd="7dp"
     android:paddingStart="5dp">
     <!--決済種別or乗車バス停-->
     <TextView
         android:id="@+id/name_start"
-        android:layout_width="259dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="名鉄岐阜（バスターミナル）"
         android:textColor="@color/black"
@@ -15,64 +16,82 @@
     <!--降車バス停-->
     <TextView
         android:id="@+id/name_end"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/name_start"
         android:text="→市役所・メディアコスモス西"
         android:textColor="@color/black"
+        android:visibility="gone"
         android:textSize="16sp" />
     <!--取引金額-->
     <TextView
         android:id="@+id/price"
-        android:layout_width="136dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
-        android:gravity="right"
-        android:text="￥56,330"
+        android:gravity="end"
+        android:text="+￥50,000"
         android:textColor="#2196F3"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        tools:ignore="RtlHardcoded" />
     <!--日付-->
     <TextView
         android:id="@+id/date"
-        android:layout_width="105dp"
-        android:layout_height="wrap_content"
+        android:layout_width="170dp"
+        android:layout_height="54dp"
         android:layout_below="@+id/name_end"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="13dp"
         android:gravity="bottom"
         android:text="7月9日 10:34"
         android:textSize="14sp" />
     <!--使用ポイント数-->
     <TextView
         android:id="@+id/usedPoint"
-        android:layout_width="130dp"
+        android:layout_width="138dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/price"
         android:layout_alignParentEnd="true"
-        android:gravity="right"
+        android:gravity="end"
         android:text="6.6P使用(割引)"
         android:textSize="14sp"
-        android:visibility="visible" />
+        android:textColor="@color/orange"
+        android:visibility="gone"
+        />
     <!--ポイント数-->
     <TextView
         android:id="@+id/point"
-        android:layout_width="130dp"
+        android:layout_width="138dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/usedPoint"
         android:layout_alignParentEnd="true"
-        android:gravity="right"
+        android:gravity="end"
         android:text="6.6P獲得"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="gone"
+        />
     <!--ボーナスポイント数-->
     <TextView
         android:id="@+id/bonusPoint"
-        android:layout_width="131dp"
+        android:layout_width="138dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/point"
         android:layout_alignParentEnd="true"
-        android:gravity="right"
+        android:gravity="end"
         android:text="ボーナス100P獲得"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="11dp"
+        android:layout_below="@+id/date"
+        android:layout_marginTop="-12dp"
+        android:layout_marginBottom="0dp"
+        android:src="@drawable/shape_history_wrapper"
+        android:contentDescription="Line" />
 </RelativeLayout>

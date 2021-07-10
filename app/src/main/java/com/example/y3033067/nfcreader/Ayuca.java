@@ -6,6 +6,7 @@ import android.nfc.Tag;
 import android.nfc.tech.NfcF;
 import android.os.Build;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
@@ -154,6 +155,9 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
         String stringTmp;
         CardHistory history;
         histories = new ArrayList<>();
+        if(historyData == null){
+            return histories;
+        }
         for (int i = historyData.size()-1; i >= 0; i--) {
             stringB = new StringBuilder();
             history = new CardHistory();
@@ -185,7 +189,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
                     device = "入金機";
                     break;
                 default:
-                    device = String.format("%X",deviceFlag);
+                    device = String.format("不明機(%04X)",deviceFlag);
             }
             switch (typeFlag){
                 case 0x3:
@@ -229,7 +233,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
 
                 if(typeFlag == 0x03){
                     grantedNormalPoint = (int) (sfUsedPrice * 10 * 0.02);
-                    usedPoint = -1 * (price - sfUsedPrice)*10;
+                    usedPoint = (price - sfUsedPrice)*10;
                     grantedBonusPoint = point - grantedNormalPoint + usedPoint;
                     //ポイント取り扱いフラグをあげる
                     history.setPointFlag(true);
@@ -320,5 +324,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
         }
         return ayucaCode.getStation(code);
     }
+
+
 
 }

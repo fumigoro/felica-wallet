@@ -2,12 +2,12 @@ package com.example.y3033067.nfcreader;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
@@ -17,6 +17,7 @@ import android.nfc.tech.NfcF;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,11 +37,16 @@ public class MainActivity extends AppCompatActivity {
     private CampusPay campusPay;
     private StudentIDCard idCard;
     TabLayout tabLayout;
-    TextView cardID,cardLog,cardName,cardBalance;
+    TextView cardID,cardName,cardBalance;
+    HistoryUI[] historyUI;
+    View[] historyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //履歴表示UIを入れる配列
+        historyUI = new HistoryUI[20];
+
         setContentView(R.layout.activity_nfcreader);
         // xmlからTabLayoutの取得
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -58,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+
 
         try {
             ndef.addDataType("text/plain");
@@ -107,12 +114,15 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<CardHistory> ch = new ArrayList<>();
         String displayText = "";
         cardID = findViewById(R.id.card_id);
-        cardLog = findViewById(R.id.log);
+
         cardName = findViewById(R.id.card_name);
         cardBalance = findViewById(R.id.card_balance);
         cardName.setText("非対応カード");
         cardBalance.setText("");
         cardID.setText(String.format("Felica IDm：%s",card.getIDm(" ")));
+
+        //履歴表示のUI部品を一括で取得
+        historyUI =  getHistoryUI();
 
         switch(type){
             case 1:
@@ -171,14 +181,21 @@ public class MainActivity extends AppCompatActivity {
                 if(ch.get(i).getGrantedBonusPoint()>0){
                     displayText += ("ボーナスポイント付与："+(double)ch.get(i).getGrantedBonusPoint()/10+"\n");
                 }
-                if(ch.get(i).getUsedPoint()<0){
+                if(ch.get(i).getUsedPoint()>0){
                     displayText += ("ポイント利用："+(double)ch.get(i).getUsedPoint()/10+"\n");
                 }
                 displayText += ("ポイント残高："+(double)ch.get(i).getPointBalance()/10+"\n");
             }
 
         }
-        cardLog.setText(displayText);
+        for(int i=0;i<historyUI.length;i++){
+            if(i<ch.size()){
+                historyUI[i].setText(ch.get(i),type);
+            }else{
+                historyUI[i].setVisible(false);
+                historyView[i].setVisibility(View.GONE);
+            }
+        }
 
 
         Drawable ringWaiting = getResources().getDrawable(R.drawable.shape_ring_waiting);
@@ -194,5 +211,47 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.disableForegroundDispatch(this);
     }
 
+    private HistoryUI[] getHistoryUI(){
+        Context context = getApplicationContext();
+        TextView name_start,name_end,price,bonusPoint,point,date,usedPoint;
+        ImageView line;
+        View wrapper;
+        historyView = new View[20];
+        historyUI = new HistoryUI[20];
 
+        historyView[0] = findViewById(R.id.history_1);
+        historyView[1] = findViewById(R.id.history_2);
+        historyView[2] = findViewById(R.id.history_3);
+        historyView[3] = findViewById(R.id.history_4);
+        historyView[4] = findViewById(R.id.history_5);
+        historyView[5] = findViewById(R.id.history_6);
+        historyView[6] = findViewById(R.id.history_7);
+        historyView[7] = findViewById(R.id.history_8);
+        historyView[8] = findViewById(R.id.history_9);
+        historyView[9] = findViewById(R.id.history_10);
+        historyView[10] = findViewById(R.id.history_11);
+        historyView[11] = findViewById(R.id.history_12);
+        historyView[12] = findViewById(R.id.history_13);
+        historyView[13] = findViewById(R.id.history_14);
+        historyView[14] = findViewById(R.id.history_15);
+        historyView[15] = findViewById(R.id.history_16);
+        historyView[16] = findViewById(R.id.history_17);
+        historyView[17] = findViewById(R.id.history_18);
+        historyView[18] = findViewById(R.id.history_19);
+        historyView[19] = findViewById(R.id.history_20);
+
+        for(int i=0;i<historyView.length;i++){
+            name_start = historyView[i].findViewById(R.id.name_start);
+            name_end = historyView[i].findViewById(R.id.name_end);
+            price = historyView[i].findViewById(R.id.price);
+            date = historyView[i].findViewById(R.id.date);
+            point = historyView[i].findViewById(R.id.point);
+            bonusPoint = historyView[i].findViewById(R.id.bonusPoint);
+            usedPoint = historyView[i].findViewById(R.id.usedPoint);
+            line = historyView[i].findViewById(R.id.line);
+            historyUI[i] = new HistoryUI(name_start,name_end,price,date,point,bonusPoint,usedPoint,
+                    line,historyView[i],context);
+        }
+        return historyUI;
+    }
 }
