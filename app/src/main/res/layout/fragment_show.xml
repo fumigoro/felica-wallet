@@ -40,10 +40,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/log"
+        android:layout_width="166dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="372dp"
-        android:layout_height="561dp"
+        android:layout_width="405dp"
+        android:layout_height="563dp"
+        android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.476"
@@ -51,19 +63,154 @@
         app:layout_constraintTop_toBottomOf="@+id/card_id"
         app:layout_constraintVertical_bias="0.161">
 
-        <TextView
-            android:id="@+id/log"
-            android:layout_width="350dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:text="Hello World!"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.511"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/card_id"
-            app:layout_constraintVertical_bias="0.515" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_1"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_2"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_3"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_4"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_5"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_6"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_7"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_8"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_9"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_10"/>
+                        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_11"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_12"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_13"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_14"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_15"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_16"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_17"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_18"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_19"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include layout="@layout/history" android:id="@+id/history_20"/>
+
+        </LinearLayout>
+
 
     </ScrollView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
