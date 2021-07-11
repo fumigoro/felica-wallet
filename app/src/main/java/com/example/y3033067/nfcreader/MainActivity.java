@@ -191,6 +191,8 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0;i<historyUI.length;i++){
             if(i<ch.size()){
                 historyUI[i].setText(ch.get(i),type);
+                historyView[i].setVisibility(View.VISIBLE);
+
             }else{
                 historyUI[i].setVisible(false);
                 historyView[i].setVisibility(View.GONE);
