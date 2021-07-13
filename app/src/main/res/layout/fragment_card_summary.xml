@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable name="image"
+            type="android.graphics.drawable.Drawable"
+            />
+    </data>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:paddingEnd="7dp"
+        android:paddingStart="5dp"
+        >
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="110dp"
+            android:layout_height="69dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="25dp"
+            android:src="@drawable/shape_ayuca"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@id/card_balance"
+            android:layout_width="219dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="41dp"
+            android:layout_toEndOf="@+id/image"
+            android:text="残高：￥54,389 / 2456.2P"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/last_read"
+            android:layout_width="218dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="67dp"
+            android:layout_toEndOf="@+id/image"
+            android:text="最終読み取り：2021/12/10 12:56"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="194dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/image"
+            android:text="Ayuca"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@+id/image"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="-13dp"
+            android:contentDescription="Line"
+            android:src="@drawable/shape_history_wrapper" />
+
+    </RelativeLayout>
+</layout>

@@ -66,127 +66,127 @@
 
             <include
                 android:id="@+id/history_1"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone"
                 />
 
 
             <include
                 android:id="@+id/history_2"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone"
                 />
 
 
             <include
                 android:id="@+id/history_3"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone"
                 />
 
 
             <include
                 android:id="@+id/history_4"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone"
                 />
 
 
             <include
                 android:id="@+id/history_5"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone"
                 />
 
 
             <include
                 android:id="@+id/history_6"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone"
                 />
 
 
             <include
                 android:id="@+id/history_7"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_8"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_9"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_10"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_11"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_12"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_13"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_14"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_15"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_16"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_17"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_18"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_19"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
 
             <include
                 android:id="@+id/history_20"
-                layout="@layout/history"
+                layout="@layout/fragment_history"
                 android:visibility="gone" />
 
         </LinearLayout>

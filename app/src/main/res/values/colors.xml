@@ -19,5 +19,17 @@
     <color name="orange">#FFFF9900</color>
     <color name="brown">#FFCC9900</color>
     <color name="cream">#FFFFFFCC</color>
+    <color name="light_gray">#f5f5f5</color>
 
+    <color name="primaryColor">#81d4fa</color>
+    <color name="primaryLightColor">#b6ffff</color>
+    <color name="primaryDarkColor">#4ba3c7</color>
+    <color name="secondaryColor">#ffd54f</color>
+    <color name="secondaryLightColor">#ffff81</color>
+    <color name="secondaryDarkColor">#c8a415</color>
+    <color name="primaryTextColor">#000000</color>
+    <color name="secondaryTextColor">#000000</color>
+
+    <color name="ayuca">#ccf7ff</color>
+    <color name="ayuca_light">#f2fdff</color>
     </resources>
