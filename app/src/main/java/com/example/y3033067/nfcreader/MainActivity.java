@@ -17,6 +17,7 @@ import android.nfc.tech.NfcF;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         // NfcAdapterを取得
         mAdapter = NfcAdapter.getDefaultAdapter(getApplicationContext());
-        Log.d("TAG", "RUN");
+
 
     }
 
@@ -134,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
                 //カードからデータを読み取り
                 ayuca.readAllData();
                 ch = ayuca.getHistories();
+                View mycard = findViewById(R.id.mycard_ayuca);
+                ayuca.setCardSummary(mycard);
 
                 cardBalance.setText(String.format("残高￥%d",ayuca.getSFBalance()));
                 Log.d("TAG","残高：￥"+(ayuca.getSFBalance()));
@@ -204,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
 //        image.setImageDrawable(ringWaiting);
 
 //        タブ切り替え
+
         Objects.requireNonNull(tabLayout.getTabAt(1)).select();
     }
 
@@ -242,6 +246,8 @@ public class MainActivity extends AppCompatActivity {
         historyView[18] = findViewById(R.id.history_19);
         historyView[19] = findViewById(R.id.history_20);
 
+
+
         for(int i=0;i<historyView.length;i++){
             name_start = historyView[i].findViewById(R.id.name_start);
             name_end = historyView[i].findViewById(R.id.name_end);
@@ -254,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
             historyUI[i] = new HistoryUI(name_start,name_end,price,date,point,bonusPoint,usedPoint,
                     line,historyView[i],context);
         }
+
         return historyUI;
     }
 }
