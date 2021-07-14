@@ -1,20 +1,26 @@
 package com.example.y3033067.nfcreader;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.AssetManager;
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -323,6 +329,28 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
             return String.format("%04X",code);
         }
         return ayucaCode.getStation(code);
+    }
+
+    @SuppressLint("DefaultLocale")
+    public void setCardSummary(View summary){
+        if(summary!=null) {
+            TextView type = summary.findViewById(R.id.type);
+            TextView balance = summary.findViewById(R.id.card_balance);
+            TextView lastRead = summary.findViewById(R.id.last_read);
+            ImageView image = summary.findViewById(R.id.image);
+            type.setText("Ayuca");
+            balance.setText(String.format("残高：￥%,d円 / %fP", getSFBalance(), getPointBalance() / 10.0));
+
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY年M月d日 H:mm");
+            String dateText = dateFormat.format(new Date());
+            lastRead.setText(dateText);
+
+            image.setImageResource(R.drawable.shape_ayuca);
+            summary.setVisibility(View.VISIBLE);
+            Log.d("AA", (String) balance.getText());
+            Log.d("AA", String.valueOf(summary.getVisibility()));
+        }
     }
 
 
