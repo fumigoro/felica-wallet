@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 View mycard = findViewById(R.id.mycard_ayuca);
                 ayuca.setCardSummary(mycard);
 
-                cardBalance.setText(String.format("残高￥%d",ayuca.getSFBalance()));
+                cardBalance.setText(String.format("￥%,d",ayuca.getSFBalance()));
                 Log.d("TAG","残高：￥"+(ayuca.getSFBalance()));
                 break;
             case 2:
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 campusPay.readAllData();
                 ch = campusPay.getHistories();
 
-                cardBalance.setText(String.format("残高￥%d",campusPay.getSFBalance()));
+                cardBalance.setText(String.format("￥%,d",campusPay.getSFBalance()));
                 Log.d("TAG","残高：￥"+(campusPay.getSFBalance()));
                 break;
             case 3:
@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 idCard.readAllData();
 
                 displayText = idCard.getStudentID();
+                cardBalance.setText(idCard.getStudentID());
                 break;
         }
 
@@ -197,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
                 historyView[i].setVisibility(View.VISIBLE);
 
             }else{
-                historyUI[i].setVisible(false);
                 historyView[i].setVisibility(View.GONE);
             }
         }
