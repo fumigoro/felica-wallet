@@ -17,7 +17,6 @@ import android.nfc.tech.NfcF;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -260,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
             historyUI[i] = new HistoryUI(name_start,name_end,price,date,point,bonusPoint,usedPoint,
                     line,historyView[i],context);
         }
+
 
         return historyUI;
     }

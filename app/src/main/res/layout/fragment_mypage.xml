@@ -20,7 +20,7 @@
                 layout="@layout/fragment_card_summary"
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 />
             <include
                 android:id="@+id/mycard_campuspay"
