@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -47,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //履歴表示UIを入れる配列
-        historyUI = new HistoryUI[20];
 
         setContentView(R.layout.activity_nfcreader);
         // xmlからTabLayoutの取得
@@ -102,10 +99,7 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d("TAG","Load");
-        ImageView image = findViewById(R.id.reader_ring);
-//        Drawable ringLoading = getResources().getDrawable(R.drawable.shape_ring_loading);
-//        image.setImageDrawable(ringLoading);
+
         // IntentにTagの基本データが入ってくるので取得
         super.onNewIntent(intent);
 
@@ -113,102 +107,82 @@ public class MainActivity extends AppCompatActivity {
         if (tag == null) {
             return;
         }
-        //参考にしたコードから追加した部分はここから
+
         NFCReader card = new NFCReader(tag);
+        //カードの種類を判別
         int type = card.getCardType();
-        Log.d("TAG", "Type:"+type);
-        ArrayList<CardHistory> ch = new ArrayList<>();
-        String displayText = "";
-        cardID = findViewById(R.id.card_id);
 
-        cardName = findViewById(R.id.card_name);
-        cardBalance = findViewById(R.id.card_balance);
-        cardName.setText("非対応カード");
-        cardBalance.setText("");
-        cardID.setText(String.format("Felica IDm：%s",card.getIDm(" ")));
-
-        //履歴表示のUI部品を一括で取得
-        historyUI =  getHistoryUI();
+        ArrayList<CardHistory> histories = new ArrayList<>();
+        final String cardIDText = String.format("Felica IDm：%s",card.getIDm(" "));
+        String cardBalanceText = "";
+        String cardNameText = "非対応カード";
 
         switch(type){
             case 1:
                 //Ayuca
-                Log.d("TAG", "Ayuca");
-                cardName.setText("Ayuca");
                 ayuca = new Ayuca(tag);
+                //バス停コード一覧ファイルを読み込み
                 ayuca.loadAssetFile((Activity)findViewById(R.id.fragment_show).getContext());
                 //カードからデータを読み取り
                 ayuca.readAllData();
-                ch = ayuca.getHistories();
-                View mycard = findViewById(R.id.mycard_ayuca);
-                ayuca.setCardSummary(mycard);
+                //カードの履歴を取得
+                histories = ayuca.getHistories();
 
-                cardBalance.setText(String.format("￥%,d",ayuca.getSFBalance()));
-                Log.d("TAG","残高：￥"+(ayuca.getSFBalance()));
+                //画面表示テキスト
+                cardNameText = "Ayuca";
+                cardBalanceText = String.format("￥%,d",ayuca.getSFBalance());
+
+                View myCard = findViewById(R.id.mycard_ayuca);
+                ayuca.setCardSummary(myCard);
+
+                CardData cd = ayuca.getNewCardData();
+                Storage st = new Storage();
+                st.addCard(cd);
+                Gson gson = new Gson();
+                String json = gson.toJson(st);
+
+                Log.d("TAG",json.replace("},","},\n"));
                 break;
             case 2:
                 //CampusPay
-                Log.d("TAG", "CampusPay");
-                cardName.setText("生協電子マネー");
-
                 campusPay = new CampusPay(tag);
                 //カードからデータを読み取り
                 campusPay.readAllData();
-                ch = campusPay.getHistories();
+                histories = campusPay.getHistories();
 
-                cardBalance.setText(String.format("￥%,d",campusPay.getSFBalance()));
-                Log.d("TAG","残高：￥"+(campusPay.getSFBalance()));
+                cardNameText = "生協電子マネー";
+                cardBalanceText = String.format("￥%,d",campusPay.getSFBalance());
                 break;
             case 3:
                 //学生証
-                cardName.setText("岐阜大学学生証");
-                Log.d("TAG", "学生証");
                 idCard = new StudentIDCard(tag);
                 //カードからデータを読み取り
                 idCard.readAllData();
 
-                displayText = idCard.getStudentID();
-                cardBalance.setText(idCard.getStudentID());
+                cardNameText = "岐阜大学学生証";
+                cardBalanceText = idCard.getStudentID();
+
                 break;
         }
 
+        cardID = findViewById(R.id.card_id);
+        cardName = findViewById(R.id.card_name);
+        cardBalance = findViewById(R.id.card_balance);
+        cardName.setText(cardNameText);
+        cardBalance.setText(cardBalanceText);
+        cardID.setText(cardIDText);
 
-        //ここまで
-        //============================================================
-        for(int i=0;i<ch.size();i++){
-            displayText += ("＝＝＝＝＝＝＝＝＝＝"+"\n");
-            displayText += ((i+1)+"件目"+ch.get(i).getDate()+"\n");
-            displayText += (""+ch.get(i).getDevice()+ch.get(i).getType()+"\n");
-            displayText += ("金額￥"+ch.get(i).getPrice()+"\n");
-            displayText += ("残高￥"+ch.get(i).getBalance()+"\n");
-            if(type==1 && ch.get(i).getTypeFlag()==0x03){
-                displayText += ("乗車区間："+ch.get(i).getStart()+" → "+ch.get(i).getEnd()+"\n");
-
-            }
-            if(ch.get(i).getPointFlag()){
-                displayText += ("通常ポイント付与："+(double)ch.get(i).getGrantedNormalPoint()/10+"\n");
-                if(ch.get(i).getGrantedBonusPoint()>0){
-                    displayText += ("ボーナスポイント付与："+(double)ch.get(i).getGrantedBonusPoint()/10+"\n");
-                }
-                if(ch.get(i).getUsedPoint()>0){
-                    displayText += ("ポイント利用："+(double)ch.get(i).getUsedPoint()/10+"\n");
-                }
-                displayText += ("ポイント残高："+(double)ch.get(i).getPointBalance()/10+"\n");
-            }
-
-        }
+        //履歴表示のUI部品を一括で取得
+        historyUI =  getHistoryUI();
         for(int i=0;i<historyUI.length;i++){
-            if(i<ch.size()){
-                historyUI[i].setText(ch.get(i),type);
+            if(i<histories.size()){
+                historyUI[i].setText(histories.get(i),type);
                 historyView[i].setVisibility(View.VISIBLE);
             }else{
                 historyView[i].setVisibility(View.GONE);
             }
         }
-        CardData st = new CardData("1","1","1","1","1","1",ch);
-        Gson gson = new Gson();
-        String json = gson.toJson(st);
-        Log.d("TAG",json);
+
 
 //        タブ切り替え
 //        Objects.requireNonNull(tabLayout.getTabAt(1)).select();

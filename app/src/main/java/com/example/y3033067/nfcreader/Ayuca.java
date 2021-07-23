@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.y3033067.nfcreader.storage.CardData;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -349,6 +350,16 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
             Log.d("AA", (String) balance.getText());
             Log.d("AA", String.valueOf(summary.getVisibility()));
         }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public CardData getNewCardData(){
+        CardData cd = new CardData("Ayuca","","1",String.valueOf(getSFBalance()),
+                String.valueOf(getPointBalance()),getIDm(""),getHistories());
+        return cd;
+    }
+
+    public void updateCardData(CardData cd){
+
     }
 
 
