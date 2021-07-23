@@ -10,7 +10,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
@@ -49,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_nfcreader);
         // xmlからTabLayoutの取得
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout =  findViewById(R.id.tab_layout);
         // xmlからViewPagerを取得
-        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        ViewPager viewPager = findViewById(R.id.pager);
 
         // 表示Pageに必要な項目を設定
         TabAdapter adapter = new TabAdapter(getSupportFragmentManager());
@@ -63,9 +62,8 @@ public class MainActivity extends AppCompatActivity {
         pendingIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
+
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-
-
         try {
             ndef.addDataType("text/plain");
         } catch (IntentFilter.MalformedMimeTypeException e) {
@@ -98,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         Log.d("TAG","Load");
         ImageView image = findViewById(R.id.reader_ring);
-        Drawable ringLoading = getResources().getDrawable(R.drawable.shape_ring_loading);
-        image.setImageDrawable(ringLoading);
+//        Drawable ringLoading = getResources().getDrawable(R.drawable.shape_ring_loading);
+//        image.setImageDrawable(ringLoading);
         // IntentにTagの基本データが入ってくるので取得
         super.onNewIntent(intent);
 
@@ -130,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("TAG", "Ayuca");
                 cardName.setText("Ayuca");
                 ayuca = new Ayuca(tag);
-                ayuca.loadAssetFile((Activity)findViewById(R.id.fragment_read).getContext());
+                ayuca.loadAssetFile((Activity)findViewById(R.id.fragment_show).getContext());
                 //カードからデータを読み取り
                 ayuca.readAllData();
                 ch = ayuca.getHistories();
@@ -195,19 +193,14 @@ public class MainActivity extends AppCompatActivity {
             if(i<ch.size()){
                 historyUI[i].setText(ch.get(i),type);
                 historyView[i].setVisibility(View.VISIBLE);
-
             }else{
                 historyView[i].setVisibility(View.GONE);
             }
         }
 
 
-        Drawable ringWaiting = getResources().getDrawable(R.drawable.shape_ring_waiting);
-//        image.setImageDrawable(ringWaiting);
-
 //        タブ切り替え
-
-        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
+//        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
     }
 
     @Override
@@ -259,8 +252,6 @@ public class MainActivity extends AppCompatActivity {
             historyUI[i] = new HistoryUI(name_start,name_end,price,date,point,bonusPoint,usedPoint,
                     line,historyView[i],context);
         }
-
-
         return historyUI;
     }
 }

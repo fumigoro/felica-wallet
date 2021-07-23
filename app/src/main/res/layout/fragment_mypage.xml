@@ -2,33 +2,34 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_myPage"
+    android:id="@+id/fragment_mypage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <include
                 android:id="@+id/mycard_ayuca"
                 layout="@layout/fragment_card_summary"
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
-                android:visibility="visible"
-                />
+                android:visibility="visible" />
+
             <include
                 android:id="@+id/mycard_campuspay"
                 layout="@layout/fragment_card_summary"
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
-                android:visibility="gone"/>
-
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>

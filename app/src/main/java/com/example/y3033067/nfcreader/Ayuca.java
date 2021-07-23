@@ -15,8 +15,6 @@ import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 
-import org.w3c.dom.Text;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -334,17 +332,17 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
     @SuppressLint("DefaultLocale")
     public void setCardSummary(View summary){
         if(summary!=null) {
-            TextView type = summary.findViewById(R.id.type);
-            TextView balance = summary.findViewById(R.id.card_balance);
+            TextView type = summary.findViewById(R.id.card_sum_type);
+            TextView balance = summary.findViewById(R.id.card_sum_balance);
             TextView lastRead = summary.findViewById(R.id.last_read);
-            ImageView image = summary.findViewById(R.id.image);
+            ImageView image = summary.findViewById(R.id.card_sum_image);
             type.setText("Ayuca");
-            balance.setText(String.format("残高：￥%,d円 / %fP", getSFBalance(), getPointBalance() / 10.0));
+            balance.setText(String.format("残高 ￥%,d円 / %.1fP", getSFBalance(), getPointBalance() / 10.0));
 
             @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY年M月d日 H:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/M/d H:mm");
             String dateText = dateFormat.format(new Date());
-            lastRead.setText(dateText);
+            lastRead.setText(String.format("最終読み取り %s",dateText));
 
             image.setImageResource(R.drawable.shape_ayuca);
             summary.setVisibility(View.VISIBLE);
