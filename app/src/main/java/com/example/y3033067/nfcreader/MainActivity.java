@@ -20,8 +20,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.y3033067.nfcreader.storage.CardData;
+import com.example.y3033067.nfcreader.storage.Storage;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -79,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
         // NfcAdapterを取得
         mAdapter = NfcAdapter.getDefaultAdapter(getApplicationContext());
 
+        //外部ファイル
+        String fileName = "data.json";
+        Context context = getApplicationContext();
+        File file = new File(context.getFilesDir(), fileName);
 
     }
 
@@ -197,7 +205,10 @@ public class MainActivity extends AppCompatActivity {
                 historyView[i].setVisibility(View.GONE);
             }
         }
-
+        CardData st = new CardData("1","1","1","1","1","1",ch);
+        Gson gson = new Gson();
+        String json = gson.toJson(st);
+        Log.d("TAG",json);
 
 //        タブ切り替え
 //        Objects.requireNonNull(tabLayout.getTabAt(1)).select();

@@ -337,7 +337,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
             TextView lastRead = summary.findViewById(R.id.last_read);
             ImageView image = summary.findViewById(R.id.card_sum_image);
             type.setText("Ayuca");
-            balance.setText(String.format("残高 ￥%,d円 / %.1fP", getSFBalance(), getPointBalance() / 10.0));
+            balance.setText(String.format("残高 ￥%,d / %.1fP", getSFBalance(), getPointBalance() / 10.0));
 
             @SuppressLint("SimpleDateFormat")
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/M/d H:mm");
