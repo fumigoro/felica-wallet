@@ -56,7 +56,7 @@ public class CardData {
 
     public int getMonthlyUsage(int year,int month){
         int monthlyUsage = 0;
-        //今月の取引分の履歴を抽出
+
         ArrayList<CardHistory> thisMonthHistory = getMonthlyHistory(year,month);
         for (CardHistory history : thisMonthHistory){
             monthlyUsage += history.getSfUsedPrice();
@@ -64,6 +64,7 @@ public class CardData {
         return monthlyUsage;
     }
 
+    //今月の取引分の履歴を抽出
     public ArrayList<CardHistory> getMonthlyHistory(int year,int month){
         Date monthStart = new Date(year-1900,month-1,1);
         Date monthEnd = new Date(year-1900,month,1);
@@ -101,6 +102,9 @@ public class CardData {
     public void setMyPageInfo(View myCard, View myCardMonthly){
         myCard.setVisibility(View.VISIBLE);
         myCardMonthly.setVisibility(View.VISIBLE);
+
+        TextView sumCardName = myCard.findViewById(R.id.sum_card_name);
+        sumCardName.setText(card_name);
 
         TextView balanceText = myCard.findViewById(R.id.card_sum_balance);
         balanceText.setText(String.format("残高 ￥%,d / %.1fP",balance,point/10.0));

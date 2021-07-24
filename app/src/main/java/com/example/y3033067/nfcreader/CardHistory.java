@@ -35,6 +35,7 @@ public class CardHistory {
         device = _device;
         start = "";
         end = "";
+        sfUsedPrice = price;
         pointFlag = false;
     }
 

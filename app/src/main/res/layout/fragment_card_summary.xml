@@ -26,7 +26,7 @@
         android:id="@+id/card_sum_balance"
         android:layout_width="237dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/card_sum_type"
+        android:layout_below="@+id/sum_card_name"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/card_sum_image"
@@ -45,7 +45,7 @@
         android:textSize="14sp" />
 
     <TextView
-        android:id="@+id/card_sum_type"
+        android:id="@+id/sum_card_name"
         android:layout_width="194dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/line"
