@@ -338,31 +338,10 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
         return ayucaCode.getStation(code);
     }
 
-    @SuppressLint("DefaultLocale")
-    public void setCardSummary(View summary){
-        if(summary!=null) {
-            TextView type = summary.findViewById(R.id.card_sum_type);
-            TextView balance = summary.findViewById(R.id.card_sum_balance);
-            TextView lastRead = summary.findViewById(R.id.last_read);
-            ImageView image = summary.findViewById(R.id.card_sum_image);
-            type.setText("Ayuca");
-            balance.setText(String.format("残高 ￥%,d / %.1fP", getSFBalance(), getPointBalance() / 10.0));
-
-            @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/M/d H:mm");
-            String dateText = dateFormat.format(new Date());
-            lastRead.setText(String.format("最終読み取り %s",dateText));
-
-            image.setImageResource(R.drawable.shape_ayuca);
-            summary.setVisibility(View.VISIBLE);
-            Log.d("AA", (String) balance.getText());
-            Log.d("AA", String.valueOf(summary.getVisibility()));
-        }
-    }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public CardData getNewCardData(){
-        CardData cd = new CardData("Ayuca","","1",String.valueOf(getSFBalance()),
-                String.valueOf(getPointBalance()),getIDm(""),getHistories());
+        CardData cd = new CardData("Ayuca","","1",getSFBalance(),
+                getPointBalance(),getIDm(""),getHistories());
         return cd;
     }
 

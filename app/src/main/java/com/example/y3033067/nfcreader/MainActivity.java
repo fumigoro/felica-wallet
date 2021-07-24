@@ -132,10 +132,14 @@ public class MainActivity extends AppCompatActivity {
                 cardNameText = "Ayuca";
                 cardBalanceText = String.format("￥%,d",ayuca.getSFBalance());
 
-                View myCard = findViewById(R.id.mycard_ayuca);
-                ayuca.setCardSummary(myCard);
+                View myCard = findViewById(R.id.myCard_1);
+                View muCardMonthly = findViewById(R.id.myCard_monthly_1);
 
+                findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
+                findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
                 CardData cd = ayuca.getNewCardData();
+                cd.setMyPageInfo(myCard,muCardMonthly);
+
                 Log.d("TAG",cd.getMonthlyUsage(2021,7)+"利用");
                 Storage st = new Storage();
                 st.addCard(cd);

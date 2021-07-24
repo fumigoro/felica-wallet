@@ -12,19 +12,19 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="Ayuca"
+        android:text="Ayuca1"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/m_View_IDm"
+        android:id="@+id/mView_payCount"
         android:layout_width="wrap_content"
         android:layout_height="19dp"
         android:textColor="@color/black"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="4dp"
         android:gravity="center"
         android:text="100回の支払い"
         android:textSize="14dp"
@@ -33,11 +33,11 @@
 
     <TextView
         android:id="@+id/mView_price"
-        android:layout_width="wrap_content"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
-        android:gravity="center"
+        android:gravity="end"
         android:text="￥54,345"
 
         android:textColor="@color/black"
