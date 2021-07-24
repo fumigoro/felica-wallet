@@ -25,7 +25,11 @@ import com.example.y3033067.nfcreader.storage.Storage;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -43,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     HistoryUI[] historyUI;
     View[] historyView;
 
+    Storage userDataStorage;
+    File userDataFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,10 +86,15 @@ public class MainActivity extends AppCompatActivity {
         // NfcAdapterを取得
         mAdapter = NfcAdapter.getDefaultAdapter(getApplicationContext());
 
-        //外部ファイル
+        //保存済みデータを読み込み
         String fileName = "data.json";
         Context context = getApplicationContext();
-        File file = new File(context.getFilesDir(), fileName);
+
+        userDataFile = new File(context.getFilesDir(), fileName);
+        userDataStorage =  roadUserDataFile();
+        if(userDataStorage==null){
+            userDataStorage = new Storage();
+        }
 
     }
 
@@ -112,14 +123,26 @@ public class MainActivity extends AppCompatActivity {
         //カードの種類を判別
         int type = card.getCardType();
 
+
+        //userData.search(card.getIDm(""));
+        //既知のカードか否か、保存するか否かのフラグを設定
+        //更新or新規保存orなにもしないの3択
+
+        int cardDataFlag = 0;
+        CardData newCardData = userDataStorage.getCardData(card.getIDm(""));
+        if(newCardData!=null){
+            cardDataFlag = 1; //更新
+        }else if(true){//確認
+                cardDataFlag = 2; //新規保存
+        }
+        Log.d("flag",cardDataFlag+"");
+
         ArrayList<CardHistory> histories = new ArrayList<>();
+
         final String cardIDText = String.format("Felica IDm：%s",card.getIDm(" "));
         String cardBalanceText = "";
         String cardNameText = "非対応カード";
 
-        View myCard = findViewById(R.id.myCard_1);
-        View muCardMonthly = findViewById(R.id.myCard_monthly_1);
-        CardData cd;
         switch(type){
             case 1:
                 //Ayuca
@@ -135,20 +158,19 @@ public class MainActivity extends AppCompatActivity {
                 cardNameText = "Ayuca";
                 cardBalanceText = String.format("￥%,d",ayuca.getSFBalance());
 
-
-                findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
-                findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
-                cd = ayuca.getNewCardData();
-                cd.setMyPageInfo(myCard,muCardMonthly);
-
-                Log.d("TAG",cd.getMonthlyUsage(2021,7)+"利用");
-                Storage st = new Storage();
-                st.addCard(cd);
-                Gson gson = new Gson();
-                String json = gson.toJson(st);
-
-                Log.d("TAG",json.replace("},","},\n"));
+                switch (cardDataFlag){
+                    case 1:
+                        //更新
+                        ayuca.updateCardData(newCardData);
+                        break;
+                    case 2:
+                        //新規保存
+                        newCardData = ayuca.getNewCardData();
+                        userDataStorage.addCard(newCardData);
+                        break;
+                }
                 break;
+
             case 2:
                 //CampusPay
                 campusPay = new CampusPay(tag);
@@ -159,11 +181,18 @@ public class MainActivity extends AppCompatActivity {
                 cardNameText = "生協電子マネー";
                 cardBalanceText = String.format("￥%,d",campusPay.getSFBalance());
 
+                switch (cardDataFlag){
+                    case 1:
+                        //更新
+                        campusPay.updateCardData(newCardData);
+                        break;
+                    case 2:
+                        //新規保存
+                        newCardData = campusPay.getNewCardData();
+                        userDataStorage.addCard(newCardData);
+                        break;
+                }
 
-                findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
-                findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
-                cd = campusPay.getNewCardData();
-                cd.setMyPageInfo(myCard,muCardMonthly);
                 break;
             case 3:
                 //学生証
@@ -177,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
+        //読み取り表示部へ表示
         cardID = findViewById(R.id.card_id);
         cardName = findViewById(R.id.card_name);
         cardBalance = findViewById(R.id.card_balance);
@@ -184,8 +214,8 @@ public class MainActivity extends AppCompatActivity {
         cardBalance.setText(cardBalanceText);
         cardID.setText(cardIDText);
 
-        //履歴表示のUI部品を一括で取得
-        historyUI =  getHistoryUI();
+        //読み取り表示の履歴部分を表示
+        historyUI =  getHistoryUI();//履歴表示のUI部品を一括で取得
         for(int i=0;i<historyUI.length;i++){
             if(i<histories.size()){
                 historyUI[i].setText(histories.get(i),type);
@@ -194,8 +224,17 @@ public class MainActivity extends AppCompatActivity {
                 historyView[i].setVisibility(View.GONE);
             }
         }
+        userDataStorage.printList();
+//        userDataStorage.reset();
+        if(newCardData!=null){
+            findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
+            findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
+            View myCard = findViewById(R.id.myCard_1);
+            View muCardMonthly = findViewById(R.id.myCard_monthly_1);
+            newCardData.setMyPageInfo(myCard,muCardMonthly);
+        }
 
-
+        saveUserDataFile();
 //        タブ切り替え
 //        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
     }
@@ -235,8 +274,6 @@ public class MainActivity extends AppCompatActivity {
         historyView[18] = findViewById(R.id.history_19);
         historyView[19] = findViewById(R.id.history_20);
 
-
-
         for(int i=0;i<historyView.length;i++){
             name_start = historyView[i].findViewById(R.id.name_start);
             name_end = historyView[i].findViewById(R.id.name_end);
@@ -250,5 +287,40 @@ public class MainActivity extends AppCompatActivity {
                     line,historyView[i],context);
         }
         return historyUI;
+    }
+
+    private Storage roadUserDataFile() {
+        Storage userData;
+        Gson gson = new Gson();
+
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(userDataFile));
+            StringBuilder json = new StringBuilder();
+            String jsonTmp;
+            while ((jsonTmp = bufferedReader.readLine()) != null) {
+                json.append(jsonTmp);
+            }
+            userData = gson.fromJson(json.toString(), Storage.class);
+            return userData;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+    // ファイルを保存
+    private void saveUserDataFile(){
+        Gson gson = new Gson();
+        String jsonData = gson.toJson(userDataStorage);
+            //既存内容を上書き
+            try (FileWriter writer = new FileWriter(userDataFile,false)) {
+                writer.write(jsonData);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+
     }
 }

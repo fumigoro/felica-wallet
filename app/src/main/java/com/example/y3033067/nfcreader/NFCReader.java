@@ -11,7 +11,8 @@ import java.util.Arrays;
 public class NFCReader  {
 
     private NfcF nfc;
-    byte[] targetIDm;
+    private byte[] targetIDm;
+    private byte[] primarySystemIDm;
 
     public NFCReader(Tag tag) {
         this.nfc = NfcF.get(tag);
@@ -34,7 +35,6 @@ public class NFCReader  {
         byte[] command = generatePollingCommand(systemCode);
         //ビット列を送信（コマンド実行）
         byte[] res = nfc.transceive(command);
-//        Log.d("general", hex2string(res,":"));
         targetIDm = Arrays.copyOfRange(res, 2, 10);
         //応答内容を返却
         return targetIDm;
@@ -43,7 +43,7 @@ public class NFCReader  {
 
     /**
      * 読み込みたい場所を指定しデータを取得
-     * @param targetIDm         IDｍ
+     * @param _targetIDm         IDｍ
      * @param targetServiceCode 読み込みたい場所のサービスコード
      * @param startBlock        読み込みたいブロックの開始位置
      * @param endBlock          終了位置
@@ -51,8 +51,8 @@ public class NFCReader  {
      * @throws Exception ReadWithoutEncryptionクラスのhandleStatusFlag()から発生。
      *                   応答内容を元にエラーの解析を行う
      */
-    public void getBlockData(byte[] targetIDm, int targetServiceCode, int startBlock, int endBlock, ArrayList<Byte[]> blockData) throws Exception {
-        ReadWithoutEncryption rwe = new ReadWithoutEncryption(targetIDm, targetServiceCode, startBlock, endBlock);
+    public void getBlockData(byte[] _targetIDm, int targetServiceCode, int startBlock, int endBlock, ArrayList<Byte[]> blockData) throws Exception {
+        ReadWithoutEncryption rwe = new ReadWithoutEncryption(_targetIDm, targetServiceCode, startBlock, endBlock);
         // コマンドを送信して結果を取得
         byte[] res = nfc.transceive(rwe.generateCommandPacket());
         //応答のエラーハンドリング
@@ -123,14 +123,14 @@ public class NFCReader  {
 
             //PollingコマンドでIDｍを取得
             //最初はどのカードかわからないのでSystemCodeはワイルドカード指定
-            targetIDm = readIDm(0xffff);
-
+            byte[] IDm = readIDm(0xffff);
+            primarySystemIDm = IDm;
             //通信終了
             nfc.close();
 
             StringBuilder IDmString = new StringBuilder();
-            IDmString.append(String.format("%02X", targetIDm[0]));
-            IDmString.append(String.format("%02X", targetIDm[1]));
+            IDmString.append(String.format("%02X", IDm[0]));
+            IDmString.append(String.format("%02X", IDm[1]));
 
             switch (String.valueOf(IDmString)){
                 case "0112":
@@ -158,7 +158,7 @@ public class NFCReader  {
     }
 
     public String getIDm(String split) {
-        return hex2string(targetIDm,split);
+        return hex2string(primarySystemIDm,split);
     }
 
 

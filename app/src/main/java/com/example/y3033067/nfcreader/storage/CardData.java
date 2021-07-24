@@ -33,6 +33,7 @@ public class CardData {
         balance = _balance;
         point = _point;
         IDm = _IDm;
+
         last_modified = getFormatDate(new Date());
         histories = (ArrayList<CardHistory>)_histories.clone();
     }
@@ -121,6 +122,10 @@ public class CardData {
         TextView mViewCardCount = myCardMonthly.findViewById(R.id.mView_payCount);
         mViewCardCount.setText(String.format("%d回の支払い",getMonthlyPayCount()));
 
+    }
+
+    public String getIDm(){
+        return IDm;
     }
 
 }

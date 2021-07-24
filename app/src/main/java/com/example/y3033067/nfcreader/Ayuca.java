@@ -67,12 +67,6 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
 
             //通信終了
             nfc.close();
-//            //        取得したデータをログに表示
-//            Log.d("TAG", "利用履歴");
-//            for(int i = 0; i< historyData.size(); i++){
-//                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(historyData.get(i),":"));
-//            }
-//            Log.d("TAG", "================");
 
             return historyData;
         } catch (Exception e) {
@@ -101,10 +95,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
 
             //通信終了
             nfc.close();
-//            Log.d("TAG", "残高情報");
-//            for(int i = 0; i< balance.size(); i++){
-//                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(balance.get(i),":"));
-//            }
+
             return balance;
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,10 +123,6 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
             //通信終了
             nfc.close();
 
-//            Log.d("TAG", "カード情報");
-//            for(int i = 0; i< cardInfo.size(); i++){
-//                Log.d("TAG", String.format("<%02X> ",i)+super.hex2string(cardInfo.get(i),":"));
-//            }
             return cardInfo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -310,6 +297,8 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
         balance = readBalance();
         historyData = readHistory();
         cardInfo = readCardInfo();
+        //複数のシステムがあり、プライマリのほうのIDｍを再度取得するために実行
+        getCardType();
     }
 
     public void loadAssetFile(Activity _activity){

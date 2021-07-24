@@ -20,6 +20,7 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
     private final NfcF nfc;
     ArrayList<Byte[]> historyData, cardInfo, balance;
     ArrayList<CardHistory> histories;
+    private String IDm;
 
     public CampusPay(Tag tag) {
         super(tag);
@@ -159,17 +160,6 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
             price = Integer.parseInt(stringB.substring(16, 22), 10);
             balance = Integer.parseInt(stringB.substring(22, 28), 10);
 
-            Log.d("TAG",
-                    year + "/" +
-                            month + "/" +
-                            day + " " +
-                            hour + ":" +
-                            minute + ":" +
-                            second + " " +
-                            type + " " +
-                            price + " " +
-                            balance + " "
-            );
             /*MEMO:
             Dateの月設定は1小さい値を入れる
             Dateの年は-1900下値を入れる
@@ -215,6 +205,8 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
         balance = readBalance();
         historyData = readHistories();
         cardInfo = readCardInfo();
+        //複数のシステムがあり、プライマリのほうのIDｍを再度取得するために実行
+        getCardType();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -226,5 +218,9 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
 
     public void updateCardData(CardData cd){
 
+    }
+
+    public String getIDm(){
+        return IDm;
     }
 }
