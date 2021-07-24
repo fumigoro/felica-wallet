@@ -136,9 +136,6 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
             hour = Integer.parseInt(stringB.substring(8, 10), 10);
             minute = Integer.parseInt(stringB.substring(10, 12), 10);
             second = Integer.parseInt(stringB.substring(12, 14), 10);
-            discount = "";
-            start = "";
-            end = "";
             device = "";
             typeFlag = Integer.parseInt(stringB.substring(14, 16), 10);
 
@@ -176,7 +173,7 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
             Dateの年は-1900下値を入れる
             * */
             history = new CardHistory(new Date(year-1900, month-1, day, hour, minute, second),
-                    price, 0,  balance, type, typeFlag, discount, device, start, end);
+                    price, balance, type, typeFlag,  device);
             histories.add(history);
         }
         return histories;

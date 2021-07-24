@@ -156,7 +156,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
         int year, month, day, hour, minute, price, balance,  pointFlag,   typeFlag, deviceFlag;
         int point,pointBalance;
         int grantedNormalPoint, grantedBonusPoint, usedPoint;
-
+        int sfUsedPrice = 0;
         String stringTmp;
         CardHistory history;
         histories = new ArrayList<>();
@@ -232,7 +232,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
                 //1件前の取引後残高を取得
                 int previousBalance = histories.get(historyData.size() - i - 2).getBalance();
                 //今回の決済でのSF残高利用金額を計算
-                int sfUsedPrice = previousBalance - balance;
+                sfUsedPrice = previousBalance - balance;
                 //今回増えたポイント
                 point = (pointBalance - previousPointBalance);
 
@@ -240,10 +240,18 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
                     grantedNormalPoint = (int) (sfUsedPrice * 10 * 0.02);
                     usedPoint = (price - sfUsedPrice)*10;
                     grantedBonusPoint = point - grantedNormalPoint + usedPoint;
+
                     //ポイント取り扱いフラグをあげる
                     history.setPointFlag(true);
                     history.setPointParams(grantedNormalPoint,grantedBonusPoint,usedPoint);
+                }else{
+                    sfUsedPrice = 0;
                 }
+            }else{
+                if(typeFlag == 0x03){
+                    sfUsedPrice += price;
+                }
+
             }
 
             /*MEMO:
@@ -251,7 +259,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
             Dateの年は-1900下値を入れる
             * */
             history.setAllParams(new Date(year + 2000 - 1900, month-1, day, hour, minute, 0),
-                    price, pointBalance, balance, type, typeFlag, discount, device, start, end);
+                    price, sfUsedPrice, pointBalance, balance, type, typeFlag, discount, device, start, end);
 
             histories.add(history);
         }

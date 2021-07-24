@@ -2,6 +2,7 @@ package com.example.y3033067.nfcreader.storage;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.util.Log;
 import android.widget.ScrollView;
 
 import com.example.y3033067.nfcreader.CardHistory;
@@ -49,6 +50,20 @@ public class CardData {
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/M/d H:mm");
         return dateFormat.format(date);
+    }
+
+    public int getMonthlyUsage(int year,int month){
+        Date monthStart = new Date(year-1900,month-1,1);
+        Date monthEnd = new Date(year-1900,month,1);
+        int monthlyUsage = 0;
+        for (CardHistory history : histories){
+            Log.d("TAG",history.getDate()+":"+monthStart+","+monthEnd);
+            if(history.getDate().after(monthStart) && history.getDate().before(monthEnd)){
+                Log.d("TAG",history.getSfUsedPrice()+"");
+                monthlyUsage += history.getSfUsedPrice();
+            }
+        }
+        return monthlyUsage;
     }
 
 

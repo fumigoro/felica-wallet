@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 ayuca.setCardSummary(myCard);
 
                 CardData cd = ayuca.getNewCardData();
+                Log.d("TAG",cd.getMonthlyUsage(2021,7)+"利用");
                 Storage st = new Storage();
                 st.addCard(cd);
                 Gson gson = new Gson();

@@ -18,29 +18,31 @@ public class CardHistory {
     private int grantedNormalPoint;//付与された通常ポイント
     private int grantedBonusPoint;//付与されたボーナスポイント
     private int usedPoint;//使用した（還元された）ポイント
+    private int sfUsedPrice;//現金チャージ分から支払った金額
 
     public CardHistory() {
         pointFlag = false;
     }
 
-    public CardHistory(Date _date, int _price,int _pointBalance, int _balance, String _type, int _typeFlag, String _discount, String _device, String _start, String _end) {
+    public CardHistory(Date _date, int _price,int _balance, String _type, int _typeFlag,  String _device) {
         date = _date;
         price = _price;
-        pointBalance = _pointBalance;
+        pointBalance = 0;
         balance = _balance;
         type = _type;
         typeFlag = _typeFlag;
-        discount = _discount;
+        discount = "";
         device = _device;
-        start = _start;
-        end = _end;
+        start = "";
+        end = "";
         pointFlag = false;
     }
 
 
-    public void setAllParams(Date _date, int _price, int _pointBalance, int _balance, String _type, int _typeFlag, String _discount, String _device, String _start, String _end) {
+    public void setAllParams(Date _date, int _price, int _sfUsedPrice, int _pointBalance, int _balance, String _type, int _typeFlag, String _discount, String _device, String _start, String _end) {
         date = _date;
         price = _price;
+        sfUsedPrice = _sfUsedPrice;
         pointBalance = _pointBalance;
         balance = _balance;
         type = _type;
@@ -148,6 +150,10 @@ public class CardHistory {
     }
     public int getUsedPoint(){
         return usedPoint;
+    }
+
+    public int getSfUsedPrice(){
+        return sfUsedPrice;
     }
 
 }
