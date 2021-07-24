@@ -117,6 +117,9 @@ public class MainActivity extends AppCompatActivity {
         String cardBalanceText = "";
         String cardNameText = "非対応カード";
 
+        View myCard = findViewById(R.id.myCard_1);
+        View muCardMonthly = findViewById(R.id.myCard_monthly_1);
+        CardData cd;
         switch(type){
             case 1:
                 //Ayuca
@@ -132,12 +135,10 @@ public class MainActivity extends AppCompatActivity {
                 cardNameText = "Ayuca";
                 cardBalanceText = String.format("￥%,d",ayuca.getSFBalance());
 
-                View myCard = findViewById(R.id.myCard_1);
-                View muCardMonthly = findViewById(R.id.myCard_monthly_1);
 
                 findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
                 findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
-                CardData cd = ayuca.getNewCardData();
+                cd = ayuca.getNewCardData();
                 cd.setMyPageInfo(myCard,muCardMonthly);
 
                 Log.d("TAG",cd.getMonthlyUsage(2021,7)+"利用");
@@ -157,6 +158,12 @@ public class MainActivity extends AppCompatActivity {
 
                 cardNameText = "生協電子マネー";
                 cardBalanceText = String.format("￥%,d",campusPay.getSFBalance());
+
+
+                findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
+                findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
+                cd = campusPay.getNewCardData();
+                cd.setMyPageInfo(myCard,muCardMonthly);
                 break;
             case 3:
                 //学生証

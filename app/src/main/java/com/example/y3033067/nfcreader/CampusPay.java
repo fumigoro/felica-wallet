@@ -7,6 +7,8 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.y3033067.nfcreader.storage.CardData;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -215,5 +217,14 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
         cardInfo = readCardInfo();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public CardData getNewCardData(){
+        CardData cd = new CardData("大学生協電子マネー","","2",getSFBalance(),
+                getPointBalance(),getIDm(""),getHistories());
+        return cd;
+    }
 
+    public void updateCardData(CardData cd){
+
+    }
 }
