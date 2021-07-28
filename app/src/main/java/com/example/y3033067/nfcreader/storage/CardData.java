@@ -41,12 +41,17 @@ public class CardData {
     public void update(int _balance,int _point,ArrayList<CardHistory> newHistories){
         balance = _balance;
         point = _point;
-        for(int i=0;i<newHistories.size();i++){
-            //保存済みの履歴より新しい物があれば追加
-            if(histories.get(0).getDate().after(newHistories.get(i).getDate())){
+        last_modified = getFormatDate(new Date());
+        CardHistory latest = histories.get(0);
+        for(int i=newHistories.size()-1;i>=0;i--){
+            //保存済みの履歴より新しい物があれば先頭へ追加
+            if(newHistories.get(i).getDate().after(latest.getDate())){
                 histories.add(0,newHistories.get(i));
             }
         }
+//        for(int i=0;i<histories.size();i++){
+//            Log.d("TAG",""+i+":"+getFormatDate(histories.get(i).getDate()) );
+//        }
     }
 
     private String getFormatDate(Date date){

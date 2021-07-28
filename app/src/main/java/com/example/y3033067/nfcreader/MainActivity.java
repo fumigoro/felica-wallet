@@ -169,6 +169,13 @@ public class MainActivity extends AppCompatActivity {
                         userDataStorage.addCard(newCardData);
                         break;
                 }
+                if(newCardData!=null){
+                    findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
+                    findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
+                    View myCard = findViewById(R.id.myCard_1);
+                    View muCardMonthly = findViewById(R.id.myCard_monthly_1);
+                    newCardData.setMyPageInfo(myCard,muCardMonthly);
+                }
                 break;
 
             case 2:
@@ -191,6 +198,13 @@ public class MainActivity extends AppCompatActivity {
                         newCardData = campusPay.getNewCardData();
                         userDataStorage.addCard(newCardData);
                         break;
+                }
+                if(newCardData!=null){
+                    findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
+                    findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
+                    View myCard = findViewById(R.id.myCard_2);
+                    View muCardMonthly = findViewById(R.id.myCard_monthly_2);
+                    newCardData.setMyPageInfo(myCard,muCardMonthly);
                 }
 
                 break;
@@ -226,13 +240,7 @@ public class MainActivity extends AppCompatActivity {
         }
         userDataStorage.printList();
 //        userDataStorage.reset();
-        if(newCardData!=null){
-            findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
-            findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
-            View myCard = findViewById(R.id.myCard_1);
-            View muCardMonthly = findViewById(R.id.myCard_monthly_1);
-            newCardData.setMyPageInfo(myCard,muCardMonthly);
-        }
+
 
         saveUserDataFile();
 //        タブ切り替え

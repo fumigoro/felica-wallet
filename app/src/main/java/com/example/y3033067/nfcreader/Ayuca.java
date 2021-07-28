@@ -334,8 +334,9 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
         return cd;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void updateCardData(CardData cd){
-
+        cd.update(getSFBalance(),getPointBalance(),getHistories());
     }
 
 
