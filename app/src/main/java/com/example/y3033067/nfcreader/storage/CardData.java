@@ -17,7 +17,7 @@ import java.util.List;
 
 public class CardData {
     private final String card_name;
-    private final String card_type;
+    private final int card_type;
     private int balance;
     private int point;
     private final String IDm;
@@ -25,7 +25,7 @@ public class CardData {
     private final ArrayList<CardHistory> histories;
     private final String card_nickname;
 
-    public CardData(String _card_name, String _card_nickname,String _card_type, int _balance, int _point,
+    public CardData(String _card_name, String _card_nickname,int _card_type, int _balance, int _point,
                     String _IDm, ArrayList<CardHistory> _histories){
         card_name = _card_name;
         card_nickname = _card_nickname;
@@ -131,6 +131,10 @@ public class CardData {
 
     public String getIDm(){
         return IDm;
+    }
+
+    public int getCardType(){
+        return card_type;
     }
 
 }

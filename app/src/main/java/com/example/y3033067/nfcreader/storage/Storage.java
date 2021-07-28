@@ -30,4 +30,18 @@ public class Storage {
     public void reset(){
         cards = new ArrayList<CardData>();
     }
+
+    public void delete(String IDm){
+        for (int i=0;i<cards.size();i++){
+            if(cards.get(i).getIDm().equals(IDm)){
+                cards.remove(i);
+                Log.d("TAG","Deleted:"+IDm);
+                break;
+            }
+        }
+    }
+
+    public ArrayList<CardData> getAllData(){
+        return cards;
+    }
 }

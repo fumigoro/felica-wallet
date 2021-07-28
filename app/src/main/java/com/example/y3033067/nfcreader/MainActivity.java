@@ -6,8 +6,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     TextView cardID,cardName,cardBalance;
     HistoryUI[] historyUI;
     View[] historyView;
+    String[] myPageIDmList;
 
     Storage userDataStorage;
     File userDataFile;
@@ -95,14 +99,21 @@ public class MainActivity extends AppCompatActivity {
         if(userDataStorage==null){
             userDataStorage = new Storage();
         }
+        myPageIDmList = new String[5];
+//        updateMyPage();
+
 
     }
+
+
 
     @Override
     protected void onResume() {
         super.onResume();
         // NFCの読み込みを有効化
         mAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
+//        setButtonListener();
+
     }
 
 
@@ -113,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
         // IntentにTagの基本データが入ってくるので取得
         super.onNewIntent(intent);
-
+        setButtonListener();
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         if (tag == null) {
             return;
@@ -175,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                     View myCard = findViewById(R.id.myCard_1);
                     View muCardMonthly = findViewById(R.id.myCard_monthly_1);
                     newCardData.setMyPageInfo(myCard,muCardMonthly);
+                    myPageIDmList[0] = ayuca.getIDm("");
                 }
                 break;
 
@@ -205,8 +217,8 @@ public class MainActivity extends AppCompatActivity {
                     View myCard = findViewById(R.id.myCard_2);
                     View muCardMonthly = findViewById(R.id.myCard_monthly_2);
                     newCardData.setMyPageInfo(myCard,muCardMonthly);
+                    myPageIDmList[1] = campusPay.getIDm("");
                 }
-
                 break;
             case 3:
                 //学生証
@@ -239,9 +251,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         userDataStorage.printList();
+        updateMyPage();
 //        userDataStorage.reset();
-
-
         saveUserDataFile();
 //        タブ切り替え
 //        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
@@ -251,7 +262,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mAdapter.disableForegroundDispatch(this);
+        saveUserDataFile();
     }
+
 
     private HistoryUI[] getHistoryUI(){
         Context context = getApplicationContext();
@@ -329,6 +342,197 @@ public class MainActivity extends AppCompatActivity {
             catch (IOException e) {
                 e.printStackTrace();
             }
+
+    }
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        setButtonListener();
+        updateMyPage();
+    }
+    Context a = this;
+    private  void setButtonListener(){
+        findViewById(R.id.myCard_1).findViewById(R.id.delete_button).setOnClickListener(
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(a);
+                    builder
+                            .setTitle("データを削除しますか？") // タイトル
+                            .setMessage("この操作は元に戻せません") // メッセージ
+                            .setNegativeButton("削除", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    userDataStorage.delete(myPageIDmList[0]);
+                                    updateMyPage();
+                                    userDataStorage.printList();
+                                }
+                            })
+                            .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                }
+                            })
+                            .create();
+                    AlertDialog dialog = builder.create();
+                    // AlertDialogを表示
+                    dialog.show();
+
+                }
+            }
+        );
+        findViewById(R.id.myCard_2).findViewById(R.id.delete_button).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(a);
+                        builder
+                                .setTitle("データを削除しますか？") // タイトル
+                                .setMessage("この操作は元に戻せません") // メッセージ
+                                .setNegativeButton("削除", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        userDataStorage.delete(myPageIDmList[1]);
+                                        updateMyPage();
+                                        userDataStorage.printList();
+                                    }
+                                })
+                                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                    }
+                                })
+                                .create();
+                        AlertDialog dialog = builder.create();
+                        // AlertDialogを表示
+                        dialog.show();
+                    }
+                }
+        );
+        findViewById(R.id.myCard_3).findViewById(R.id.delete_button).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(a);
+                        builder
+                                .setTitle("データを削除しますか？") // タイトル
+                                .setMessage("この操作は元に戻せません") // メッセージ
+                                .setNegativeButton("削除", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        userDataStorage.delete(myPageIDmList[2]);
+                                        updateMyPage();
+                                        userDataStorage.printList();
+                                    }
+                                })
+                                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                    }
+                                })
+                                .create();
+                        AlertDialog dialog = builder.create();
+                        // AlertDialogを表示
+                        dialog.show();
+                    }
+                }
+        );
+        findViewById(R.id.myCard_4).findViewById(R.id.delete_button).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(a);
+                        builder
+                                .setTitle("データを削除しますか？") // タイトル
+                                .setMessage("この操作は元に戻せません") // メッセージ
+                                .setNegativeButton("削除", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        userDataStorage.delete(myPageIDmList[3]);
+                                        updateMyPage();
+                                        userDataStorage.printList();
+                                    }
+                                })
+                                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                    }
+                                })
+                                .create();
+                        AlertDialog dialog = builder.create();
+                        // AlertDialogを表示
+                        dialog.show();
+                    }
+                }
+        );
+        findViewById(R.id.myCard_5).findViewById(R.id.delete_button).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(a);
+                        builder
+                                .setTitle("データを削除しますか？") // タイトル
+                                .setMessage("この操作は元に戻せません") // メッセージ
+                                .setNegativeButton("削除", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        userDataStorage.delete(myPageIDmList[4]);
+                                        updateMyPage();
+                                        userDataStorage.printList();
+                                    }
+                                })
+                                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                    }
+                                })
+                                .create();
+                        AlertDialog dialog = builder.create();
+                        // AlertDialogを表示
+                        dialog.show();
+                    }
+                }
+        );
+    }
+
+    private void updateMyPage(){
+        ArrayList<CardData> cards= userDataStorage.getAllData();
+        View[] myCards = new View[5];
+        View[] myCardsMonthly = new View[5];
+        myCards[0] = findViewById(R.id.myCard_1);
+        myCardsMonthly[0] = findViewById(R.id.myCard_monthly_1);
+        myCards[1] = findViewById(R.id.myCard_2);
+        myCardsMonthly[1] = findViewById(R.id.myCard_monthly_2);
+        myCards[2] = findViewById(R.id.myCard_3);
+        myCardsMonthly[2] = findViewById(R.id.myCard_monthly_3);
+        myCards[3] = findViewById(R.id.myCard_4);
+        myCardsMonthly[3] = findViewById(R.id.myCard_monthly_4);
+        myCards[4] = findViewById(R.id.myCard_5);
+        myCardsMonthly[4] = findViewById(R.id.myCard_monthly_5);
+        //表示を初期化
+        for(View myCard : myCards){
+            myCard.setVisibility(View.GONE);
+        }
+        for(View myCardMonthly : myCardsMonthly){
+            myCardMonthly.setVisibility(View.GONE);
+        }
+        findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.VISIBLE);
+        findViewById(R.id.myCard_empty_message).setVisibility(View.VISIBLE);
+        if(cards.size()>0){
+            findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
+            findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
+            for(int i=0;i<cards.size();i++){
+                switch (cards.get(i).getCardType()){
+                    case 1:
+                        cards.get(i).setMyPageInfo(myCards[0],myCardsMonthly[0]);
+                        myPageIDmList[0] = cards.get(i).getIDm();
+                        break;
+                    case 2:
+                        cards.get(i).setMyPageInfo(myCards[1],myCardsMonthly[1]);
+                        myPageIDmList[1] = cards.get(i).getIDm();
+                        break;
+                }
+            }
+        }
+
+    }
+
+    void confirmDeleteMyCard(){
 
     }
 }

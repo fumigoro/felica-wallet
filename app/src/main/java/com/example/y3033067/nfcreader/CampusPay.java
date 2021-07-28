@@ -193,7 +193,15 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
      */
     @Override
     public int getPointBalance() {
-        return 0;
+        StringBuilder stringB = new StringBuilder();
+        if(cardInfo.get(2).length<8){
+            return 0;
+        }
+        for (int j = 0; j < 4; j++) {
+            stringB.append(String.format("%02X", cardInfo.get(2)[j]));
+        }
+        Log.d("TAG",stringB.toString());
+        return Integer.parseInt(stringB.toString(), 16);
     }
 
     /**
@@ -211,13 +219,14 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public CardData getNewCardData(){
-        CardData cd = new CardData("大学生協電子マネー","","2",getSFBalance(),
+        CardData cd = new CardData("大学生協電子マネー","",2,getSFBalance(),
                 getPointBalance(),getIDm(""),getHistories());
         return cd;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void updateCardData(CardData cd){
-
+        cd.update(getSFBalance(),getPointBalance(),getHistories());
     }
 
     public String getIDm(){

@@ -67,7 +67,7 @@
         android:src="@drawable/shape_history_wrapper" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/delete_button"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_alignParentTop="true"

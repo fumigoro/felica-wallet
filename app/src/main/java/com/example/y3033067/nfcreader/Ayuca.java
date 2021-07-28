@@ -329,7 +329,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public CardData getNewCardData(){
-        CardData cd = new CardData("Ayuca","","1",getSFBalance(),
+        CardData cd = new CardData("Ayuca","",1,getSFBalance(),
                 getPointBalance(),getIDm(""),getHistories());
         return cd;
     }
