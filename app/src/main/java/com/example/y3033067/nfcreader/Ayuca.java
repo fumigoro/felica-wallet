@@ -276,16 +276,17 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
      * 読み取ったデータからポイント残高を返す
      * @return ポイント残高
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int getPointBalance() {
         String stringTmp;
         StringBuilder stringB = new StringBuilder();
-        for (int j = 0; j < balance.get(0).length; j++) {
+        for (int j = 0; j < balance.get(1).length; j++) {
             //16進数のまま文字列へ
-            stringTmp = String.format("%02X", balance.get(0)[j]);
-            stringB.append(stringTmp);
+            stringTmp = (Integer.toBinaryString(Byte.toUnsignedInt(balance.get(1)[j])));
+            stringB.append(String.format("%8s", stringTmp).replace(' ', '0')); // 0埋め
         }
-        return Integer.parseInt(stringB.substring(0, 4), 16);
+        return Integer.parseInt(stringB.substring(32, 52), 2);
     }
 
     /**
