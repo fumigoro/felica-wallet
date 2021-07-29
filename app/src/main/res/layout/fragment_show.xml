@@ -138,6 +138,16 @@
                 layout="@layout/fragment_history"
                 android:visibility="gone" />
 
+            <TextView
+                android:id="@+id/saved_data_massage_10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="これより下は以前保存したデータです"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="@color/primaryColor"
+                android:visibility="gone"
+                />
 
             <include
                 android:id="@+id/history_11"
@@ -199,7 +209,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/saved_data_massage"
+                android:id="@+id/saved_data_massage_20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="これより下は以前保存したデータです"
@@ -207,12 +217,9 @@
                 android:textColor="@color/white"
                 android:background="@color/primaryColor"
                 android:visibility="gone"
+                android:layout_marginBottom="10dp"
                 />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:src="@drawable/shape_history_wrapper" />
 
             <include
                 android:id="@+id/history_21"

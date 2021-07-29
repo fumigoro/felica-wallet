@@ -318,23 +318,47 @@ public class MainActivity extends AppCompatActivity {
             bonusPoint = historyWrapper[i].findViewById(R.id.bonusPoint);
             usedPoint = historyWrapper[i].findViewById(R.id.usedPoint);
             line = historyWrapper[i].findViewById(R.id.line);
-            if(i>=20){
+            if(type==1 && i>=CardParams.MAX_HISTORY_ITEMS_AYUCA){
                 price.setTextColor(Color.rgb(0xBE,0xBE,0xBE));
-                findViewById(R.id.saved_data_massage).setVisibility(View.VISIBLE);
+            }else if(type==2 && i>=CardParams.MAX_HISTORY_ITEMS_CAMPUS_PAY){
+                price.setTextColor(Color.rgb(0xBE,0xBE,0xBE));
             }else{
-                findViewById(R.id.saved_data_massage).setVisibility(View.GONE);
+                price.setTextColor(Color.rgb(0x81,0xD4,0xFA));
             }
+            switch(i){
+                case 20:
+                    findViewById(R.id.saved_data_massage_20).setVisibility(View.VISIBLE);
+                    break;
+                case 10:
+
+
+                    break;
+                default:
+
+            }
+
             historyUI[i] = new HistoryUI(name_start,name_end,price,date,point,bonusPoint,usedPoint,
                     line, historyWrapper[i],context);
         }
-        int count = Math.min(historyUI.length,histories.size());
-        for(int i=0;i<count;i++){
+
+        for(int i=0;i<historyUI.length;i++){
             if(i<histories.size()){
                 historyUI[i].setText(histories.get(i),type);
                 historyWrapper[i].setVisibility(View.VISIBLE);
             }else{
                 historyWrapper[i].setVisibility(View.GONE);
             }
+        }
+        //境界部のメッセージ表示切り替え
+        if(type==1 && histories.size()>CardParams.MAX_HISTORY_ITEMS_AYUCA){
+            findViewById(R.id.saved_data_massage_20).setVisibility(View.VISIBLE);
+            findViewById(R.id.saved_data_massage_10).setVisibility(View.GONE);
+        }else if(type==2 && histories.size()>CardParams.MAX_HISTORY_ITEMS_CAMPUS_PAY){
+            findViewById(R.id.saved_data_massage_20).setVisibility(View.GONE);
+            findViewById(R.id.saved_data_massage_10).setVisibility(View.VISIBLE);
+        }else{
+            findViewById(R.id.saved_data_massage_20).setVisibility(View.GONE);
+            findViewById(R.id.saved_data_massage_10).setVisibility(View.GONE);
         }
     }
 

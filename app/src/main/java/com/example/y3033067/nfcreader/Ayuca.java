@@ -41,7 +41,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
     public Ayuca(Tag tag) {
         super(tag);
         this.nfc = NfcF.get(tag);
-        SYSTEM_CODE = 0x83EE;
+        SYSTEM_CODE = CardParams.SYSTEM_CODE_AYUCA;
         SERVICE_CODE_HISTORY = 0x898F;//履歴
         SERVICE_CODE_BALANCE = 0x884B;//残高
         SERVICE_CODE_INFO = 0x804B;//カード情報

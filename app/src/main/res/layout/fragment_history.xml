@@ -33,7 +33,7 @@
         android:layout_marginBottom="0dp"
         android:gravity="end"
         android:text="+￥50,000"
-        android:textColor="#2196F3"
+        android:textColor="@color/primaryDarkColor"
         android:textSize="30sp"
         tools:ignore="RtlHardcoded" />
     <!--日付-->

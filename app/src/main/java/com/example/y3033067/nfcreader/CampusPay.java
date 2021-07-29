@@ -25,7 +25,7 @@ public class CampusPay extends NFCReader implements NFCReaderIf{
     public CampusPay(Tag tag) {
         super(tag);
         this.nfc = NfcF.get(tag);
-        SYSTEM_CODE = SystemCode.CAMPUS_PAY;
+        SYSTEM_CODE = CardParams.SYSTEM_CODE_CAMPUS_PAY;
         SERVICE_CODE_HISTORY = 0x50CF;//履歴
         SERVICE_CODE_BALANCE = 0x50D7;//残高
         SERVICE_CODE_INFO = 0x50CB;//カード情報

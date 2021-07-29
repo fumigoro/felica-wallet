@@ -19,7 +19,7 @@ public class StudentIDCard extends NFCReader implements NFCReaderIf{
     public StudentIDCard(Tag tag){
         super(tag);
         this.nfc = NfcF.get(tag);
-        SYSTEM_CODE = SystemCode.STUDENT_ID;
+        SYSTEM_CODE = CardParams.SYSTEM_CODE_STUDENT_ID;
         SERVICE_CODE_ID = 0x020B;//学籍番号
     }
 
