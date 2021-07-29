@@ -7,12 +7,12 @@ import androidx.viewpager.widget.ViewPager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     TextView cardID,cardName,cardBalance;
     HistoryUI[] historyUI;
-    View[] historyView;
+    View[] historyWrapper;
     String[] myPageIDmList;
 
     Storage userDataStorage;
@@ -241,15 +241,10 @@ public class MainActivity extends AppCompatActivity {
         cardID.setText(cardIDText);
 
         //読み取り表示の履歴部分を表示
-        historyUI =  getHistoryUI();//履歴表示のUI部品を一括で取得
-        for(int i=0;i<historyUI.length;i++){
-            if(i<histories.size()){
-                historyUI[i].setText(histories.get(i),type);
-                historyView[i].setVisibility(View.VISIBLE);
-            }else{
-                historyView[i].setVisibility(View.GONE);
-            }
+        if(newCardData!=null){
+            showHistory(type,newCardData.getHistories());
         }
+
         userDataStorage.printList();
         updateMyPage();
 //        userDataStorage.reset();
@@ -266,48 +261,81 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private HistoryUI[] getHistoryUI(){
+    private void showHistory(int type,ArrayList<CardHistory> histories){
         Context context = getApplicationContext();
         TextView name_start,name_end,price,bonusPoint,point,date,usedPoint;
         ImageView line;
-        View wrapper;
-        historyView = new View[20];
-        historyUI = new HistoryUI[20];
+        historyWrapper = new View[40];
+        historyUI = new HistoryUI[40];
 
-        historyView[0] = findViewById(R.id.history_1);
-        historyView[1] = findViewById(R.id.history_2);
-        historyView[2] = findViewById(R.id.history_3);
-        historyView[3] = findViewById(R.id.history_4);
-        historyView[4] = findViewById(R.id.history_5);
-        historyView[5] = findViewById(R.id.history_6);
-        historyView[6] = findViewById(R.id.history_7);
-        historyView[7] = findViewById(R.id.history_8);
-        historyView[8] = findViewById(R.id.history_9);
-        historyView[9] = findViewById(R.id.history_10);
-        historyView[10] = findViewById(R.id.history_11);
-        historyView[11] = findViewById(R.id.history_12);
-        historyView[12] = findViewById(R.id.history_13);
-        historyView[13] = findViewById(R.id.history_14);
-        historyView[14] = findViewById(R.id.history_15);
-        historyView[15] = findViewById(R.id.history_16);
-        historyView[16] = findViewById(R.id.history_17);
-        historyView[17] = findViewById(R.id.history_18);
-        historyView[18] = findViewById(R.id.history_19);
-        historyView[19] = findViewById(R.id.history_20);
+        historyWrapper[0] = findViewById(R.id.history_1);
+        historyWrapper[1] = findViewById(R.id.history_2);
+        historyWrapper[2] = findViewById(R.id.history_3);
+        historyWrapper[3] = findViewById(R.id.history_4);
+        historyWrapper[4] = findViewById(R.id.history_5);
+        historyWrapper[5] = findViewById(R.id.history_6);
+        historyWrapper[6] = findViewById(R.id.history_7);
+        historyWrapper[7] = findViewById(R.id.history_8);
+        historyWrapper[8] = findViewById(R.id.history_9);
+        historyWrapper[9] = findViewById(R.id.history_10);
+        historyWrapper[10] = findViewById(R.id.history_11);
+        historyWrapper[11] = findViewById(R.id.history_12);
+        historyWrapper[12] = findViewById(R.id.history_13);
+        historyWrapper[13] = findViewById(R.id.history_14);
+        historyWrapper[14] = findViewById(R.id.history_15);
+        historyWrapper[15] = findViewById(R.id.history_16);
+        historyWrapper[16] = findViewById(R.id.history_17);
+        historyWrapper[17] = findViewById(R.id.history_18);
+        historyWrapper[18] = findViewById(R.id.history_19);
+        historyWrapper[19] = findViewById(R.id.history_20);
+        historyWrapper[20] = findViewById(R.id.history_21);
+        historyWrapper[21] = findViewById(R.id.history_22);
+        historyWrapper[22] = findViewById(R.id.history_23);
+        historyWrapper[23] = findViewById(R.id.history_24);
+        historyWrapper[24] = findViewById(R.id.history_25);
+        historyWrapper[25] = findViewById(R.id.history_26);
+        historyWrapper[26] = findViewById(R.id.history_27);
+        historyWrapper[27] = findViewById(R.id.history_28);
+        historyWrapper[28] = findViewById(R.id.history_29);
+        historyWrapper[29] = findViewById(R.id.history_30);
+        historyWrapper[30] = findViewById(R.id.history_31);
+        historyWrapper[31] = findViewById(R.id.history_32);
+        historyWrapper[32] = findViewById(R.id.history_33);
+        historyWrapper[33] = findViewById(R.id.history_34);
+        historyWrapper[34] = findViewById(R.id.history_35);
+        historyWrapper[35] = findViewById(R.id.history_36);
+        historyWrapper[36] = findViewById(R.id.history_37);
+        historyWrapper[37] = findViewById(R.id.history_38);
+        historyWrapper[38] = findViewById(R.id.history_39);
+        historyWrapper[39] = findViewById(R.id.history_40);
 
-        for(int i=0;i<historyView.length;i++){
-            name_start = historyView[i].findViewById(R.id.name_start);
-            name_end = historyView[i].findViewById(R.id.name_end);
-            price = historyView[i].findViewById(R.id.price);
-            date = historyView[i].findViewById(R.id.date);
-            point = historyView[i].findViewById(R.id.point);
-            bonusPoint = historyView[i].findViewById(R.id.bonusPoint);
-            usedPoint = historyView[i].findViewById(R.id.usedPoint);
-            line = historyView[i].findViewById(R.id.line);
+        for(int i = 0; i< historyWrapper.length; i++){
+            name_start = historyWrapper[i].findViewById(R.id.name_start);
+            name_end = historyWrapper[i].findViewById(R.id.name_end);
+            price = historyWrapper[i].findViewById(R.id.price);
+            date = historyWrapper[i].findViewById(R.id.date);
+            point = historyWrapper[i].findViewById(R.id.point);
+            bonusPoint = historyWrapper[i].findViewById(R.id.bonusPoint);
+            usedPoint = historyWrapper[i].findViewById(R.id.usedPoint);
+            line = historyWrapper[i].findViewById(R.id.line);
+            if(i>=20){
+                price.setTextColor(Color.rgb(0xBE,0xBE,0xBE));
+                findViewById(R.id.saved_data_massage).setVisibility(View.VISIBLE);
+            }else{
+                findViewById(R.id.saved_data_massage).setVisibility(View.GONE);
+            }
             historyUI[i] = new HistoryUI(name_start,name_end,price,date,point,bonusPoint,usedPoint,
-                    line,historyView[i],context);
+                    line, historyWrapper[i],context);
         }
-        return historyUI;
+        int count = Math.min(historyUI.length,histories.size());
+        for(int i=0;i<count;i++){
+            if(i<histories.size()){
+                historyUI[i].setText(histories.get(i),type);
+                historyWrapper[i].setVisibility(View.VISIBLE);
+            }else{
+                historyWrapper[i].setVisibility(View.GONE);
+            }
+        }
     }
 
     private Storage roadUserDataFile() {

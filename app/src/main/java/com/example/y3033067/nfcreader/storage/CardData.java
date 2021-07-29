@@ -137,4 +137,8 @@ public class CardData {
         return card_type;
     }
 
+    public ArrayList<CardHistory> getHistories(){
+        return histories;
+    }
+
 }

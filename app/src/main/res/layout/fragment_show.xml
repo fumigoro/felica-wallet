@@ -198,6 +198,139 @@
                 layout="@layout/fragment_history"
                 android:visibility="gone" />
 
+            <TextView
+                android:id="@+id/saved_data_massage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="これより下は以前保存したデータです"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="@color/primaryColor"
+                android:visibility="gone"
+                />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:src="@drawable/shape_history_wrapper" />
+
+            <include
+                android:id="@+id/history_21"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_22"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_23"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_24"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_25"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_26"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_27"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_28"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_29"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_30"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_31"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_32"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_33"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_34"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_35"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_36"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_37"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_38"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+
+            <include
+                android:id="@+id/history_39"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/history_40"
+                layout="@layout/fragment_history"
+                android:visibility="gone" />
         </LinearLayout>
 
 
