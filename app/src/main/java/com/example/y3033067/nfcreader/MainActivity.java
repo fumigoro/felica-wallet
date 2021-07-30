@@ -2,6 +2,7 @@ package com.example.y3033067.nfcreader;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.motion.utils.Easing;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
@@ -25,6 +26,19 @@ import android.widget.TextView;
 
 import com.example.y3033067.nfcreader.storage.CardData;
 import com.example.y3033067.nfcreader.storage.Storage;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 
@@ -34,6 +48,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -325,18 +343,6 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 price.setTextColor(Color.rgb(0x81,0xD4,0xFA));
             }
-            switch(i){
-                case 20:
-                    findViewById(R.id.saved_data_massage_20).setVisibility(View.VISIBLE);
-                    break;
-                case 10:
-
-
-                    break;
-                default:
-
-            }
-
             historyUI[i] = new HistoryUI(name_start,name_end,price,date,point,bonusPoint,usedPoint,
                     line, historyWrapper[i],context);
         }
@@ -579,12 +585,94 @@ public class MainActivity extends AppCompatActivity {
                         myPageIDmList[1] = cards.get(i).getIDm();
                         break;
                 }
+
             }
+        }
+        showGraph(userDataStorage);
+
+
+    }
+
+    void showGraph(Storage userDataStorage){
+        View[] chartWrapper = new View[2];
+        chartWrapper[0] = findViewById(R.id.history_chart1);
+        chartWrapper[1] = findViewById(R.id.history_chart2);
+
+        TextView title;
+        HorizontalBarChart chart;
+        int count = Math.min(chartWrapper.length,userDataStorage.getAllData().size());
+        for (int i=0;i<count;i++){
+            title = chartWrapper[i].findViewById(R.id.chart_title);
+            chart = chartWrapper[i].findViewById(R.id.usage_chart);
+            setChartParams(chart,userDataStorage.getAllData().get(i));
+            title.setText(userDataStorage.getAllData().get(i).getCardName());
         }
 
     }
 
-    void confirmDeleteMyCard(){
+    @SuppressLint("DefaultLocale")
+    private void setChartParams(HorizontalBarChart chart, CardData cardData){
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        int chartItemNum = 5;
+        calendar.setTime(new Date());
+        ArrayList<Calendar> date = new ArrayList<>();
 
+        for(int i=0;i<chartItemNum;i++){
+            date.add((Calendar) calendar.clone());
+            calendar.add(Calendar.MONTH, -1);
+        }
+        Collections.reverse(date);
+
+        for(int i=0;i<chartItemNum;i++){
+            int value = cardData.getMonthlyUsage(date.get(i).get(Calendar.YEAR),date.get(i).get(Calendar.MONTH)+1);
+            entries.add(new BarEntry(i ,value));
+            Log.d("chart",i+":"+value+","+date.get(i).get(Calendar.YEAR)+"/"+date.get(i).get(Calendar.MONTH)+1);
+        }
+
+        List<IBarDataSet> bars = new ArrayList<>();
+        BarDataSet dataSet = new BarDataSet(entries, "bar");
+        //整数で表示
+//        dataSet.setValueFormatter(new ValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+//                return "" + (int) value;
+//            }
+//        });
+
+        bars.add(dataSet);
+
+        BarData data = new BarData(bars);
+        data.setBarWidth(0.5f);
+        chart.setData(data);
+
+        //Y軸(左)
+        YAxis yAxis = chart.getAxisLeft();
+        //Y軸に表示するLabelのリスト(最初の""は原点の位置)
+        final String[] labels = new String[chartItemNum];
+        for(int i=0;i<chartItemNum;i++){
+            labels[i] = String.format("%d月",date.get(i).get(Calendar.MONTH));
+        }
+
+        yAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setDrawLabels(true);
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setDrawAxisLine(true);
+
+        //X軸
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setDrawLabels(false);
+        xAxis.setDrawGridLines(false);
+
+
+        //グラフ上の表示
+        chart.setDrawValueAboveBar(true);
+        chart.getDescription().setEnabled(false);
+        chart.setClickable(false);
+
+        chart.invalidate();
+
+        Log.d("TAG","fin");
     }
 }

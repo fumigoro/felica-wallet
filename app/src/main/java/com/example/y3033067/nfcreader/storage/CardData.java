@@ -141,4 +141,8 @@ public class CardData {
         return histories;
     }
 
+    public String getCardName(){
+        return card_name;
+    }
+
 }

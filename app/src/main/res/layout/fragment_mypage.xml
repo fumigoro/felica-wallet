@@ -157,6 +157,16 @@
 
             </androidx.cardview.widget.CardView>
 
+            <include
+                android:id="@+id/history_chart1"
+                layout="@layout/history_chart"/>
+
+            <include
+                android:id="@+id/history_chart2"
+                layout="@layout/history_chart"/>
+
+
+
 
         </LinearLayout>
     </ScrollView>
