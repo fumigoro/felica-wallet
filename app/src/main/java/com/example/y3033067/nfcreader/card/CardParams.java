@@ -1,4 +1,4 @@
-package com.example.y3033067.nfcreader;
+package com.example.y3033067.nfcreader.card;
 
 public class CardParams {
     public static final int SYSTEM_CODE_AYUCA = 0x83EE;

@@ -1,4 +1,4 @@
-package com.example.y3033067.nfcreader;
+package com.example.y3033067.nfcreader.card;
 
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
@@ -7,7 +7,7 @@ import android.util.Log;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public class StudentIDCard extends NFCReader implements NFCReaderIf{
+public class StudentIDCard extends FelicaReader implements FelicaCard {
     private final int SYSTEM_CODE;
 
     private final int SERVICE_CODE_ID;

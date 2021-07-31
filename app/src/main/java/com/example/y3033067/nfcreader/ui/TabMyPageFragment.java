@@ -1,4 +1,4 @@
-package com.example.y3033067.nfcreader;
+package com.example.y3033067.nfcreader.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+
+import com.example.y3033067.nfcreader.R;
 
 public class TabMyPageFragment extends Fragment {
     @Nullable

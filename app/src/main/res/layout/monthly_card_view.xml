@@ -12,7 +12,6 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="大学生協電子マネー"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,8 +25,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="4dp"
         android:gravity="center"
-        android:text="100回の支払い"
-        android:textSize="14dp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@+id/mView_price"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,10 +36,9 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="4dp"
         android:gravity="end"
-        android:text="￥54,345"
 
         android:textColor="@color/black"
-        android:textSize="18dp"
+        android:textSize="18sp"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

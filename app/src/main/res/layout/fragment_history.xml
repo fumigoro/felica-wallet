@@ -10,7 +10,6 @@
         android:id="@+id/name_start"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="名鉄岐阜（バスターミナル）"
         android:textColor="@color/black"
         android:textSize="16sp" />
     <!--降車バス停-->
@@ -19,7 +18,6 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/name_start"
-        android:text="→市役所・メディアコスモス西"
         android:textColor="@color/black"
         android:visibility="gone"
         android:textSize="16sp" />
@@ -32,7 +30,6 @@
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
         android:gravity="end"
-        android:text="+￥50,000"
         android:textColor="@color/primaryDarkColor"
         android:textSize="30sp"
         tools:ignore="RtlHardcoded" />
@@ -45,7 +42,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="13dp"
         android:gravity="bottom"
-        android:text="7月9日 10:34"
         android:textSize="14sp" />
     <!--使用ポイント数-->
     <TextView
@@ -55,7 +51,6 @@
         android:layout_below="@+id/price"
         android:layout_alignParentEnd="true"
         android:gravity="end"
-        android:text="6.6P使用(割引)"
         android:textSize="14sp"
         android:textColor="@color/orange"
         android:visibility="gone"
@@ -68,7 +63,6 @@
         android:layout_below="@+id/usedPoint"
         android:layout_alignParentEnd="true"
         android:gravity="end"
-        android:text="6.6P獲得"
         android:textSize="14sp"
         android:visibility="gone"
         />
@@ -80,7 +74,6 @@
         android:layout_below="@+id/point"
         android:layout_alignParentEnd="true"
         android:gravity="end"
-        android:text="ボーナス100P獲得"
         android:textSize="14sp"
         android:visibility="gone"
         />
@@ -93,5 +86,5 @@
         android:layout_marginTop="-12dp"
         android:layout_marginBottom="0dp"
         android:src="@drawable/shape_history_wrapper"
-        android:contentDescription="Line" />
+         />
 </RelativeLayout>

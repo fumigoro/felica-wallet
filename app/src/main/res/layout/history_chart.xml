@@ -21,7 +21,6 @@
                 android:id="@+id/chart_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="利用実績"
                 />
 
             <com.github.mikephil.charting.charts.HorizontalBarChart

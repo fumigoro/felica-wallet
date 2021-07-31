@@ -1,15 +1,10 @@
-package com.example.y3033067.nfcreader;
+package com.example.y3033067.nfcreader.card;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.AssetManager;
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
 import android.os.Build;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
@@ -19,12 +14,11 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
-public class Ayuca extends NFCReader  implements NFCReaderIf  {
+public class Ayuca extends FelicaReader implements FelicaCard {
     private final int SYSTEM_CODE;
     private final int SERVICE_CODE_HISTORY;
     private final int SERVICE_CODE_BALANCE;
@@ -35,7 +29,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
     byte[] targetIDm;
     //アセットの読み込みに使う
     private Activity activity;
-    AyucaCode ayucaCode;
+    AyucaStationCode ayucaCode;
 
 
     public Ayuca(Tag tag) {
@@ -315,7 +309,7 @@ public class Ayuca extends NFCReader  implements NFCReaderIf  {
             while ((jsonTmp = bufferedReader.readLine()) != null){
                 json.append(jsonTmp);
             }
-            ayucaCode = gson.fromJson(json.toString(),AyucaCode.class);
+            ayucaCode = gson.fromJson(json.toString(), AyucaStationCode.class);
 
         }catch(Exception e){
             e.printStackTrace();

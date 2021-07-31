@@ -36,7 +36,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="登録済みカード" />
+                        android:text="@string/myPage_cad_title_list" />
 
                     <TextView
                         android:id="@+id/myCard_empty_message"
@@ -45,7 +45,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:textSize="16sp"
-                        android:text="カードをかざして登録しましょう" />
+                        android:text="@string/myPage_list_emptyMessage" />
                     <include
                         android:id="@+id/myCard_1"
                         layout="@layout/fragment_card_summary"
@@ -104,7 +104,7 @@
                         android:id="@+id/monthly_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="今月の支払い額"
+                        android:text="@string/myPage_card_title_monthlyUsage"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -122,7 +122,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:textSize="16sp"
-                            android:text="今月の合計利用額を確認できます" />
+                            android:text="@string/myPage_monthlyUsage_emptyMessage" />
                         <include
                             android:id="@+id/myCard_monthly_1"
                             layout="@layout/monthly_card_view"

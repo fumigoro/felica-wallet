@@ -1,15 +1,15 @@
-package com.example.y3033067.nfcreader;
+package com.example.y3033067.nfcreader.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.y3033067.nfcreader.card.CardHistory;
+
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class HistoryUI {
     private final TextView name_start,name_end,price,bonusPoint,point,usedPoint,date;

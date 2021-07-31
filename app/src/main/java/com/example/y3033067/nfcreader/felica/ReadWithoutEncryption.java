@@ -1,4 +1,4 @@
-package com.example.y3033067.nfcreader;
+package com.example.y3033067.nfcreader.felica;
 
 import android.util.Log;
 

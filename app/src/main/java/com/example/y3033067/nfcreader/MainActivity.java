@@ -2,7 +2,6 @@ package com.example.y3033067.nfcreader;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.motion.utils.Easing;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
@@ -24,23 +23,24 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.y3033067.nfcreader.card.Ayuca;
+import com.example.y3033067.nfcreader.card.CampusPay;
+import com.example.y3033067.nfcreader.card.CardHistory;
+import com.example.y3033067.nfcreader.card.CardParams;
+import com.example.y3033067.nfcreader.card.FelicaReader;
+import com.example.y3033067.nfcreader.card.StudentIDCard;
 import com.example.y3033067.nfcreader.storage.CardData;
 import com.example.y3033067.nfcreader.storage.Storage;
-import com.github.mikephil.charting.charts.BarChart;
+import com.example.y3033067.nfcreader.ui.HistoryUI;
+import com.example.y3033067.nfcreader.ui.TabAdapter;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 
@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -150,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        NFCReader card = new NFCReader(tag);
+        FelicaReader card = new FelicaReader(tag);
         //カードの種類を判別
         int type = card.getCardType();
 
@@ -340,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
             bonusPoint = historyWrapper[i].findViewById(R.id.bonusPoint);
             usedPoint = historyWrapper[i].findViewById(R.id.usedPoint);
             line = historyWrapper[i].findViewById(R.id.line);
-            if(type==1 && i>=CardParams.MAX_HISTORY_ITEMS_AYUCA){
+            if(type==1 && i>= CardParams.MAX_HISTORY_ITEMS_AYUCA){
                 price.setTextColor(Color.rgb(0xBE,0xBE,0xBE));
             }else if(type==2 && i>=CardParams.MAX_HISTORY_ITEMS_CAMPUS_PAY){
                 price.setTextColor(Color.rgb(0xBE,0xBE,0xBE));

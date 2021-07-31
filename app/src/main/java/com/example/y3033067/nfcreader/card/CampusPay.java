@@ -1,4 +1,4 @@
-package com.example.y3033067.nfcreader;
+package com.example.y3033067.nfcreader.card;
 
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
@@ -12,7 +12,7 @@ import com.example.y3033067.nfcreader.storage.CardData;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class CampusPay extends NFCReader implements NFCReaderIf{
+public class CampusPay extends FelicaReader implements FelicaCard {
     private final int SYSTEM_CODE;
     private final int SERVICE_CODE_HISTORY;
     private final int SERVICE_CODE_BALANCE;

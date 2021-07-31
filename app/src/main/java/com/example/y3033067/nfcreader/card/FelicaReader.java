@@ -1,20 +1,21 @@
-package com.example.y3033067.nfcreader;
+package com.example.y3033067.nfcreader.card;
 
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
-import android.util.Log;
+
+import com.example.y3033067.nfcreader.felica.ReadWithoutEncryption;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class NFCReader  {
+public class FelicaReader {
 
     private NfcF nfc;
     private byte[] targetIDm;
     private byte[] primarySystemIDm;
 
-    public NFCReader(Tag tag) {
+    public FelicaReader(Tag tag) {
         this.nfc = NfcF.get(tag);
         // システムコード
         /*

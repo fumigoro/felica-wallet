@@ -1,6 +1,6 @@
-package com.example.y3033067.nfcreader;
+package com.example.y3033067.nfcreader.card;
 
-public class AyucaCode {
+public class AyucaStationCode {
 
     private class Station{
         private String code,name;

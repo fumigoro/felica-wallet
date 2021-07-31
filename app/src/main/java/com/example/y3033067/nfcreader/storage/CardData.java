@@ -1,21 +1,18 @@
 package com.example.y3033067.nfcreader.storage;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.example.y3033067.nfcreader.CardHistory;
-import com.example.y3033067.nfcreader.CardParams;
+import com.example.y3033067.nfcreader.card.CardHistory;
+import com.example.y3033067.nfcreader.card.CardParams;
 import com.example.y3033067.nfcreader.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class CardData {
     private final String card_name;
