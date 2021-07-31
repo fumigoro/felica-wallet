@@ -17,7 +17,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-
+/**
+ * Ayucaに関しての読み取りパラメータの指定やデータの解釈を行うクラス
+ */
 public class Ayuca extends FelicaReader implements FelicaCard {
     // Felicaシステムコード
     private final int SYSTEM_CODE;
@@ -106,6 +108,7 @@ public class Ayuca extends FelicaReader implements FelicaCard {
 
     /**
      * カード情報が保存されたサービスを読み込む
+     *
      * @return 読み取ったダンプデータ
      */
     private ArrayList<Byte[]> readCardInfo() {
@@ -132,6 +135,7 @@ public class Ayuca extends FelicaReader implements FelicaCard {
 
     /**
      * 利用履歴を返す
+     *
      * @return 利用履歴
      * readAllData()を先に実行する必要がある
      */
@@ -141,18 +145,18 @@ public class Ayuca extends FelicaReader implements FelicaCard {
         StringBuilder stringB;
         String discount, start, end, device, type;
         int year, month, day, hour, minute, price, balance, typeFlag, deviceFlag;
-        int point,pointBalance;
+        int point, pointBalance;
         int grantedNormalPoint, grantedBonusPoint, usedPoint;
         int sfUsedPrice = 0;
         //利用履歴を持つクラスのリスト
         histories = new ArrayList<>();
         // 履歴0件の場合は処理終了
-        if(historyData == null){
+        if (historyData == null) {
             return histories;
         }
 
         //1件ずつバイナリを解釈しCardHistoryのインスタンスとしてhistoriesリストに入れていく
-        for (int i = historyData.size()-1; i >= 0; i--) {
+        for (int i = historyData.size() - 1; i >= 0; i--) {
             stringB = new StringBuilder();
             CardHistory history = new CardHistory();
             // 16進数の生データを2進数へ変換
@@ -179,7 +183,7 @@ public class Ayuca extends FelicaReader implements FelicaCard {
             typeFlag = Integer.parseInt(stringB.substring(68, 72), 2);
 
             // 処理端末を解釈
-            switch (deviceFlag){
+            switch (deviceFlag) {
                 case 0x5:
                     device = "車載機";
                     break;
@@ -190,10 +194,10 @@ public class Ayuca extends FelicaReader implements FelicaCard {
                     device = "入金機";
                     break;
                 default:
-                    device = String.format("不明機(%04X)",deviceFlag);
+                    device = String.format("不明機(%04X)", deviceFlag);
             }
             //処理種別を解釈
-            switch (typeFlag){
+            switch (typeFlag) {
                 case 0x3:
                     //SF利用
                     type = "決済";
@@ -242,28 +246,28 @@ public class Ayuca extends FelicaReader implements FelicaCard {
                 point = (pointBalance - previousPointBalance);
 
                 //運賃支払の場合
-                if(typeFlag == 0x03){
+                if (typeFlag == 0x03) {
                     //通常ポイントは現金残高から現金残高からの支払い額の2%
                     //実際の値を10倍し整数として保存するため10倍する
                     grantedNormalPoint = (int) (sfUsedPrice * 10 * 0.02);
                     //使用したポイントは、取引金額-現金残高からの支払い額
-                    usedPoint = (price - sfUsedPrice)*10;
+                    usedPoint = (price - sfUsedPrice) * 10;
                     //ボーナスポイントは、今回増えたポイント-通常ポイント+使用ポイント
                     grantedBonusPoint = point - grantedNormalPoint + usedPoint;
 
                     //ポイント取り扱いフラグをあげる
                     history.setPointFlag(true);
                     //CardHistoryのインスタンスにポイント関係のデータをセット
-                    history.setPointParams(grantedNormalPoint,grantedBonusPoint,usedPoint);
-                }else{
+                    history.setPointParams(grantedNormalPoint, grantedBonusPoint, usedPoint);
+                } else {
                     //運賃支払以外の取引の場合
                     //ポイントの増減は発生しないため0扱い
                     sfUsedPrice = 0;
                 }
-            }else{
+            } else {
                 //最終行の場合
 
-                if(typeFlag == 0x03){
+                if (typeFlag == 0x03) {
                     //運賃支払の場合は月間利用金額の計算時に必要なため、
                     //ポイント還元はなかったものとして取引金額をそのまま入れる
                     sfUsedPrice = price;
@@ -275,7 +279,7 @@ public class Ayuca extends FelicaReader implements FelicaCard {
             Dateの月設定は1小さい値を入れる
             Dateの年は-1900下値を入れる
             * */
-            history.setAllParams(new Date(year + 2000 - 1900, month-1, day, hour, minute, 0),
+            history.setAllParams(new Date(year + 2000 - 1900, month - 1, day, hour, minute, 0),
                     price, sfUsedPrice, pointBalance, balance, type, typeFlag, discount, device, start, end);
 
             histories.add(history);
@@ -287,11 +291,12 @@ public class Ayuca extends FelicaReader implements FelicaCard {
 
     /**
      * 現金積み増し分の残高を返す
+     *
      * @return 残高
      * readAllData()を先に実行する必要がある
      */
     @Override
-    public int getSFBalance(){
+    public int getSFBalance() {
         String stringTmp;
         StringBuilder stringB = new StringBuilder();
         for (int j = 0; j < balance.get(0).length; j++) {
@@ -305,6 +310,7 @@ public class Ayuca extends FelicaReader implements FelicaCard {
 
     /**
      * 読み取ったデータからポイント残高を返す
+     *
      * @return ポイント残高
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -326,7 +332,7 @@ public class Ayuca extends FelicaReader implements FelicaCard {
      * カードから残高関連、履歴、カード情報を読み出す
      */
     @Override
-    public void readAllData(){
+    public void readAllData() {
         balance = readBalance();
         historyData = readHistory();
         cardInfo = readCardInfo();
@@ -336,14 +342,15 @@ public class Ayuca extends FelicaReader implements FelicaCard {
 
     /**
      * アセットにあるファイルからAyucaのバス停コード一覧を読み込んでAyucaCodeのインスタンスとして保存する
+     *
      * @param _activity メインのActivity
      */
-    public void loadAssetFile(Activity _activity){
+    public void loadAssetFile(Activity _activity) {
         activity = _activity;
         // JsonとJavaオブジェクトの変換を行うライブラリ
         Gson gson = new Gson();
 
-        try{
+        try {
             //アセット呼び出し
             AssetManager assetManager = activity.getResources().getAssets();
             //Jsonファイルを開く
@@ -353,47 +360,50 @@ public class Ayuca extends FelicaReader implements FelicaCard {
             int i = 0;
             String jsonTmp;
             //中身を読み込み
-            while ((jsonTmp = bufferedReader.readLine()) != null){
+            while ((jsonTmp = bufferedReader.readLine()) != null) {
                 json.append(jsonTmp);
             }
             //Javaオブジェクトへ変換
             ayucaCode = gson.fromJson(json.toString(), AyucaStationCode.class);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
      * バス停コードを渡すとバス停名を返す
+     *
      * @param code バス停コード
      * @return バス停名
      */
-    private String getStationName(int code){
-        if(ayucaCode==null){
-            return String.format("%04X",code);
+    private String getStationName(int code) {
+        if (ayucaCode == null) {
+            return String.format("%04X", code);
         }
         return ayucaCode.getStation(code);
     }
 
     /**
      * カード内のデータを保存するためのCardDataクラスのインスタンスを作り、読み取った内容をセットする
+     *
      * @return CardDataクラスのインスタンス
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public CardData getNewCardData(){
-        CardData cd = new CardData("Ayuca","",1,getSFBalance(),
-                getPointBalance(),getIDm(""),getHistories());
+    public CardData getNewCardData() {
+        CardData cd = new CardData("Ayuca", "", 1, getSFBalance(),
+                getPointBalance(), getIDm(""), getHistories());
         return cd;
     }
 
     /**
      * 既存のCardDataクラスのインスタンスを参照し、今読み取った新しいデータを書き加える
+     *
      * @param cd CardDataクラスのインスタンスの参照
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void updateCardData(CardData cd){
-        cd.update(getSFBalance(),getPointBalance(),getHistories());
+    public void updateCardData(CardData cd) {
+        cd.update(getSFBalance(), getPointBalance(), getHistories());
     }
 
 }

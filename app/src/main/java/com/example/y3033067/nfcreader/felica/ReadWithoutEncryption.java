@@ -2,6 +2,13 @@ package com.example.y3033067.nfcreader.felica;
 
 import android.util.Log;
 
+/**
+ * Felicaのデータ読み込みに用いるReadWithoutEncryptionコマンドの、
+ * ・コマンドパケット生成(カードへ送信するバイナリ配列)
+ * ・カードからの応答のエラー内容を解釈
+ * ・ReadWithoutEncryptionコマンドの実行
+ * を担うクラス
+ */
 public class ReadWithoutEncryption {
     byte[] idm;
     byte serviceCodeNumber;
@@ -45,7 +52,7 @@ public class ReadWithoutEncryption {
      * コマンドを実行するために必要なコマンド配列を生成
      *
      * @return コマンド配列
-     * @throws Exception　例外
+     * @throws Exception 　例外
      */
     public byte[] generateCommandPacket() throws Exception {
 
@@ -154,7 +161,7 @@ public class ReadWithoutEncryption {
                 Log.e("Exception", "コマンドパケットにリストを含まないコマンドでのエラー・リストに依存しないエラー");
                 break;
             default:
-                Log.e("Exception", "ブロックリストまたはサービスコードリストに関するエラー/Flag1:0x" + String.format("%02X,Flag2:0x%02X", status1,status2));
+                Log.e("Exception", "ブロックリストまたはサービスコードリストに関するエラー/Flag1:0x" + String.format("%02X,Flag2:0x%02X", status1, status2));
                 break;
         }
         if (status1 != 0x00) {

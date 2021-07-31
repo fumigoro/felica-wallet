@@ -7,6 +7,9 @@ import android.util.Log;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+/**
+ * 学生証に関しての読み取りパラメータの指定やデータの解釈を行うクラス
+ */
 public class StudentIDCard extends FelicaReader implements FelicaCard {
     private final int SYSTEM_CODE;
 
@@ -16,7 +19,7 @@ public class StudentIDCard extends FelicaReader implements FelicaCard {
     private Byte[] studentID;
 
 
-    public StudentIDCard(Tag tag){
+    public StudentIDCard(Tag tag) {
         super(tag);
         this.nfc = NfcF.get(tag);
         SYSTEM_CODE = CardParams.SYSTEM_CODE_STUDENT_ID;
@@ -54,27 +57,28 @@ public class StudentIDCard extends FelicaReader implements FelicaCard {
 
     /**
      * 読み取ったデータから学籍番号を返す
+     *
      * @return 学籍番号
      */
     public String getStudentID() {
 
-
         byte[] studentID2 = new byte[16];
-        for(int i=0; i<studentID.length;i++){
+        for (int i = 0; i < studentID.length; i++) {
             studentID2[i] = studentID[i];
         }
         studentID2[0] = 0x20;//空白
-        Log.d("TAG",super.hex2string(studentID2,":"));
+        Log.d("TAG", super.hex2string(studentID2, ":"));
 
         String resultString = "test";
         try {
             resultString = new String(studentID2, StandardCharsets.US_ASCII);
-            Log.d("TAG","res:"+resultString);
+            Log.d("TAG", "res:" + resultString);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return resultString;
     }
+
     @Override
     public ArrayList<CardHistory> getHistories() {
         return null;

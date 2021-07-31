@@ -13,11 +13,15 @@ import androidx.fragment.app.Fragment;
 
 import com.example.y3033067.nfcreader.R;
 
+/**
+ * マイページのFragment
+ * 初期状態から特に何も変更していない
+ */
 public class TabMyPageFragment extends Fragment {
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_mypage,container,false);
+        return inflater.inflate(R.layout.fragment_mypage, container, false);
     }
 }

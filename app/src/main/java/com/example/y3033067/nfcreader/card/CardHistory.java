@@ -2,6 +2,10 @@ package com.example.y3033067.nfcreader.card;
 
 import java.util.Date;
 
+/**
+ * 利用履歴1件分の様々なデータを保持するクラス
+ * メソッドは単純なgetterとsetterのみのため個別のコメントは省略
+ */
 public class CardHistory {
     private Date date;//発生日時
     private int price;//金額
@@ -24,7 +28,7 @@ public class CardHistory {
         pointFlag = false;
     }
 
-    public CardHistory(Date _date, int _price,int _balance, String _type, int _typeFlag,  String _device) {
+    public CardHistory(Date _date, int _price, int _balance, String _type, int _typeFlag, String _device) {
         date = _date;
         price = _price;
         pointBalance = 0;
@@ -54,46 +58,11 @@ public class CardHistory {
         end = _end;
     }
 
-
-//    public void setDate(Date _date) {
-//        date = _date;
-//    }
-//    public void setPrice(int _price) {
-//        price = _price;
-//    }
-//
-//    public void setPointBalance(int _point) {
-//        pointBalance = _point;
-//    }
-//
-//    public void setBalance(int _balance) {
-//        balance = _balance;
-//    }
-//
-//    public void setType(String _type) {
-//        type = _type;
-//    }
-//
-//    public void setDiscount(String _discount) {
-//        discount = _discount;
-//    }
-//
-//    public void setDevice(String _device) {
-//        device = _device;
-//    }
-//
-//    public void setStart(String _start) {
-//        start = _start;
-//    }
-//
-//    public void setEnd(String _end) {
-//        end = _end;
-//    }
-
     public void setPointFlag(Boolean _pointFlag) {
         pointFlag = _pointFlag;
     }
-    public void setPointParams(int _grantedNormalPoint,int _grantedBonusPoint,int _usedPoint){
+
+    public void setPointParams(int _grantedNormalPoint, int _grantedBonusPoint, int _usedPoint) {
         grantedNormalPoint = _grantedNormalPoint;
         grantedBonusPoint = _grantedBonusPoint;
         usedPoint = _usedPoint;
@@ -119,10 +88,6 @@ public class CardHistory {
         return type;
     }
 
-    public String getDiscount() {
-        return discount;
-    }
-
     public String getDevice() {
         return device;
     }
@@ -135,7 +100,7 @@ public class CardHistory {
         return end;
     }
 
-    public int getTypeFlag(){
+    public int getTypeFlag() {
         return typeFlag;
     }
 
@@ -143,17 +108,19 @@ public class CardHistory {
         return pointFlag;
     }
 
-    public int getGrantedNormalPoint(){
+    public int getGrantedNormalPoint() {
         return grantedNormalPoint;
     }
-    public int getGrantedBonusPoint(){
+
+    public int getGrantedBonusPoint() {
         return grantedBonusPoint;
     }
-    public int getUsedPoint(){
+
+    public int getUsedPoint() {
         return usedPoint;
     }
 
-    public int getSfUsedPrice(){
+    public int getSfUsedPrice() {
         return sfUsedPrice;
     }
 

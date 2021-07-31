@@ -65,20 +65,21 @@ public class MainActivity extends AppCompatActivity {
     private CampusPay campusPay;
     private StudentIDCard idCard;
     TabLayout tabLayout;
-    TextView cardID,cardName,cardBalance;
+    TextView cardID, cardName, cardBalance;
     HistoryUI[] historyUI;
     View[] historyWrapper;
     String[] myPageIDmList;
 
     Storage userDataStorage;
     File userDataFile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_nfcreader);
         // xmlからTabLayoutの取得
-        tabLayout =  findViewById(R.id.tab_layout);
+        tabLayout = findViewById(R.id.tab_layout);
         // xmlからViewPagerを取得
         ViewPager viewPager = findViewById(R.id.pager);
 
@@ -89,10 +90,9 @@ public class MainActivity extends AppCompatActivity {
         // ViewPagerをTabLayoutを設定
         tabLayout.setupWithViewPager(viewPager);
 
+        //Felica読み取りのインテント
         pendingIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-
-
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
         try {
             ndef.addDataType("text/plain");
@@ -112,18 +112,14 @@ public class MainActivity extends AppCompatActivity {
         //保存済みデータを読み込み
         String fileName = "data.json";
         Context context = getApplicationContext();
-
         userDataFile = new File(context.getFilesDir(), fileName);
-        userDataStorage =  roadUserDataFile();
-        if(userDataStorage==null){
+        userDataStorage = roadUserDataFile();
+        if (userDataStorage == null) {
             userDataStorage = new Storage();
         }
         myPageIDmList = new String[5];
-//        updateMyPage();
-
 
     }
-
 
 
     @Override
@@ -131,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         // NFCの読み込みを有効化
         mAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
-//        setButtonListener();
 
     }
 
@@ -150,35 +145,31 @@ public class MainActivity extends AppCompatActivity {
         }
 
         FelicaReader card = new FelicaReader(tag);
-        //カードの種類を判別
+        //読み取ったカードの種類を判別
         int type = card.getCardType();
 
-
-        //userData.search(card.getIDm(""));
         //既知のカードか否か、保存するか否かのフラグを設定
         //更新or新規保存orなにもしないの3択
-
         int cardDataFlag = 0;
         CardData newCardData = userDataStorage.getCardData(card.getIDm(""));
-        if(newCardData!=null){
+        if (newCardData != null) {
             cardDataFlag = 1; //更新
-        }else if(true){//確認
-                cardDataFlag = 2; //新規保存
+        } else if (true) {//確認
+            cardDataFlag = 2; //新規保存
         }
-        Log.d("flag",cardDataFlag+"");
-
+        //読み取った履歴を保存するオブジェクト
         ArrayList<CardHistory> histories = new ArrayList<>();
-
-        final String cardIDText = String.format("Felica IDm：%s",card.getIDm(" "));
+        //カードIDｍを表示
+        final String cardIDText = String.format("Felica IDm：%s", card.getIDm(" "));
         String cardBalanceText = "";
         String cardNameText = "非対応カード";
-
-        switch(type){
-            case 1:
+        //カード種別に応じた処理
+        switch (type) {
+            case CardParams.TYPE_CODE_AYUCA:
                 //Ayuca
                 ayuca = new Ayuca(tag);
                 //バス停コード一覧ファイルを読み込み
-                ayuca.loadAssetFile((Activity)findViewById(R.id.fragment_show).getContext());
+                ayuca.loadAssetFile((Activity) findViewById(R.id.fragment_show).getContext());
                 //カードからデータを読み取り
                 ayuca.readAllData();
                 //カードの履歴を取得
@@ -186,9 +177,9 @@ public class MainActivity extends AppCompatActivity {
 
                 //画面表示テキスト
                 cardNameText = "Ayuca";
-                cardBalanceText = String.format("￥%,d",ayuca.getSFBalance());
+                cardBalanceText = String.format("￥%,d", ayuca.getSFBalance());
 
-                switch (cardDataFlag){
+                switch (cardDataFlag) {
                     case 1:
                         //更新
                         ayuca.updateCardData(newCardData);
@@ -199,12 +190,15 @@ public class MainActivity extends AppCompatActivity {
                         userDataStorage.addCard(newCardData);
                         break;
                 }
-                if(newCardData!=null){
+                //マイページのUIへデータを入れる
+                if (newCardData != null) {
+                    //空メッセージを非表示に
                     findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
                     findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
+
                     View myCard = findViewById(R.id.myCard_1);
                     View muCardMonthly = findViewById(R.id.myCard_monthly_1);
-                    newCardData.setMyPageInfo(myCard,muCardMonthly);
+                    newCardData.setMyPageInfo(myCard, muCardMonthly);
                     myPageIDmList[0] = ayuca.getIDm("");
                 }
                 break;
@@ -217,9 +211,9 @@ public class MainActivity extends AppCompatActivity {
                 histories = campusPay.getHistories();
 
                 cardNameText = "大学生協電子マネー";
-                cardBalanceText = String.format("￥%,d",campusPay.getSFBalance());
+                cardBalanceText = String.format("￥%,d", campusPay.getSFBalance());
 
-                switch (cardDataFlag){
+                switch (cardDataFlag) {
                     case 1:
                         //更新
                         campusPay.updateCardData(newCardData);
@@ -230,12 +224,13 @@ public class MainActivity extends AppCompatActivity {
                         userDataStorage.addCard(newCardData);
                         break;
                 }
-                if(newCardData!=null){
+                //マイページのUIへデータを入れる
+                if (newCardData != null) {
                     findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
                     findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
                     View myCard = findViewById(R.id.myCard_2);
                     View muCardMonthly = findViewById(R.id.myCard_monthly_2);
-                    newCardData.setMyPageInfo(myCard,muCardMonthly);
+                    newCardData.setMyPageInfo(myCard, muCardMonthly);
                     myPageIDmList[1] = campusPay.getIDm("");
                 }
                 break;
@@ -260,8 +255,8 @@ public class MainActivity extends AppCompatActivity {
         cardID.setText(cardIDText);
 
         //読み取り表示の履歴部分を表示
-        if(newCardData!=null){
-            showHistory(type,newCardData.getHistories());
+        if (newCardData != null) {
+            showHistory(type, newCardData.getHistories());
         }
 
         userDataStorage.printList();
@@ -270,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
         saveUserDataFile();
 //        タブ切り替え
 //        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
+        //読み取り待機のリング状のUIを消し、読み取り結果を表示
         findViewById(R.id.read_waiting_view).setVisibility(View.GONE);
         findViewById(R.id.history_scrollView).setVisibility(View.VISIBLE);
     }
@@ -281,14 +277,19 @@ public class MainActivity extends AppCompatActivity {
         saveUserDataFile();
     }
 
-
-    private void showHistory(int type,ArrayList<CardHistory> histories){
+    /**
+     * 履歴をUIに表示する
+     * @param type カード種別
+     * @param histories 履歴
+     */
+    private void showHistory(int type, ArrayList<CardHistory> histories) {
         Context context = getApplicationContext();
-        TextView name_start,name_end,price,bonusPoint,point,date,usedPoint;
+        TextView name_start, name_end, price, bonusPoint, point, date, usedPoint;
         ImageView line;
         historyWrapper = new View[40];
         historyUI = new HistoryUI[40];
 
+        //カード履歴の表示部分の大枠を取得
         historyWrapper[0] = findViewById(R.id.history_1);
         historyWrapper[1] = findViewById(R.id.history_2);
         historyWrapper[2] = findViewById(R.id.history_3);
@@ -330,7 +331,8 @@ public class MainActivity extends AppCompatActivity {
         historyWrapper[38] = findViewById(R.id.history_39);
         historyWrapper[39] = findViewById(R.id.history_40);
 
-        for(int i = 0; i< historyWrapper.length; i++){
+        //UI部品の取得と文字色の設定
+        for (int i = 0; i < historyWrapper.length; i++) {
             name_start = historyWrapper[i].findViewById(R.id.name_start);
             name_end = historyWrapper[i].findViewById(R.id.name_end);
             price = historyWrapper[i].findViewById(R.id.price);
@@ -339,38 +341,50 @@ public class MainActivity extends AppCompatActivity {
             bonusPoint = historyWrapper[i].findViewById(R.id.bonusPoint);
             usedPoint = historyWrapper[i].findViewById(R.id.usedPoint);
             line = historyWrapper[i].findViewById(R.id.line);
-            if(type==1 && i>= CardParams.MAX_HISTORY_ITEMS_AYUCA){
-                price.setTextColor(Color.rgb(0xBE,0xBE,0xBE));
-            }else if(type==2 && i>=CardParams.MAX_HISTORY_ITEMS_CAMPUS_PAY){
-                price.setTextColor(Color.rgb(0xBE,0xBE,0xBE));
-            }else{
-                price.setTextColor(Color.rgb(0x81,0xD4,0xFA));
-            }
-            historyUI[i] = new HistoryUI(name_start,name_end,price,date,point,bonusPoint,usedPoint,
-                    line, historyWrapper[i],context);
-        }
 
-        for(int i=0;i<historyUI.length;i++){
-            if(i<histories.size()){
-                historyUI[i].setText(histories.get(i),type);
+            if (type == 1 && i >= CardParams.MAX_HISTORY_ITEMS_AYUCA) {
+                //Ayucaかつデータが21件以上の場合
+                //それは内部保存データからの読み込み分のため金額の文字色をグレーに設定
+                price.setTextColor(Color.rgb(0xBE, 0xBE, 0xBE));
+            } else if (type == 2 && i >= CardParams.MAX_HISTORY_ITEMS_CAMPUS_PAY) {
+                //生協電子マネーかつデータが11件以上の場合
+                //それは内部保存データからの読み込み分のため金額の文字色をグレーに設定
+                price.setTextColor(Color.rgb(0xBE, 0xBE, 0xBE));
+            } else {
+                price.setTextColor(Color.rgb(0x81, 0xD4, 0xFA));
+            }
+            historyUI[i] = new HistoryUI(name_start, name_end, price, date, point, bonusPoint, usedPoint,
+                    line, historyWrapper[i], context);
+        }
+        //取得したUIにデータを入れる
+        for (int i = 0; i < historyUI.length; i++) {
+            //UIが多めに作ってあるため。履歴を最後まで表示しきったら、それ以降は不可視化
+            if (i < histories.size()) {
+                historyUI[i].setText(histories.get(i), type);
                 historyWrapper[i].setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 historyWrapper[i].setVisibility(View.GONE);
             }
         }
-        //境界部のメッセージ表示切り替え
-        if(type==1 && histories.size()>CardParams.MAX_HISTORY_ITEMS_AYUCA){
+        //境界部の「ここから下は以前保存したデータです」メッセージ表示切り替え
+        if (type == 1 && histories.size() > CardParams.MAX_HISTORY_ITEMS_AYUCA) {
+            //Ayucaかつ21件以上
             findViewById(R.id.saved_data_massage_20).setVisibility(View.VISIBLE);
             findViewById(R.id.saved_data_massage_10).setVisibility(View.GONE);
-        }else if(type==2 && histories.size()>CardParams.MAX_HISTORY_ITEMS_CAMPUS_PAY){
+        } else if (type == 2 && histories.size() > CardParams.MAX_HISTORY_ITEMS_CAMPUS_PAY) {
+            //生協電子マネーかつ11件以上
             findViewById(R.id.saved_data_massage_20).setVisibility(View.GONE);
             findViewById(R.id.saved_data_massage_10).setVisibility(View.VISIBLE);
-        }else{
+        } else {
             findViewById(R.id.saved_data_massage_20).setVisibility(View.GONE);
             findViewById(R.id.saved_data_massage_10).setVisibility(View.GONE);
         }
     }
 
+    /**
+     * 保存済みのデータファイルを読み込む
+     * @return Storageクラス
+     */
     private Storage roadUserDataFile() {
         Storage userData;
         Gson gson = new Gson();
@@ -389,63 +403,69 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-
     }
 
-    // ファイルを保存
-    private void saveUserDataFile(){
+    /**
+     * カード登録データをファイルに書き出し保存する
+     */
+    private void saveUserDataFile() {
         Gson gson = new Gson();
         String jsonData = gson.toJson(userDataStorage);
-            //既存内容を上書き
-            try (FileWriter writer = new FileWriter(userDataFile,false)) {
-                writer.write(jsonData);
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+        //既存内容を上書き
+        try (FileWriter writer = new FileWriter(userDataFile, false)) {
+            writer.write(jsonData);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
+
     @Override
     public void onRestart() {
         super.onRestart();
         setButtonListener();
         updateMyPage();
     }
-    Context a = this;
-    private  void setButtonListener(){
+
+    /**
+     * マイページのカード一覧にあるデータ削除ボタンのリスナー設定
+     */
+    private void setButtonListener() {
+        Context context = this;
         findViewById(R.id.myCard_1).findViewById(R.id.delete_button).setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(a);
-                    builder
-                            .setTitle("データを削除しますか？") // タイトル
-                            .setMessage("この操作は元に戻せません") // メッセージ
-                            .setNegativeButton("削除", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    userDataStorage.delete(myPageIDmList[0]);
-                                    updateMyPage();
-                                    userDataStorage.printList();
-                                }
-                            })
-                            .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //ダイアナログを表示
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder
+                                .setTitle("データを削除しますか？") // タイトル
+                                .setMessage("この操作は元に戻せません") // メッセージ
+                                .setNegativeButton("削除", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        userDataStorage.delete(myPageIDmList[0]);
+                                        updateMyPage();
+                                        userDataStorage.printList();
+                                    }
+                                })
+                                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
 
-                                }
-                            })
-                            .create();
-                    AlertDialog dialog = builder.create();
-                    // AlertDialogを表示
-                    dialog.show();
+                                    }
+                                })
+                                .create();
+                        AlertDialog dialog = builder.create();
+                        // AlertDialogを表示
+                        dialog.show();
 
+                    }
                 }
-            }
         );
         findViewById(R.id.myCard_2).findViewById(R.id.delete_button).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(a);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder
                                 .setTitle("データを削除しますか？") // タイトル
                                 .setMessage("この操作は元に戻せません") // メッセージ
@@ -472,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(a);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder
                                 .setTitle("データを削除しますか？") // タイトル
                                 .setMessage("この操作は元に戻せません") // メッセージ
@@ -499,7 +519,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(a);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder
                                 .setTitle("データを削除しますか？") // タイトル
                                 .setMessage("この操作は元に戻せません") // メッセージ
@@ -526,7 +546,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(a);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder
                                 .setTitle("データを削除しますか？") // タイトル
                                 .setMessage("この操作は元に戻せません") // メッセージ
@@ -551,10 +571,14 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    private void updateMyPage(){
-        ArrayList<CardData> cards= userDataStorage.getAllData();
+    /**
+     * マイページのUI表示を更新する
+     */
+    private void updateMyPage() {
+        ArrayList<CardData> cards = userDataStorage.getAllCardData();
         View[] myCards = new View[5];
         View[] myCardsMonthly = new View[5];
+        //登録済みカードと今月の支払額UIを取得
         myCards[0] = findViewById(R.id.myCard_1);
         myCardsMonthly[0] = findViewById(R.id.myCard_monthly_1);
         myCards[1] = findViewById(R.id.myCard_2);
@@ -566,55 +590,74 @@ public class MainActivity extends AppCompatActivity {
         myCards[4] = findViewById(R.id.myCard_5);
         myCardsMonthly[4] = findViewById(R.id.myCard_monthly_5);
         //表示を初期化
-        for(View myCard : myCards){
+        for (View myCard : myCards) {
             myCard.setVisibility(View.GONE);
         }
-        for(View myCardMonthly : myCardsMonthly){
+        for (View myCardMonthly : myCardsMonthly) {
             myCardMonthly.setVisibility(View.GONE);
         }
+        //空メッセージを可視化
         findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.VISIBLE);
         findViewById(R.id.myCard_empty_message).setVisibility(View.VISIBLE);
-        if(cards.size()>0){
+
+        //カードが登録されている場合
+        if (cards.size() > 0) {
+            //からメッセージを非表示
             findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.GONE);
             findViewById(R.id.myCard_empty_message).setVisibility(View.GONE);
-            for(int i=0;i<cards.size();i++){
-                switch (cards.get(i).getCardType()){
-                    case 1:
-                        cards.get(i).setMyPageInfo(myCards[0],myCardsMonthly[0]);
+            //データを入れる
+            for (int i = 0; i < cards.size(); i++) {
+                switch (cards.get(i).getCardType()) {
+                    case CardParams.TYPE_CODE_AYUCA:
+                        //Ayucaの場合
+                        cards.get(i).setMyPageInfo(myCards[0], myCardsMonthly[0]);
                         myPageIDmList[0] = cards.get(i).getIDm();
                         break;
-                    case 2:
-                        cards.get(i).setMyPageInfo(myCards[1],myCardsMonthly[1]);
+                    case CardParams.TYPE_CODE_CAMPUS_PAY:
+                        //大学生協電子マネーの場合
+                        cards.get(i).setMyPageInfo(myCards[1], myCardsMonthly[1]);
                         myPageIDmList[1] = cards.get(i).getIDm();
                         break;
                 }
 
             }
         }
+        //グラフの描画
         showGraph(userDataStorage);
 
 
     }
 
-    void showGraph(Storage userDataStorage){
+    /**
+     * 登録済みカードそれぞれの過去5ヶ月分の利用金額をグラフで表示する
+     * @param userDataStorage 登録済みカードデータ
+     */
+    void showGraph(Storage userDataStorage) {
         View[] chartWrapper = new View[2];
+        //グラフ表示領域
         chartWrapper[0] = findViewById(R.id.history_chart1);
         chartWrapper[1] = findViewById(R.id.history_chart2);
 
         TextView title;
         HorizontalBarChart chart;
-        int count = Math.min(chartWrapper.length,userDataStorage.getAllData().size());
-        for (int i=0;i<count;i++){
+        int count = Math.min(chartWrapper.length, userDataStorage.getAllCardData().size());
+        //各グラフにタイトルの設定とグラフ描画エリアの取得
+        for (int i = 0; i < count; i++) {
             title = chartWrapper[i].findViewById(R.id.chart_title);
             chart = chartWrapper[i].findViewById(R.id.usage_chart);
-            setChartParams(chart,userDataStorage.getAllData().get(i));
-            title.setText(userDataStorage.getAllData().get(i).getCardName()+" 月額利用履歴");
+            setChartParams(chart, userDataStorage.getAllCardData().get(i));
+            title.setText(userDataStorage.getAllCardData().get(i).getCardName() + " 月額利用履歴");
         }
 
     }
 
+    /**
+     *
+     * @param chart
+     * @param cardData
+     */
     @SuppressLint("DefaultLocale")
-    private void setChartParams(HorizontalBarChart chart, CardData cardData){
+    private void setChartParams(HorizontalBarChart chart, CardData cardData) {
         ArrayList<BarEntry> entries = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         int chartItemNum = 5;
@@ -622,21 +665,21 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Calendar> date = new ArrayList<>();
         ArrayList<String> xValues = new ArrayList<>();
 
-        for(int i=0;i<chartItemNum;i++){
+        for (int i = 0; i < chartItemNum; i++) {
             date.add((Calendar) calendar.clone());
             calendar.add(Calendar.MONTH, -1);
         }
         Collections.reverse(date);
 
-        for(int i=0;i<chartItemNum;i++){
-            int value = cardData.getMonthlyUsage(date.get(i).get(Calendar.YEAR),date.get(i).get(Calendar.MONTH)+1);
-            entries.add(new BarEntry((float)i ,value));
-            Log.d("chart",i+":"+value+","+date.get(i).get(Calendar.YEAR)+"/"+date.get(i).get(Calendar.MONTH)+1);
+        for (int i = 0; i < chartItemNum; i++) {
+            int value = cardData.getMonthlyUsage(date.get(i).get(Calendar.YEAR), date.get(i).get(Calendar.MONTH) + 1);
+            entries.add(new BarEntry((float) i, value));
+            Log.d("chart", i + ":" + value + "," + date.get(i).get(Calendar.YEAR) + "/" + date.get(i).get(Calendar.MONTH) + 1);
         }
 
 
-        for(int i=0;i<chartItemNum;i++){
-            xValues.add(String.format("%d月",date.get(i).get(Calendar.MONTH)+1));
+        for (int i = 0; i < chartItemNum; i++) {
+            xValues.add(String.format("%d月", date.get(i).get(Calendar.MONTH) + 1));
         }
 
         ArrayList<IBarDataSet> bars = new ArrayList<>();
@@ -644,36 +687,36 @@ public class MainActivity extends AppCompatActivity {
 
         //ハイライトさせない
         dataSet.setHighlightEnabled(false);
-        switch (cardData.getCardType()){
+        switch (cardData.getCardType()) {
             case CardParams.TYPE_CODE_AYUCA:
                 break;
             case CardParams.TYPE_CODE_CAMPUS_PAY:
-                dataSet.setColor(Color.rgb(0xFF,0x91,0x01));
+                dataSet.setColor(Color.rgb(0xFF, 0x91, 0x01));
                 break;
         }
 
         bars.add(dataSet);
         //Y軸に表示するLabelのリスト
-        final String[] labels = new String[chartItemNum+1];
+        final String[] labels = new String[chartItemNum + 1];
 //        labels[0] = "";
-        for(int i=0;i<chartItemNum;i++){
-            labels[i] = String.format("%d月",date.get(i).get(Calendar.MONTH)+1);
+        for (int i = 0; i < chartItemNum; i++) {
+            labels[i] = String.format("%d月", date.get(i).get(Calendar.MONTH) + 1);
         }
-        for(int i=0;i<labels.length;i++){
-            Log.d("TAG","Label:"+labels[i]);
+        for (int i = 0; i < labels.length; i++) {
+            Log.d("TAG", "Label:" + labels[i]);
         }
         BarData data = new BarData(bars);
         data.setBarWidth(0.7f);
         data.setValueTextSize(12f);
 
 
-        data.setValueFormatter(new IndexAxisValueFormatter(){
+        data.setValueFormatter(new IndexAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                if(value<=0){
+                if (value <= 0) {
                     return "利用なし";
-                }else{
-                    return String.format("%,d",(int)value);
+                } else {
+                    return String.format("%,d", (int) value);
                 }
 
             }
@@ -711,7 +754,7 @@ public class MainActivity extends AppCompatActivity {
         chart.invalidate();
         chart.animateY(500);
 
-        Log.d("TAG","fin");
+        Log.d("TAG", "fin");
     }
 
 }

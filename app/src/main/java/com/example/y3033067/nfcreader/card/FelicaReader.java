@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * カードの読み取りのパラメーター指定や読み取ったバイナリの解釈を行うクラス
+ * 特定のカードに関するパラメータは持たず、基本的にはこのクラスを継承したサブクラスをインスタンス化することを想定
+ */
 public class FelicaReader {
 
     private NfcF nfc;
@@ -17,11 +21,6 @@ public class FelicaReader {
 
     public FelicaReader(Tag tag) {
         this.nfc = NfcF.get(tag);
-        // システムコード
-        /*
-         * Ayuca:0x83ee
-         * CampusPay:0x8e4b
-         */
     }
 
     /**
@@ -44,7 +43,8 @@ public class FelicaReader {
 
     /**
      * 読み込みたい場所を指定しデータを取得
-     * @param _targetIDm         IDｍ
+     *
+     * @param _targetIDm        IDｍ
      * @param targetServiceCode 読み込みたい場所のサービスコード
      * @param startBlock        読み込みたいブロックの開始位置
      * @param endBlock          終了位置
@@ -116,7 +116,7 @@ public class FelicaReader {
     /**
      *
      */
-    public int getCardType(){
+    public int getCardType() {
         try {
             //通信開始
 
@@ -133,16 +133,16 @@ public class FelicaReader {
             IDmString.append(String.format("%02X", IDm[0]));
             IDmString.append(String.format("%02X", IDm[1]));
 
-            switch (String.valueOf(IDmString)){
+            switch (String.valueOf(IDmString)) {
                 case "0112":
                     //Ayuca
-                    return 1;
+                    return CardParams.TYPE_CODE_AYUCA;
                 case "0114":
                     //CampusPay
-                    return 2;
+                    return CardParams.TYPE_CODE_CAMPUS_PAY;
                 case "012E":
                     //学生証
-                    return 3;
+                    return CardParams.TYPE_CODE_STUDENT_ID;
                 default:
                     return 0;
             }
@@ -153,53 +153,28 @@ public class FelicaReader {
         }
 
 
-
-
-
     }
 
     public String getIDm(String split) {
-        return hex2string(primarySystemIDm,split);
-    }
-
-
-    /**
-     * バイト配列を16進数表記で1バイトずつ区切った文字列に変換する
-     * @param bytes バイト配列(プリミティブbyte)
-     * @return 文字列
-     */
-    //こっちは基本データ型のbyte型
-    public String hex2string(Byte[] bytes,String split) {
-        StringBuilder string = new StringBuilder();
-        for (byte b : bytes) {
-            try {
-                string.append(String.format("%02X%s", b,split));
-            } catch (Error e) {
-                e.printStackTrace();
-            }
-        }
-        return string.toString();
+        return hex2string(primarySystemIDm, split);
     }
 
     /**
      * バイト配列を16進数表記で1バイトずつ区切った文字列に変換する
+     *
      * @param bytes バイト配列(Byteクラス)
      * @return 文字列
      */
     //こっちはByteクラスのByte型
-    public String hex2string(byte[] bytes,String split) {
+    public String hex2string(byte[] bytes, String split) {
         StringBuilder string = new StringBuilder();
         for (byte b : bytes) {
             try {
-                string.append(String.format("%02X%s", b,split));
+                string.append(String.format("%02X%s", b, split));
             } catch (Error e) {
                 e.printStackTrace();
             }
         }
         return string.toString();
     }
-
-
-
-
 }
