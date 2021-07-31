@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 campusPay.readAllData();
                 histories = campusPay.getHistories();
 
-                cardNameText = "生協電子マネー";
+                cardNameText = "大学生協電子マネー";
                 cardBalanceText = String.format("￥%,d",campusPay.getSFBalance());
 
                 switch (cardDataFlag){
@@ -271,6 +271,8 @@ public class MainActivity extends AppCompatActivity {
         saveUserDataFile();
 //        タブ切り替え
 //        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
+        findViewById(R.id.read_waiting_view).setVisibility(View.GONE);
+        findViewById(R.id.history_scrollView).setVisibility(View.VISIBLE);
     }
 
     @Override

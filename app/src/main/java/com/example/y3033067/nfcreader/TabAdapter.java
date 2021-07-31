@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
 
 public class TabAdapter extends FragmentPagerAdapter {
-    final String[] pageTitle = {"読み取り", "マイページ"};
+    final String[] pageTitle = {"履歴表示", "マイページ"};
 
     public TabAdapter(@NonNull @NotNull FragmentManager fm) {
         super(fm);

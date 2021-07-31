@@ -7,11 +7,23 @@
     android:layout_height="match_parent">
 
 
+    <RelativeLayout
+        android:id="@+id/read_waiting_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingBottom="200dp"
+        >
+        <include layout="@layout/read_waiting" />
+    </RelativeLayout>
+
     <ScrollView
-        android:id="@+id/scrollView"
+        android:id="@+id/history_scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="5dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
