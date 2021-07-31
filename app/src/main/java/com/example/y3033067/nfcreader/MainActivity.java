@@ -28,6 +28,7 @@ import com.example.y3033067.nfcreader.storage.CardData;
 import com.example.y3033067.nfcreader.storage.Storage;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -38,6 +39,7 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
@@ -605,7 +607,7 @@ public class MainActivity extends AppCompatActivity {
             title = chartWrapper[i].findViewById(R.id.chart_title);
             chart = chartWrapper[i].findViewById(R.id.usage_chart);
             setChartParams(chart,userDataStorage.getAllData().get(i));
-            title.setText(userDataStorage.getAllData().get(i).getCardName());
+            title.setText(userDataStorage.getAllData().get(i).getCardName()+" 月額利用履歴");
         }
 
     }
@@ -617,6 +619,7 @@ public class MainActivity extends AppCompatActivity {
         int chartItemNum = 5;
         calendar.setTime(new Date());
         ArrayList<Calendar> date = new ArrayList<>();
+        ArrayList<String> xValues = new ArrayList<>();
 
         for(int i=0;i<chartItemNum;i++){
             date.add((Calendar) calendar.clone());
@@ -626,53 +629,88 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i=0;i<chartItemNum;i++){
             int value = cardData.getMonthlyUsage(date.get(i).get(Calendar.YEAR),date.get(i).get(Calendar.MONTH)+1);
-            entries.add(new BarEntry(i ,value));
+            entries.add(new BarEntry((float)i ,value));
             Log.d("chart",i+":"+value+","+date.get(i).get(Calendar.YEAR)+"/"+date.get(i).get(Calendar.MONTH)+1);
         }
 
-        List<IBarDataSet> bars = new ArrayList<>();
-        BarDataSet dataSet = new BarDataSet(entries, "bar");
-        //整数で表示
-//        dataSet.setValueFormatter(new ValueFormatter() {
-//            @Override
-//            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-//                return "" + (int) value;
-//            }
-//        });
+
+        for(int i=0;i<chartItemNum;i++){
+            xValues.add(String.format("%d月",date.get(i).get(Calendar.MONTH)+1));
+        }
+
+        ArrayList<IBarDataSet> bars = new ArrayList<>();
+        BarDataSet dataSet = new BarDataSet(entries, cardData.getCardName());
+
+        //ハイライトさせない
+        dataSet.setHighlightEnabled(false);
+        switch (cardData.getCardType()){
+            case CardParams.TYPE_CODE_AYUCA:
+                break;
+            case CardParams.TYPE_CODE_CAMPUS_PAY:
+                dataSet.setColor(Color.rgb(0xFF,0x91,0x01));
+                break;
+        }
 
         bars.add(dataSet);
-
+        //Y軸に表示するLabelのリスト
+        final String[] labels = new String[chartItemNum+1];
+//        labels[0] = "";
+        for(int i=0;i<chartItemNum;i++){
+            labels[i] = String.format("%d月",date.get(i).get(Calendar.MONTH)+1);
+        }
+        for(int i=0;i<labels.length;i++){
+            Log.d("TAG","Label:"+labels[i]);
+        }
         BarData data = new BarData(bars);
-        data.setBarWidth(0.5f);
+        data.setBarWidth(0.7f);
+        data.setValueTextSize(12f);
+
+
+        data.setValueFormatter(new IndexAxisValueFormatter(){
+            @Override
+            public String getFormattedValue(float value) {
+                if(value<=0){
+                    return "利用なし";
+                }else{
+                    return String.format("%,d",(int)value);
+                }
+
+            }
+        });
         chart.setData(data);
 
         //Y軸(左)
-        YAxis yAxis = chart.getAxisLeft();
-        //Y軸に表示するLabelのリスト(最初の""は原点の位置)
-        final String[] labels = new String[chartItemNum];
-        for(int i=0;i<chartItemNum;i++){
-            labels[i] = String.format("%d月",date.get(i).get(Calendar.MONTH));
-        }
+        XAxis xl = chart.getXAxis();
+        xl.setEnabled(true);
+        xl.setLabelCount(5);
 
-        yAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-        YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setDrawLabels(true);
-        leftAxis.setDrawGridLines(false);
-        leftAxis.setDrawAxisLine(true);
+        xl.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xl.setDrawAxisLine(true);
+        xl.setDrawLabels(true);
+        xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xl.setTextSize(12f);
+//        xl.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        xl.setDrawGridLines(false);
+        xl.setDrawAxisLine(true);
 
-        //X軸
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setDrawLabels(false);
-        xAxis.setDrawGridLines(false);
+        YAxis yAxis = chart.getAxisRight();
+        yAxis.setEnabled(false);
+        chart.getAxisLeft().setEnabled(false);
+//        //X軸
+//        XAxis xAxis = chart.getXAxis();
+//        xAxis.setDrawLabels(false);
+//        xAxis.setDrawGridLines(false);
 
 
         //グラフ上の表示
         chart.setDrawValueAboveBar(true);
         chart.getDescription().setEnabled(false);
         chart.setClickable(false);
-
+        chart.getLegend().setEnabled(false);
         chart.invalidate();
+        chart.animateY(500);
 
         Log.d("TAG","fin");
     }
+
 }

@@ -23,7 +23,7 @@
         android:angle="135"
         android:centerX="0"
         android:centerY="0"
-        android:centerColor="@color/gray"
+        android:centerColor="@color/orange"
         android:endColor="@color/white"
         />
 </shape>

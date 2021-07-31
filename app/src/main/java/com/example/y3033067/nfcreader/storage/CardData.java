@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.y3033067.nfcreader.CardHistory;
+import com.example.y3033067.nfcreader.CardParams;
 import com.example.y3033067.nfcreader.R;
 
 import java.text.SimpleDateFormat;
@@ -111,6 +113,7 @@ public class CardData {
 
         TextView sumCardName = myCard.findViewById(R.id.sum_card_name);
         sumCardName.setText(card_name);
+        Log.d("UI","card_name"+card_name);
 
         TextView balanceText = myCard.findViewById(R.id.card_sum_balance);
         balanceText.setText(String.format("残高 ￥%,d / %.1fP",balance,point/10.0));
@@ -126,6 +129,19 @@ public class CardData {
 
         TextView mViewCardCount = myCardMonthly.findViewById(R.id.mView_payCount);
         mViewCardCount.setText(String.format("%d回の支払い",getMonthlyPayCount()));
+
+        ImageView cardImage = myCard.findViewById(R.id.card_sum_image);
+        switch (getCardType()){
+            case CardParams.TYPE_CODE_AYUCA:
+                cardImage.setImageResource(R.drawable.shape_ayuca);
+                Log.d("UI","ayuca"+card_type);
+                break;
+            case CardParams.TYPE_CODE_CAMPUS_PAY:
+                cardImage.setImageResource(R.drawable.shape_campuspay);
+                Log.d("UI","cp"+card_type);
+                break;
+        }
+
 
     }
 
