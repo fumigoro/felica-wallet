@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -35,7 +34,6 @@ import com.example.y3033067.nfcreader.ui.HistoryUI;
 import com.example.y3033067.nfcreader.ui.TabAdapter;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -61,9 +59,6 @@ public class MainActivity extends AppCompatActivity {
     private String[][] techListsArray;
     private NfcAdapter mAdapter;
     private PendingIntent pendingIntent;
-    private Ayuca ayuca;
-    private CampusPay campusPay;
-    private StudentIDCard idCard;
     TabLayout tabLayout;
     TextView cardID, cardName, cardBalance;
     HistoryUI[] historyUI;
@@ -135,9 +130,9 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onNewIntent(Intent intent) {
-
-        // IntentにTagの基本データが入ってくるので取得
         super.onNewIntent(intent);
+
+        // Intentに入っているTagの基本データ取得
         setButtonListener();
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         if (tag == null) {
@@ -150,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
 
         //既知のカードか否か、保存するか否かのフラグを設定
         //更新or新規保存orなにもしないの3択
-        int cardDataFlag = 0;
+        int cardDataFlag;
         CardData newCardData = userDataStorage.getCardData(card.getIDm(""));
         if (newCardData != null) {
             cardDataFlag = 1; //更新
-        } else if (true) {//確認
+        } else {
             cardDataFlag = 2; //新規保存
         }
         //読み取った履歴を保存するオブジェクト
@@ -167,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         switch (type) {
             case CardParams.TYPE_CODE_AYUCA:
                 //Ayuca
-                ayuca = new Ayuca(tag);
+                Ayuca ayuca = new Ayuca(tag);
                 //バス停コード一覧ファイルを読み込み
                 ayuca.loadAssetFile((Activity) findViewById(R.id.fragment_show).getContext());
                 //カードからデータを読み取り
@@ -205,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
             case 2:
                 //CampusPay
-                campusPay = new CampusPay(tag);
+                CampusPay campusPay = new CampusPay(tag);
                 //カードからデータを読み取り
                 campusPay.readAllData();
                 histories = campusPay.getHistories();
@@ -236,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 3:
                 //学生証
-                idCard = new StudentIDCard(tag);
+                StudentIDCard idCard = new StudentIDCard(tag);
                 //カードからデータを読み取り
                 idCard.readAllData();
 
@@ -435,140 +430,106 @@ public class MainActivity extends AppCompatActivity {
     private void setButtonListener() {
         Context context = this;
         findViewById(R.id.myCard_1).findViewById(R.id.delete_button).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //ダイアナログを表示
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder
-                                .setTitle("データを削除しますか？") // タイトル
-                                .setMessage("この操作は元に戻せません") // メッセージ
-                                .setNegativeButton("削除", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        userDataStorage.delete(myPageIDmList[0]);
-                                        updateMyPage();
-                                        userDataStorage.printList();
-                                    }
-                                })
-                                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
+                v -> {
+                    //ダイアナログを表示
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder
+                            .setTitle("データを削除しますか？") // タイトル
+                            .setMessage("この操作は元に戻せません") // メッセージ
+                            .setNegativeButton("削除", (dialog, id) -> {
+                                //承諾時の処理
+                                userDataStorage.delete(myPageIDmList[0]);
+                                updateMyPage();
+                                userDataStorage.printList();
+                            })
+                            // キャンセル時の処理
+                            .setPositiveButton("キャンセル", (dialog, id) -> {
+                            })
+                            .create();
+                    AlertDialog dialog = builder.create();
+                    // 表示
+                    dialog.show();
 
-                                    }
-                                })
-                                .create();
-                        AlertDialog dialog = builder.create();
-                        // AlertDialogを表示
-                        dialog.show();
-
-                    }
                 }
         );
         findViewById(R.id.myCard_2).findViewById(R.id.delete_button).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder
-                                .setTitle("データを削除しますか？") // タイトル
-                                .setMessage("この操作は元に戻せません") // メッセージ
-                                .setNegativeButton("削除", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        userDataStorage.delete(myPageIDmList[1]);
-                                        updateMyPage();
-                                        userDataStorage.printList();
-                                    }
-                                })
-                                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
+                v -> {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder
+                            .setTitle("データを削除しますか？") // タイトル
+                            .setMessage("この操作は元に戻せません") // メッセージ
+                            .setNegativeButton("削除", (dialog, id) -> {
+                                userDataStorage.delete(myPageIDmList[1]);
+                                updateMyPage();
+                                userDataStorage.printList();
+                            })
+                            .setPositiveButton("キャンセル", (dialog, id) -> {
 
-                                    }
-                                })
-                                .create();
-                        AlertDialog dialog = builder.create();
-                        // AlertDialogを表示
-                        dialog.show();
-                    }
+                            })
+                            .create();
+                    AlertDialog dialog = builder.create();
+                    // AlertDialogを表示
+                    dialog.show();
                 }
         );
         findViewById(R.id.myCard_3).findViewById(R.id.delete_button).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder
-                                .setTitle("データを削除しますか？") // タイトル
-                                .setMessage("この操作は元に戻せません") // メッセージ
-                                .setNegativeButton("削除", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        userDataStorage.delete(myPageIDmList[2]);
-                                        updateMyPage();
-                                        userDataStorage.printList();
-                                    }
-                                })
-                                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
+                v -> {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder
+                            .setTitle("データを削除しますか？") // タイトル
+                            .setMessage("この操作は元に戻せません") // メッセージ
+                            .setNegativeButton("削除", (dialog, id) -> {
+                                userDataStorage.delete(myPageIDmList[2]);
+                                updateMyPage();
+                                userDataStorage.printList();
+                            })
+                            .setPositiveButton("キャンセル", (dialog, id) -> {
 
-                                    }
-                                })
-                                .create();
-                        AlertDialog dialog = builder.create();
-                        // AlertDialogを表示
-                        dialog.show();
-                    }
+                            })
+                            .create();
+                    AlertDialog dialog = builder.create();
+                    // AlertDialogを表示
+                    dialog.show();
                 }
         );
         findViewById(R.id.myCard_4).findViewById(R.id.delete_button).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder
-                                .setTitle("データを削除しますか？") // タイトル
-                                .setMessage("この操作は元に戻せません") // メッセージ
-                                .setNegativeButton("削除", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        userDataStorage.delete(myPageIDmList[3]);
-                                        updateMyPage();
-                                        userDataStorage.printList();
-                                    }
-                                })
-                                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
+                v -> {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder
+                            .setTitle("データを削除しますか？") // タイトル
+                            .setMessage("この操作は元に戻せません") // メッセージ
+                            .setNegativeButton("削除", (dialog, id) -> {
+                                userDataStorage.delete(myPageIDmList[3]);
+                                updateMyPage();
+                                userDataStorage.printList();
+                            })
+                            .setPositiveButton("キャンセル", (dialog, id) -> {
 
-                                    }
-                                })
-                                .create();
-                        AlertDialog dialog = builder.create();
-                        // AlertDialogを表示
-                        dialog.show();
-                    }
+                            })
+                            .create();
+                    AlertDialog dialog = builder.create();
+                    // AlertDialogを表示
+                    dialog.show();
                 }
         );
         findViewById(R.id.myCard_5).findViewById(R.id.delete_button).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder
-                                .setTitle("データを削除しますか？") // タイトル
-                                .setMessage("この操作は元に戻せません") // メッセージ
-                                .setNegativeButton("削除", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        userDataStorage.delete(myPageIDmList[4]);
-                                        updateMyPage();
-                                        userDataStorage.printList();
-                                    }
-                                })
-                                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
+                v -> {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder
+                            .setTitle("データを削除しますか？") // タイトル
+                            .setMessage("この操作は元に戻せません") // メッセージ
+                            .setNegativeButton("削除", (dialog, id) -> {
+                                userDataStorage.delete(myPageIDmList[4]);
+                                updateMyPage();
+                                userDataStorage.printList();
+                            })
+                            .setPositiveButton("キャンセル", (dialog, id) -> {
 
-                                    }
-                                })
-                                .create();
-                        AlertDialog dialog = builder.create();
-                        // AlertDialogを表示
-                        dialog.show();
-                    }
+                            })
+                            .create();
+                    AlertDialog dialog = builder.create();
+                    // AlertDialogを表示
+                    dialog.show();
                 }
         );
     }
@@ -648,7 +609,8 @@ public class MainActivity extends AppCompatActivity {
             title = chartWrapper[i].findViewById(R.id.chart_title);
             chart = chartWrapper[i].findViewById(R.id.usage_chart);
             setChartParams(chart, userDataStorage.getAllCardData().get(i));
-            title.setText(userDataStorage.getAllCardData().get(i).getCardName() + " 月額利用履歴");
+            String titleText = userDataStorage.getAllCardData().get(i).getCardName() + " 月額利用履歴";
+            title.setText(titleText);
         }
 
     }
