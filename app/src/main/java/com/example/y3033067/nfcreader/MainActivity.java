@@ -279,7 +279,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 履歴をUIに表示する
-     * @param type カード種別
+     *
+     * @param type      カード種別
      * @param histories 履歴
      */
     private void showHistory(int type, ArrayList<CardHistory> histories) {
@@ -383,6 +384,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 保存済みのデータファイルを読み込む
+     *
      * @return Storageクラス
      */
     private Storage roadUserDataFile() {
@@ -625,11 +627,11 @@ public class MainActivity extends AppCompatActivity {
         //グラフの描画
         showGraph(userDataStorage);
 
-
     }
 
     /**
      * 登録済みカードそれぞれの過去5ヶ月分の利用金額をグラフで表示する
+     *
      * @param userDataStorage 登録済みカードデータ
      */
     void showGraph(Storage userDataStorage) {
@@ -652,41 +654,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * グラフを描画するHorizontalBarChartのインスタンスに必要なパラメータを入れる
      *
-     * @param chart
-     * @param cardData
+     * @param chart    HorizontalBarChartのインスタンス
+     * @param cardData カードデータ
      */
     @SuppressLint("DefaultLocale")
     private void setChartParams(HorizontalBarChart chart, CardData cardData) {
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        int chartItemNum = 5;
-        calendar.setTime(new Date());
-        ArrayList<Calendar> date = new ArrayList<>();
-        ArrayList<String> xValues = new ArrayList<>();
+        // グラフ表示する月数
+        final int CHART_ITEM_NUM = 5;
 
-        for (int i = 0; i < chartItemNum; i++) {
+        //今月から5ヶ月前までの各月を表すCalendarオブジェクトを生成
+        ArrayList<Calendar> date = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        for (int i = 0; i < CHART_ITEM_NUM; i++) {
             date.add((Calendar) calendar.clone());
             calendar.add(Calendar.MONTH, -1);
         }
         Collections.reverse(date);
 
-        for (int i = 0; i < chartItemNum; i++) {
+
+        // ===== Entry =====
+        // 月ごとのEntryを作成
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        for (int i = 0; i < CHART_ITEM_NUM; i++) {
             int value = cardData.getMonthlyUsage(date.get(i).get(Calendar.YEAR), date.get(i).get(Calendar.MONTH) + 1);
             entries.add(new BarEntry((float) i, value));
             Log.d("chart", i + ":" + value + "," + date.get(i).get(Calendar.YEAR) + "/" + date.get(i).get(Calendar.MONTH) + 1);
         }
 
+//        ArrayList<String> xValues = new ArrayList<>();
+//        for (int i = 0; i < CHART_ITEM_NUM; i++) {
+//            xValues.add(String.format("%d月", date.get(i).get(Calendar.MONTH) + 1));
+//        }
 
-        for (int i = 0; i < chartItemNum; i++) {
-            xValues.add(String.format("%d月", date.get(i).get(Calendar.MONTH) + 1));
-        }
-
-        ArrayList<IBarDataSet> bars = new ArrayList<>();
+        // ===== DataSet =====
         BarDataSet dataSet = new BarDataSet(entries, cardData.getCardName());
-
-        //ハイライトさせない
+        //ハイライト無効化
         dataSet.setHighlightEnabled(false);
+        //色の設定
         switch (cardData.getCardType()) {
             case CardParams.TYPE_CODE_AYUCA:
                 break;
@@ -695,21 +702,14 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
+        // ===== DataSetのリスト =====
+        ArrayList<IBarDataSet> bars = new ArrayList<>();
         bars.add(dataSet);
-        //Y軸に表示するLabelのリスト
-        final String[] labels = new String[chartItemNum + 1];
-//        labels[0] = "";
-        for (int i = 0; i < chartItemNum; i++) {
-            labels[i] = String.format("%d月", date.get(i).get(Calendar.MONTH) + 1);
-        }
-        for (int i = 0; i < labels.length; i++) {
-            Log.d("TAG", "Label:" + labels[i]);
-        }
+
+        // ===== BarData =====
         BarData data = new BarData(bars);
         data.setBarWidth(0.7f);
         data.setValueTextSize(12f);
-
-
         data.setValueFormatter(new IndexAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
@@ -723,38 +723,50 @@ public class MainActivity extends AppCompatActivity {
         });
         chart.setData(data);
 
-        //Y軸(左)
+        //5ヶ月分のラベルを作成
+        final String[] labels = new String[CHART_ITEM_NUM + 1];
+        for (int i = 0; i < CHART_ITEM_NUM; i++) {
+            labels[i] = String.format("%d月", date.get(i).get(Calendar.MONTH) + 1);
+        }
+
+        // 軸の設定
+        // X軸(左端)
         XAxis xl = chart.getXAxis();
+        //有効化
         xl.setEnabled(true);
+        //ラベルの個数を設定
         xl.setLabelCount(5);
-
+        //ラベルを設定
         xl.setValueFormatter(new IndexAxisValueFormatter(labels));
-        xl.setDrawAxisLine(true);
+        //軸線を表示
+        xl.setDrawAxisLine(false);
+        //ラベルを表示
         xl.setDrawLabels(true);
-        xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+        //位置指定
+        xl.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+        //文字サイズ指定
         xl.setTextSize(12f);
-//        xl.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        //グリッド線
         xl.setDrawGridLines(false);
-        xl.setDrawAxisLine(true);
 
-        YAxis yAxis = chart.getAxisRight();
-        yAxis.setEnabled(false);
+        // 左右の軸を無効化
+        chart.getAxisRight().setEnabled(true);
         chart.getAxisLeft().setEnabled(false);
-//        //X軸
-//        XAxis xAxis = chart.getXAxis();
-//        xAxis.setDrawLabels(false);
-//        xAxis.setDrawGridLines(false);
-
 
         //グラフ上の表示
+        // バー上に値表示
         chart.setDrawValueAboveBar(true);
+        // グラフの説明を非表示
         chart.getDescription().setEnabled(false);
+        // グラフのタッチを無効化
         chart.setClickable(false);
+        // 凡例を無効化
         chart.getLegend().setEnabled(false);
+        // グラフ描画
         chart.invalidate();
+        // Y方向のアニメーション
         chart.animateY(500);
 
-        Log.d("TAG", "fin");
     }
 
 }
