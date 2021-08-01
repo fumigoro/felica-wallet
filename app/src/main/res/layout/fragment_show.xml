@@ -67,7 +67,7 @@
                     android:id="@+id/card_balance_label"
                     android:layout_width="120dp"
                     android:layout_height="50dp"
-
+                    android:text="@string/show_balanceLabel"
                     android:gravity="end|center_vertical"
                     android:textSize="20sp"
                     android:layout_below="@+id/card_name"

@@ -541,11 +541,14 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<CardData> cards = userDataStorage.getAllCardData();
         View[] myCards = new View[5];
         View[] myCardsMonthly = new View[5];
+        View[] chart = new View[2];
         //登録済みカードと今月の支払額UIを取得
         myCards[0] = findViewById(R.id.myCard_1);
         myCardsMonthly[0] = findViewById(R.id.myCard_monthly_1);
+        chart[0] = findViewById(R.id.history_chart1);
         myCards[1] = findViewById(R.id.myCard_2);
         myCardsMonthly[1] = findViewById(R.id.myCard_monthly_2);
+        chart[1] = findViewById(R.id.history_chart2);
         myCards[2] = findViewById(R.id.myCard_3);
         myCardsMonthly[2] = findViewById(R.id.myCard_monthly_3);
         myCards[3] = findViewById(R.id.myCard_4);
@@ -558,6 +561,9 @@ public class MainActivity extends AppCompatActivity {
         }
         for (View myCardMonthly : myCardsMonthly) {
             myCardMonthly.setVisibility(View.GONE);
+        }
+        for (View chartTmp : chart) {
+            chartTmp.setVisibility(View.GONE);
         }
         //空メッセージを可視化
         findViewById(R.id.myCard_monthly_empty_message).setVisibility(View.VISIBLE);
@@ -575,11 +581,13 @@ public class MainActivity extends AppCompatActivity {
                         //Ayucaの場合
                         cards.get(i).setMyPageInfo(myCards[0], myCardsMonthly[0]);
                         myPageIDmList[0] = cards.get(i).getIDm();
+                        chart[0].setVisibility(View.VISIBLE);
                         break;
                     case CardParams.TYPE_CODE_CAMPUS_PAY:
                         //大学生協電子マネーの場合
                         cards.get(i).setMyPageInfo(myCards[1], myCardsMonthly[1]);
                         myPageIDmList[1] = cards.get(i).getIDm();
+                        chart[1].setVisibility(View.VISIBLE);
                         break;
                 }
 

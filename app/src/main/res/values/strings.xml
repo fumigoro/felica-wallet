@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">NfcReader</string>
+    <string name="app_name">Felica Wallet</string>
     <string name="myPage_cad_title_list">登録済みカード</string>
     <string name="myPage_list_emptyMessage">カードをかざして登録しましょう</string>
     <string name="myPage_card_title_monthlyUsage">今月の支払い額</string>
     <string name="myPage_monthlyUsage_emptyMessage">今月の合計利用額を確認できます</string>
     <string name="show_readWaitingMessage">カードをかざしてください</string>
+    <string name="show_balanceLabel">残高</string>
 </resources>
